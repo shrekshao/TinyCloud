@@ -16,7 +16,7 @@
 using namespace std;
 
 
-bool do_write(int fd, char *buf, int len)
+bool do_write(int fd, const char *buf, int len)
 {
     int sent = 0;
     while (sent < len)
@@ -163,8 +163,8 @@ void* clientThread(void* params)
   pthread_exit(NULL);
 }
 
-string CRLF = "\r\n";
-string LF = "\n";
+const string CRLF = "\r\n";
+const string LF = "\n";
 string HTTP_OK = "HTTP/1.1 200 OK\r\n";
 
 void sendTextFile(int comm_fd, const string& filename)
