@@ -11,26 +11,15 @@
 #include <fstream>
 
 #include <unordered_set>
+#include <unordered_map>
 
 
 using namespace std;
 
+typedef void (*FunctionHandler)(int);
 
-bool do_write(int fd, const char *buf, int len)
-{
-    int sent = 0;
-    while (sent < len)
-    {
-        int n = write(fd, &buf[sent], len - sent);
-        if (n < 0)
-        {
-            cerr << "write message error\n";
-            return false;
-        }
-        sent += n;
-    }
-    return true;
-}
+
+
 
 
 //#include "utils.h"
@@ -49,6 +38,29 @@ bool fdArray[NUM_FD] = {};  // all elements 0
 
 
 
+
+string msgGreeting = "+OK Server ready (Author: Shuai Shao / sshuai)\n";
+string msgQuit = "+OK Goodbye!\n";
+string msgErr = "-ERR Unknown command\n";
+string msgServerOff = "-ERR Server shutting down\n";
+
+
+const string CRLF = "\r\n";
+const string LF = "\n";
+string HTTP_OK = "HTTP/1.1 200 OK\r\n";
+
+
+
+unordered_map<string, string> headers_received;
+unordered_map<string, string> headers_tosend;
+
+// uri, function handler
+unordered_map<string, FunctionHandler> uri_to_handlers;
+
+
+
+
+
 void printDebugMessage(int fd, const string & msg)
 {
   //stderr << "[" << fd << "]"
@@ -59,118 +71,56 @@ void printDebugMessage(int fd, const string & msg)
 }
 
 
-string msgGreeting = "+OK Server ready (Author: Shuai Shao / sshuai)\n";
-string msgQuit = "+OK Goodbye!\n";
-string msgErr = "-ERR Unknown command\n";
-string msgServerOff = "-ERR Server shutting down\n";
 
-void* clientThread(void* params)
+bool do_write(int fd, const char *buf, int len)
 {
-  // int comm_fd = *((int *)params);
-  int *p = (int *)params;
-  int comm_fd = *p;
-  delete p;
-
-  //cerr << "\n\nthread created!!!!    fd=" << comm_fd << "\n\n";
-
-  printDebugMessage(comm_fd, "New connection\n");
-
-  do_write(comm_fd, &msgGreeting.at(0), msgGreeting.size());
-
-
-  stringstream ss;
-
-  // receive message from client
-  
-  // unsigned short rlen;
-  // do_read(comm_fd, (char*)&rlen, sizeof(rlen));
-  // rlen = ntohs(rlen);
-  char buf[BUFFER_SIZE];
-
-  while (true)
-  {
-    
-    string cmd;
-    getline(ss, cmd, '\n');
-
-    if ( ss.eof() )
+    int sent = 0;
+    while (sent < len)
     {
-      ss.clear();
-      ss << cmd;
-      int n;
-    
-      n = read(comm_fd, &buf[0], BUFFER_SIZE);
-
-      if (n > 0)
-      {
-        buf[n] = 0;
-        ss << buf;
-      } 
-      continue;
-    } 
-
-    
-
-    istringstream iss(cmd);
-    string curInput;
-    iss >> curInput;
-
-    printDebugMessage(comm_fd, "C: " + cmd + "\n");
-
-    if (curInput == "QUIT")
-    {
-      
-      printDebugMessage(comm_fd, "S: " + msgQuit);
-      // send to client
-      do_write(comm_fd, &msgQuit.at(0), msgQuit.size());
-
-      printDebugMessage(comm_fd, "Connection closed\n");
-
-      // ? thread safe?
-      // fdSet.erase(comm_fd);
-      fdArray[comm_fd] = false;
-
-      close(comm_fd);
-      break;
+      // if (outputDebug)
+      // {
+      //   fprintf(stderr, "[%d] %s", fd, buf); 
+      // }
+        int n = write(fd, &buf[sent], len - sent);
+        if (n < 0)
+        {
+            cerr << "write message error\n";
+            return false;
+        }
+        sent += n;
     }
-    else if (curInput == "ECHO")
-    {
-      //iss >> curInput;  // message
-      getline(iss, curInput); // has a space at the begining
-
-      // string msg = "+OK " + curInput + "\n";
-      string msg = "+OK" + curInput + "\n";
-      printDebugMessage(comm_fd, "S: " + msg);
-      // send to client
-      do_write(comm_fd, &msg.at(0), msg.size());
-    }
-    else
-    {
-      // error handling
-      
-      printDebugMessage(comm_fd, "S: " + msgErr);
-      do_write(comm_fd, &msgErr.at(0), msgErr.size());
-
-      ss.clear();
-    }
-
-
-  }
-  
-
-
-
-  pthread_exit(NULL);
+    return true;
 }
 
-const string CRLF = "\r\n";
-const string LF = "\n";
-string HTTP_OK = "HTTP/1.1 200 OK\r\n";
+
+
+
+
 
 void sendTextFile(int comm_fd, const string& filename)
 {
     ifstream in;
     in.open(filename);
+
+
+    // file related headers
+    const string contentType = "Content-Type: text/html\r\n";
+    do_write(comm_fd, &contentType.at(0), contentType.size());
+
+    in.seekg(0, in.end);
+    int length = in.tellg();
+    in.seekg(0, in.beg);
+
+
+    string contentLength = "Content-Length: " + to_string(length) + "\r\n";
+    do_write(comm_fd, &contentLength.at(0), contentLength.size());
+
+    // separate line
+    do_write(comm_fd, &CRLF.at(0), CRLF.size());
+
+    // content
+    
+
 
     string line;
     while(getline(in, line))
@@ -246,16 +196,16 @@ void* httpClientThread(void* params)
 
         iss >> uri;
 
-        // test
-        do_write(comm_fd, &HTTP_OK.at(0), HTTP_OK.size());
-
-        // what if a empty line
-
-        do_write(comm_fd, &CRLF.at(0), CRLF.size());
-        
-        do_write(comm_fd, &CRLF.at(0), CRLF.size());
-
-        sendTextFile(comm_fd, "index.html");
+        auto it = uri_to_handlers.find(uri);
+        if (it != uri_to_handlers.end())
+        {
+          it->second(comm_fd);
+        }
+        else
+        {
+          // 404
+          printDebugMessage(comm_fd, "S: 404\r\n");
+        }
 
     }
     else if (curInput == CRLF || curInput == LF)
@@ -283,7 +233,20 @@ void* httpClientThread(void* params)
 
 
 
+void renderLoginPage(int comm_fd)
+{
+  // http 200 ok
+  do_write(comm_fd, &HTTP_OK.at(0), HTTP_OK.size());
 
+  // headers
+
+  // TODO: date
+
+
+  // do_write(comm_fd, &CRLF.at(0), CRLF.size());
+
+  sendTextFile(comm_fd, "index.html");
+}
 
 
 
@@ -308,7 +271,7 @@ void endServerHandler(int s){
   {
     if (fdArray[i]) 
     {
-      do_write(i, &msgServerOff.at(0), msgServerOff.size());
+      // do_write(i, &msgServerOff.at(0), msgServerOff.size());
       close(i);
     }
   }
@@ -363,7 +326,15 @@ int main(int argc, char *argv[])
 
 
 
-  /* Your code here */
+  // init page uri handlers
+  uri_to_handlers.emplace("/", &renderLoginPage);
+
+
+
+
+
+
+  // listen ports
 
   int listen_fd = socket(PF_INET, SOCK_STREAM, 0);
 
