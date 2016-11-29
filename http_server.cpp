@@ -9,6 +9,7 @@
 #include <sstream>
 #include <iostream>
 #include <fstream>
+#include <time.h>
 
 #include <unordered_set>
 #include <unordered_map>
@@ -16,7 +17,7 @@
 
 using namespace std;
 
-typedef void (*FunctionHandler)(int);
+typedef void (*FunctionHandler)(int, const string &);
 
 
 
@@ -97,14 +98,33 @@ bool do_write(int fd, const char *buf, int len)
 
 
 
-void sendTextFile(int comm_fd, const string& filename)
+void sendTextFile(int comm_fd, const string& uri)
 {
+    string filename;
+    string extensionName;
+    if (uri == "/")
+    {
+        filename = "index.html";
+    }
+    else if (uri.at(0) =='/')
+    {
+        filename = uri.substr(1);
+    }
+
+    size_t dotPos = filename.find_last_of('.');
+
+    extensionName = filename.substr(dotPos + 1);
+
+
+    // http 200 ok
+    do_write(comm_fd, &HTTP_OK.at(0), HTTP_OK.size());
+
     ifstream in;
     in.open(filename);
 
 
     // file related headers
-    const string contentType = "Content-Type: text/html\r\n";
+    string contentType = "Content-Type: text/" + extensionName + "\r\n";
     do_write(comm_fd, &contentType.at(0), contentType.size());
 
     in.seekg(0, in.end);
@@ -199,7 +219,7 @@ void* httpClientThread(void* params)
         auto it = uri_to_handlers.find(uri);
         if (it != uri_to_handlers.end())
         {
-          it->second(comm_fd);
+          it->second(comm_fd, it->first);
         }
         else
         {
@@ -233,20 +253,24 @@ void* httpClientThread(void* params)
 
 
 
-void renderLoginPage(int comm_fd)
-{
-  // http 200 ok
-  do_write(comm_fd, &HTTP_OK.at(0), HTTP_OK.size());
+// void renderLoginPage(int comm_fd)
+// {
+//   // http 200 ok
+//   do_write(comm_fd, &HTTP_OK.at(0), HTTP_OK.size());
 
-  // headers
+//   // headers
 
-  // TODO: date
+//   // // date
+//   // char timestamp[30];
+//   // time_t rawtime;
+//   // time(&rawtime);
+//   // struct tm *timeinfo = localtime(&rawtime);
+//   // strftime(timestamp, 30, "%c", timeinfo);
 
+//   // do_write(comm_fd, &CRLF.at(0), CRLF.size());
 
-  // do_write(comm_fd, &CRLF.at(0), CRLF.size());
-
-  sendTextFile(comm_fd, "index.html");
-}
+//   sendTextFile(comm_fd, "index.html");
+// }
 
 
 
@@ -327,7 +351,9 @@ int main(int argc, char *argv[])
 
 
   // init page uri handlers
-  uri_to_handlers.emplace("/", &renderLoginPage);
+  // TODO: Or parse all files transmissiable
+  uri_to_handlers.emplace("/", &sendTextFile);
+  uri_to_handlers.emplace("/main.css", &sendTextFile);
 
 
 
