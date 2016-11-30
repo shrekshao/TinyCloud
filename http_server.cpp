@@ -48,8 +48,36 @@ string msgServerOff = "-ERR Server shutting down\n";
 
 const string CRLF = "\r\n";
 const string LF = "\n";
-string HTTP_OK = "HTTP/1.1 200 OK\r\n";
+const string HTTP_OK = "HTTP/1.1 200 OK\r\n";
+const string HTTP_404 = "HTTP/1.1 404 NOT_FOUND\r\n";
+const string HTTP_HEADER_SERVER = "Server: tinycloud\r\n";
 
+
+const string HTML_404_PAGE = "404 Not Found\r\nThe requested URL /t.html was not found on this server.\r\n";
+
+// TODO: http struct header
+
+bool do_write(int fd, const char *buf, int len);
+
+struct GeneralHeader
+{
+    
+    string content_type;
+    int content_length;
+
+    void send(int fd)
+    {
+        // TODO: date
+
+        do_write(fd, &HTTP_HEADER_SERVER.at(0), (int)HTTP_HEADER_SERVER.size());
+
+        string contentTypeStr = "Content-Type: " + content_type + "\r\n";
+        do_write(fd, &contentTypeStr.at(0), contentTypeStr.size());
+
+        string contentLengthStr = "Content-Length: " + to_string(content_length) + "\r\n";
+        do_write(fd, &contentLengthStr.at(0), contentLengthStr.size());
+    }
+};
 
 
 unordered_map<string, string> headers_received;
@@ -108,32 +136,60 @@ void sendTextFile(int comm_fd, const string& uri)
     }
     else if (uri.at(0) =='/')
     {
+        // TODO: add custom site root
         filename = uri.substr(1);
     }
 
     size_t dotPos = filename.find_last_of('.');
+    
+    if (dotPos == string::npos)
+    {
+        filename += ".html";
+    }
 
     extensionName = filename.substr(dotPos + 1);
 
 
-    // http 200 ok
-    do_write(comm_fd, &HTTP_OK.at(0), HTTP_OK.size());
+    
 
     ifstream in;
     in.open(filename);
 
+    if (!in.is_open())
+    {
+        // 404
+        printDebugMessage(comm_fd, uri + " " + filename + " 404\n");
+        do_write(comm_fd, &HTTP_404.at(0), (int)HTTP_404.size());
+        GeneralHeader header = {"text/html", (int)HTML_404_PAGE.size()};
+        header.send(comm_fd);
+        // separate line
+        do_write(comm_fd, &CRLF.at(0), CRLF.size());
 
-    // file related headers
-    string contentType = "Content-Type: text/" + extensionName + "\r\n";
-    do_write(comm_fd, &contentType.at(0), contentType.size());
+        do_write(comm_fd, &HTML_404_PAGE.at(0), HTML_404_PAGE.size());
+
+        return;
+    }
+
+    // http 200 ok
+    do_write(comm_fd, &HTTP_OK.at(0), HTTP_OK.size());
+
+    // // file related headers
+    // string contentType = "Content-Type: text/" + extensionName + "\r\n";
+    // do_write(comm_fd, &contentType.at(0), contentType.size());
 
     in.seekg(0, in.end);
     int length = in.tellg();
     in.seekg(0, in.beg);
 
 
-    string contentLength = "Content-Length: " + to_string(length) + "\r\n";
-    do_write(comm_fd, &contentLength.at(0), contentLength.size());
+    // string contentLength = "Content-Length: " + to_string(length) + "\r\n";
+    // do_write(comm_fd, &contentLength.at(0), contentLength.size());
+
+    string content_type = "text/" + extensionName;
+    GeneralHeader header = {content_type, length};
+    header.send(comm_fd);
+
+
 
     // separate line
     do_write(comm_fd, &CRLF.at(0), CRLF.size());
@@ -153,7 +209,10 @@ void sendTextFile(int comm_fd, const string& uri)
 }
 
 enum ReceivingStatus{
-    request, content
+    wait,
+    request_get,
+    request_post, 
+    content
 };
 
 void* httpClientThread(void* params)
@@ -170,7 +229,7 @@ void* httpClientThread(void* params)
 
   stringstream ss;
 
-  ReceivingStatus receivingStatus = request;
+  ReceivingStatus receivingStatus = wait;
 
   // receive message from client
   
@@ -209,26 +268,23 @@ void* httpClientThread(void* params)
 
     printDebugMessage(comm_fd, "C: " + line + "\n");
 
+
+
     if (curInput == "GET")
     {
-        // get all headers
         string uri;
-
         iss >> uri;
 
-        auto it = uri_to_handlers.find(uri);
-        if (it != uri_to_handlers.end())
-        {
-          it->second(comm_fd, it->first);
-        }
-        else
-        {
-          // 404
-          printDebugMessage(comm_fd, "S: 404\r\n");
-        }
+        // test
+        sendTextFile(comm_fd, uri);
 
     }
-    else if (curInput == CRLF || curInput == LF)
+    else if (curInput == "POST")
+    {
+        
+    }
+    // else if (curInput == CRLF || curInput == LF)
+    else if (curInput == "")
     {
 
     }
@@ -240,6 +296,9 @@ void* httpClientThread(void* params)
     //   do_write(comm_fd, &msgErr.at(0), msgErr.size());
 
     //   ss.clear();
+
+
+        // handle headers
     }
 
 
@@ -350,10 +409,10 @@ int main(int argc, char *argv[])
 
 
 
-  // init page uri handlers
-  // TODO: Or parse all files transmissiable
-  uri_to_handlers.emplace("/", &sendTextFile);
-  uri_to_handlers.emplace("/main.css", &sendTextFile);
+//   // init page uri handlers
+//   // TODO: Or parse all files transmissiable
+//   uri_to_handlers.emplace("/", &sendTextFile);
+//   uri_to_handlers.emplace("/main.css", &sendTextFile);
 
 
 
