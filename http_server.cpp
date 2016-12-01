@@ -51,23 +51,37 @@ void* httpClientThread(void* params)
         } 
         
         int contentLength = stoi(it_content_length->second);
-
+        // printDebugMessage(comm_fd, "Content Length: " + to_string(contentLength) + "\n");
 
         // test
         // printDebugMessage(comm_fd, "Content Line: " + line + "\r\n");
         
-        // ss.seekg (0, ss.end);
-        // int sslength = ss.tellg();
-        // ss.seekg (0, ss.beg);
+        streampos curPos = ss.tellg();
+        ss.seekg (0, ss.end);
+        int sslength = (int)ss.tellg() - (int)curPos;
+        ss.seekg (curPos);
 
-        // if (sslength >= contentLength)
-        // {
+        if (sslength >= contentLength)
+        {
             // string contentString;
-            char * contentBuf = new char [ contentLength ];
+            char * contentBuf = new char [ contentLength+1 ];
             ss.read(contentBuf, contentLength);
-            printDebugMessage(comm_fd, contentBuf);
+            contentBuf[contentLength] = '\0';
+            // printDebugMessage(comm_fd, contentBuf);
+            string contentStr(contentBuf);
+            // contentStr += "\n";
+            // printDebugMessage(comm_fd, contentStr);
+            log( comm_fd, "%d, %s", contentLength, contentStr.c_str());
 
             delete [] contentBuf;
+
+
+            size_t split_pos = contentStr.find('&');
+            string username_value = contentStr.substr(0, split_pos);
+
+            header.clear();
+            header.set_cookie = username_value;
+
 
             receivingStatus = waiting_request;
 
@@ -76,7 +90,7 @@ void* httpClientThread(void* params)
 
 
             continue;
-        // }
+        }
         
     }
 
@@ -123,6 +137,8 @@ void* httpClientThread(void* params)
     if (waiting_request == receivingStatus)
     {
         // printDebugMessage(comm_fd, "Server State: waiting_request " + to_string(receivingStatus) + "\n");
+
+        // header.clear();
 
         istringstream iss(line);
         string curInput;
@@ -189,7 +205,8 @@ void* httpClientThread(void* params)
             {
                 // no content
                 receivingStatus = waiting_request;
-                // test
+                
+                header.clear();
                 sendFileToClient(comm_fd, uri);
             }
             
@@ -197,10 +214,10 @@ void* httpClientThread(void* params)
         else if (curInput.back() == ':')
         {
             // header
-            string header = curInput.substr(0, curInput.size() - 1);
+            string headerAttr = curInput.substr(0, curInput.size() - 1);
             string value;
             getline(iss, value);
-            headersReceived.emplace(header, value);
+            headersReceived.emplace(headerAttr, value);
         }
         else
         {

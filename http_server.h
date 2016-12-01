@@ -40,6 +40,7 @@ enum ReceivingStatus{
     waiting_request,
     reading_request_get,
     reading_request_post,
+    reading_request_header,
     reading_content
 };
 
@@ -50,7 +51,7 @@ const string HTTP_OK = "HTTP/1.1 200 OK\r\n";
 const string HTTP_404 = "HTTP/1.1 404 NOT_FOUND\r\n";
 const string HTTP_HEADER_SERVER = "Server: tinycloud\r\n";
 
-const string HTML_404_PAGE = "404 Not Found\r\nThe requested URL /t.html was not found on this server.\r\n";
+const string HTML_404_PAGE = "404 Not Found\r\nThe requested URL was not found on this server.\r\n";
 
 
 const string siteRoot = "_site/";
@@ -69,6 +70,13 @@ const unordered_map<string, string> extToFileCat({
 });
 
 
+#define log(fd, a...) do { \
+if (outputDebug) {\
+struct timeval tv; \
+fprintf(stdout, "[%d] ", fd); \
+fprintf(stdout, a); \
+fprintf(stdout, "\n"); } } while(0)
+
 // TODO: http struct header
 
 bool do_write(int fd, const char *buf, int len);
@@ -76,8 +84,19 @@ bool do_write(int fd, const char *buf, int len);
 struct GeneralHeader
 {
     
-    string content_type;
-    int content_length;
+    string content_type = "";
+    int content_length = 0;
+
+    string set_cookie = "";
+
+
+
+    void clear()
+    {
+        content_type = "";
+        content_length = 0;
+        set_cookie = "";
+    }
 
     void send(int fd)
     {
@@ -85,14 +104,29 @@ struct GeneralHeader
 
         do_write(fd, &HTTP_HEADER_SERVER.at(0), (int)HTTP_HEADER_SERVER.size());
 
-        string contentTypeStr = "Content-Type: " + content_type + "\r\n";
-        do_write(fd, &contentTypeStr.at(0), contentTypeStr.size());
 
-        string contentLengthStr = "Content-Length: " + to_string(content_length) + "\r\n";
-        do_write(fd, &contentLengthStr.at(0), contentLengthStr.size());
+        if (set_cookie != "")
+        {
+            string setCookieStr = "Set-Cookie: " + set_cookie + "\r\n";
+            do_write(fd, &setCookieStr.at(0), setCookieStr.size());
+        }
+
+        if (content_type != "")
+        {
+            string contentTypeStr = "Content-Type: " + content_type + "\r\n";
+            do_write(fd, &contentTypeStr.at(0), contentTypeStr.size());
+        }
+        
+        if (content_length != 0)
+        {
+            string contentLengthStr = "Content-Length: " + to_string(content_length) + "\r\n";
+            do_write(fd, &contentLengthStr.at(0), contentLengthStr.size());
+        }
+        
     }
 };
 
+GeneralHeader header;
 
 // uri, function handler
 // unordered_map<string, FunctionHandler> uri_to_handlers;
@@ -168,7 +202,19 @@ bool do_write(int fd, const char *buf, int len)
 // }
 
 
+void send404Page(int fd)
+{
+    // 404
+    do_write(fd, &HTTP_404.at(0), (int)HTTP_404.size());
+    // GeneralHeader header404 = {"text/html", (int)HTML_404_PAGE.size()};
+    GeneralHeader header404;
+    header404.content_type = "text/html";
+    header404.content_length = HTML_404_PAGE.size();
+    // separate line
+    do_write(fd, &CRLF.at(0), CRLF.size());
 
+    do_write(fd, &HTML_404_PAGE.at(0), HTML_404_PAGE.size());
+}
 
 
 void sendTextFile(int fd, const string & filename, const string & extensionName)
@@ -180,14 +226,7 @@ void sendTextFile(int fd, const string & filename, const string & extensionName)
     {
         // 404
         printDebugMessage(fd, filename + " 404\n");
-        do_write(fd, &HTTP_404.at(0), (int)HTTP_404.size());
-        GeneralHeader header = {"text/html", (int)HTML_404_PAGE.size()};
-        header.send(fd);
-        // separate line
-        do_write(fd, &CRLF.at(0), CRLF.size());
-
-        do_write(fd, &HTML_404_PAGE.at(0), HTML_404_PAGE.size());
-
+        send404Page(fd);
         return;
     }
 
@@ -199,7 +238,9 @@ void sendTextFile(int fd, const string & filename, const string & extensionName)
     in.seekg(0, in.beg);
 
     string content_type = "text/" + extensionName;
-    GeneralHeader header = {content_type, length};
+    // GeneralHeader header = {content_type, length};
+    header.content_type = content_type;
+    header.content_length = length;
     header.send(fd);
 
     // separate line
@@ -226,14 +267,7 @@ void sendBinaryFile(int fd, const string &filename, const string & extensionName
     {
         // 404
         printDebugMessage(fd, filename + " 404\n");
-        do_write(fd, &HTTP_404.at(0), (int)HTTP_404.size());
-        GeneralHeader header = {"text/html", (int)HTML_404_PAGE.size()};
-        header.send(fd);
-        // separate line
-        do_write(fd, &CRLF.at(0), CRLF.size());
-
-        do_write(fd, &HTML_404_PAGE.at(0), HTML_404_PAGE.size());
-
+        send404Page(fd);
         return;
     }
 
@@ -253,7 +287,9 @@ void sendBinaryFile(int fd, const string &filename, const string & extensionName
 
     string file_cat = extToFileCat.find(extensionName)->second;
     string content_type = file_cat + "/" + extensionName;
-    GeneralHeader header = {content_type, length};
+    // GeneralHeader header = {content_type, length};
+    header.content_type = content_type;
+    header.content_length = length;
     header.send(fd);
 
     // separate line

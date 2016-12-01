@@ -2,8 +2,8 @@ TARGETS = http_server
 
 all: $(TARGETS)
 
-http_server: http_server.cpp
+http_server: http_server.h http_server.cpp
 	g++ $^ -lpthread -std=c++11 -o $@
 
-clean::
+clean:
 	rm -fv $(TARGETS)
