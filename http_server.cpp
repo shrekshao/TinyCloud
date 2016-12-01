@@ -80,11 +80,8 @@ struct GeneralHeader
 };
 
 
-unordered_map<string, string> headers_received;
-unordered_map<string, string> headers_tosend;
-
 // uri, function handler
-unordered_map<string, FunctionHandler> uri_to_handlers;
+// unordered_map<string, FunctionHandler> uri_to_handlers;
 
 
 
@@ -123,7 +120,41 @@ bool do_write(int fd, const char *buf, int len)
 
 
 
+// std::istream& safeGetline(std::istream& is, std::string& t)
+// {
+//     t.clear();
 
+//     // The characters in the stream are read one-by-one using a std::streambuf.
+//     // That is faster than reading them one-by-one using the std::istream.
+//     // Code that uses streambuf this way must be guarded by a sentry object.
+//     // The sentry object performs various tasks,
+//     // such as thread synchronization and updating the stream state.
+
+//     std::istream::sentry se(is, true);
+//     std::streambuf* sb = is.rdbuf();
+
+//     for(;;) {
+//         int c = sb->sbumpc();
+//         switch (c) {
+//         case '\n':
+//             return is;
+//         case '\r':
+//             if(sb->sgetc() == '\n')
+//                 sb->sbumpc();
+//             return is;
+//         case EOF:
+//             // Also handle the case when the last line has no line ending
+//             if(t.empty())
+//                 is.setstate(std::ios::eofbit);
+//             return is;
+//         default:
+//             t += (char)c;
+//         }
+//     }
+// }
+
+
+const string siteRoot = "_site/";
 
 
 void sendTextFile(int comm_fd, const string& uri)
@@ -153,7 +184,7 @@ void sendTextFile(int comm_fd, const string& uri)
     
 
     ifstream in;
-    in.open(filename);
+    in.open(siteRoot + filename);
 
     if (!in.is_open())
     {
@@ -209,10 +240,10 @@ void sendTextFile(int comm_fd, const string& uri)
 }
 
 enum ReceivingStatus{
-    wait,
-    request_get,
-    request_post, 
-    content
+    waiting_request,
+    reading_request_get,
+    reading_request_post,
+    reading_content
 };
 
 void* httpClientThread(void* params)
@@ -229,7 +260,7 @@ void* httpClientThread(void* params)
 
   stringstream ss;
 
-  ReceivingStatus receivingStatus = wait;
+  ReceivingStatus receivingStatus = waiting_request;
 
   // receive message from client
   
@@ -237,20 +268,89 @@ void* httpClientThread(void* params)
   // do_read(comm_fd, (char*)&rlen, sizeof(rlen));
   // rlen = ntohs(rlen);
   char buf[BUFFER_SIZE];
+  memset( buf, '\0', BUFFER_SIZE );
+
+  unordered_map<string, string> headersReceived;
+  string uri;
+
 
   while (true)
   {
     
-    string line;
-    getline(ss, line, '\n');
+    // printDebugMessage(comm_fd, "Server Status: " + to_string(receivingStatus) + "\n");
 
+    if(reading_content == receivingStatus)
+    {
+        // printDebugMessage(comm_fd, "Server State: reading_content" + to_string(receivingStatus) + "\n");
+
+        // int contentLength = stoi(headersReceived["Content-Length"]);    // TODO exception
+        // string contentType = headersReceived["Content-Type"];
+
+        auto it_content_length = headersReceived.find("Content-Length");
+        if (it_content_length == headersReceived.end())
+        {
+            // ERROR, content-length not received
+            printDebugMessage(comm_fd, "ERR: Content-Length not received");
+            receivingStatus = waiting_request;
+            ss.clear();
+            continue;
+        } 
+        
+        int contentLength = stoi(it_content_length->second);
+
+
+        // test
+        // printDebugMessage(comm_fd, "Content Line: " + line + "\r\n");
+        
+        // ss.seekg (0, ss.end);
+        // int sslength = ss.tellg();
+        // ss.seekg (0, ss.beg);
+
+        // if (sslength >= contentLength)
+        // {
+            // string contentString;
+            char * contentBuf = new char [ contentLength ];
+            ss.read(contentBuf, contentLength);
+            printDebugMessage(comm_fd, contentBuf);
+
+            delete [] contentBuf;
+
+
+            
+            receivingStatus = waiting_request;
+
+            // temp test, direct to new page
+            sendTextFile(comm_fd, "/profile.html");
+
+
+            continue;
+        // }
+        
+    }
+
+
+
+
+
+
+
+
+
+    string line;
+
+    // ? do a safe get line ?
+    getline(ss, line, '\n');
     if ( ss.eof() )
     {
       ss.clear();
       ss << line;
+      
+
       int n;
     
       n = read(comm_fd, &buf[0], BUFFER_SIZE);
+
+    //   printDebugMessage(comm_fd, "eof " + line + " " + to_string(n) + "\n");
 
       if (n > 0)
       {
@@ -262,44 +362,103 @@ void* httpClientThread(void* params)
 
     
 
-    istringstream iss(line);
-    string curInput;
-    iss >> curInput;
+    
 
     printDebugMessage(comm_fd, "C: " + line + "\n");
 
 
+    
 
-    if (curInput == "GET")
+    if (waiting_request == receivingStatus)
     {
-        string uri;
-        iss >> uri;
+        // printDebugMessage(comm_fd, "Server State: waiting_request " + to_string(receivingStatus) + "\n");
 
-        // test
-        sendTextFile(comm_fd, uri);
+        istringstream iss(line);
+        string curInput;
+        iss >> curInput;
 
-    }
-    else if (curInput == "POST")
-    {
+        if (curInput == "GET")
+        {
+            receivingStatus = reading_request_get;
+            
+            iss >> uri;
+
+            headersReceived.clear();
+
+        }
+        else if (curInput == "POST")
+        {
+            receivingStatus = reading_request_post;
+
+            
+            iss >> uri;
+
+            headersReceived.clear();
+
+            // TODO
+        }
+        else
+        {
+            printDebugMessage(comm_fd, "Error in waiting_request" + curInput + "\n");
+        }
+
         
     }
-    // else if (curInput == CRLF || curInput == LF)
-    else if (curInput == "")
+    else if(reading_request_get == receivingStatus
+        || reading_request_post == receivingStatus )
     {
+        // printDebugMessage(comm_fd, "Server State: reading_request " + to_string(receivingStatus) + "\n");
 
+        istringstream iss(line);
+        string curInput;
+        iss >> curInput;
+
+        if (curInput == "" || curInput == "\r")
+        {
+            printDebugMessage(comm_fd, "Content Separation line\n");
+            // printDebugMessage(comm_fd, buf);
+            // printDebugMessage(comm_fd, curInput.c_str());
+
+            // ss >> curInput;
+            // printDebugMessage(comm_fd, curInput.c_str());
+            // ss >> curInput;
+            // printDebugMessage(comm_fd, curInput.c_str());
+            // ss >> curInput;
+            // printDebugMessage(comm_fd, curInput.c_str());
+            
+
+
+            // auto it = headersReceived.find("Content-Length");
+            if (receivingStatus == reading_request_post)
+            {
+                // has content
+                receivingStatus = reading_content;
+            }
+            else if (receivingStatus == reading_request_get)
+            {
+                // no content
+                receivingStatus = waiting_request;
+                // test
+                sendTextFile(comm_fd, uri);
+            }
+            
+        }
+        else if (curInput.back() == ':')
+        {
+            // header
+            string header = curInput.substr(0, curInput.size() - 1);
+            string value;
+            getline(iss, value);
+            headersReceived.emplace(header, value);
+        }
+        else
+        {
+            printDebugMessage(comm_fd, "Error in reading_headers " + curInput + "\n");
+        }
+
+        
     }
-    else
-    {
-    //   // error handling
-      
-    //   printDebugMessage(comm_fd, "S: " + msgErr);
-    //   do_write(comm_fd, &msgErr.at(0), msgErr.size());
-
-    //   ss.clear();
-
-
-        // handle headers
-    }
+    
 
 
   }
