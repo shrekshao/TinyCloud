@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang='en'>
+
+<head>
+    <title>TrashBox</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/main.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+</head>
+
+
+<body>
+    <nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            
+            <a class="navbar-brand" href="#">
+                <img src="assets/img/drive.png" width=32 alt="">
+            </a>
+            <div id="username" class="navbar-brand">
+                Username
+            </div>
+        </div>
+    </div>
+    </nav>
+
+    <div class="container"> 
+        <br />
+        <div class="row">
+
+            <div class="col-md-7">
+                <div class="panel panel-default">
+                    <div class="panel-heading"><strong>Upload files</strong> <small> </small></div>
+                    <div class="panel-body">
+                        <form id="js-upload-form">
+                            <input id="input-1" type="file" class="file">
+                            <!--<div class="input-group">
+                                <input id="input-1" type="file" class="file">
+                                <input type="text" id="fake-file-input-name" disabled="disabled" placeholder="File not selected" class="form-control">
+                            </div>-->
+                        </form> 
+                        
+                        <br />
+                        
+                        <!-- Drop Zone -->
+                        <div class="upload-drop-zone" id="drop-zone"> Or drag and drop files here to upload</div>
+                        <br />
+                        
+                        <!-- Progress Bar -->
+                        <!--<div class="progress">
+                            <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%;"> <span class="sr-only">60% Complete</span> </div>
+                        </div>
+                        <br />-->
+
+                        <!-- Upload Finished -->
+                        <div class="js-upload-finished">
+                            <h4>Files</h4>
+                            <div class="list-group"> 
+                                <a href="#" class="list-group-item list-group-item-danger">
+                                    <span class="badge alert-danger pull-right">20-11-2014</span>
+                                    what-the-fuck.pdf
+                                </a>
+                                
+                                <a href="#" class="list-group-item list-group-item-success">
+                                    <span class="badge alert-success pull-right">23-11-2014</span>
+                                    what-the-fuck.pdf
+                                </a>
+                                
+                                <a href="#" class="list-group-item list-group-item-success">
+                                    <span class="badge alert-success pull-right">23-11-2014</span>
+                                    what-the-fuck.pdf
+                                </a>
+                                
+                                <a href="#" class="list-group-item list-group-item-success">
+                                    <span class="badge alert-success pull-right">23-11-2014</span>
+                                    what-the-fuck.pdf
+                                </a>
+
+                                </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!--<div class="col-md-5">
+                <div class="panel panel-default">
+                    <div class="panel-heading"><strong>Download files</strong> <small> </small></div>
+                <div class="panel-body">
+                    <button type="button" class="btn btn-labeled btn-primary"> <span class="btn-label"><i class="glyphicon glyphicon-download"></i> </span>Download catalogue</button>
+                    <button type="button" class="btn btn-labeled btn-info"> <span class="btn-label"><i class="glyphicon glyphicon-download"></i> </span>Download delta</button>
+                    <br />
+                </div>
+                </div>
+            </div>        -->
+            
+            
+        </div>
+    </div>
+
+    <!-- /container --> 
+
+
+
+</body>
+
+
+<script>
+
+    function onSelectFiles() {
+        var fileViewer = $('#file-viewer')[0];
+        var txt = "";
+
+        if (fileViewer.files.length == 0) {
+            txt = "Select one or more files.";
+        } else {
+            for (var i = 0; i < fileViewer.files.length; i++) {
+                txt += fileViewer.files[i].name + " ";
+                console.log(fileViewer.files[i].name);
+            }
+        }
+
+        $('#file-name').text(txt);
+    }
+
+    $(function(){
+        'use strict';
+
+        // UPLOAD CLASS DEFINITION
+        // ======================
+
+        var dropZone = document.getElementById('drop-zone');
+        var uploadForm = document.getElementById('js-upload-form');
+
+        var startUpload = function(files) {
+            console.log(files);
+            // TODO
+        }
+
+        uploadForm.addEventListener('submit', function(e) {
+            var uploadFiles = document.getElementById('js-upload-files').files;
+            e.preventDefault();
+
+            startUpload(uploadFiles);
+        })
+
+        dropZone.ondrop = function(e) {
+            // console.log("something dropped");
+            // console.log(e.dataTransfer.files[0].name);
+
+            e.preventDefault();
+            this.className = 'upload-drop-zone';
+
+            // $('#file-viewer').text(e.dataTransfer.files[0].name);
+
+            startUpload(e.dataTransfer.files)
+        }
+
+        dropZone.ondragover = function() {
+            this.className = 'upload-drop-zone drop';
+            return false;
+        }
+
+        dropZone.ondragleave = function() {
+            this.className = 'upload-drop-zone';
+            return false;
+        }
+    });
+</script>
+
+
+</html>
