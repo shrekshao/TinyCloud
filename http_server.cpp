@@ -63,6 +63,8 @@ void* httpClientThread(void* params)
 
         if (sslength >= contentLength)
         {
+            receivingStatus = waiting_request;
+
             // string contentString;
             char * contentBuf = new char [ contentLength+1 ];
             ss.read(contentBuf, contentLength);
@@ -75,20 +77,18 @@ void* httpClientThread(void* params)
 
             delete [] contentBuf;
 
-
-            size_t split_pos = contentStr.find('&');
-            string username_value = contentStr.substr(0, split_pos);
-
-            header.clear();
-            header.set_cookie = username_value;
-
-
-            receivingStatus = waiting_request;
-
-            // temp test, direct to new page
-            sendFileToClient(comm_fd, "/profile.html");
-
-
+            auto it = postRequestHandlers.find(uri);
+            if (it == postRequestHandlers.end())
+            {
+                // 400 not valid uri post
+                log( comm_fd, "Invalid post url request: %s", uri.c_str());
+                send400Page(comm_fd);
+            }
+            else
+            {
+                (*(it->second))(comm_fd, contentStr);
+            }
+            
             continue;
         }
         

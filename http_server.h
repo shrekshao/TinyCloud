@@ -48,9 +48,12 @@ enum ReceivingStatus{
 const string CRLF = "\r\n";
 const string LF = "\n";
 const string HTTP_OK = "HTTP/1.1 200 OK\r\n";
-const string HTTP_404 = "HTTP/1.1 404 NOT_FOUND\r\n";
+const string HTTP_400 = "HTTP/1.1 400 BAD REQUEST\r\n";
+const string HTTP_400_invalid_username = "HTTP/1.1 400 INVALID USERNAME OR PASSWORD\r\n";
+const string HTTP_404 = "HTTP/1.1 404 NOT FOUND\r\n";
 const string HTTP_HEADER_SERVER = "Server: tinycloud\r\n";
 
+const string HTML_400_PAGE = "400 Bad Request\r\nWrong request URL\r\n";
 const string HTML_404_PAGE = "404 Not Found\r\nThe requested URL was not found on this server.\r\n";
 
 
@@ -68,6 +71,8 @@ const unordered_map<string, string> extToFileCat({
 
     ,{"pdf", "application"}
 });
+
+
 
 
 #define log(fd, a...) do { \
@@ -216,6 +221,19 @@ void send404Page(int fd)
     do_write(fd, &HTML_404_PAGE.at(0), HTML_404_PAGE.size());
 }
 
+void send400Page(int fd)
+{
+    // 400
+    do_write(fd, &HTTP_400.at(0), (int)HTTP_400.size());
+    GeneralHeader header400;
+    header400.content_type = "text/html";
+    header400.content_length = HTML_400_PAGE.size();
+    // separate line
+    do_write(fd, &CRLF.at(0), CRLF.size());
+
+    do_write(fd, &HTML_400_PAGE.at(0), HTML_400_PAGE.size());
+}
+
 
 void sendTextFile(int fd, const string & filename, const string & extensionName)
 {
@@ -320,6 +338,7 @@ void sendFileToClient(int fd, const string & uri)
     if (dotPos == string::npos)
     {
         filename += ".html";
+        dotPos = filename.find_last_of('.');
     }
 
     extensionName = filename.substr(dotPos + 1);
@@ -336,3 +355,71 @@ void sendFileToClient(int fd, const string & uri)
         sendBinaryFile(fd, filename, extensionName);
     }
 }
+
+
+/**
+* @ return: if username and password is valid
+*/
+bool verifyUsernameAndPassword(const string & username, const string & password)
+{
+    // temp test
+    // TODO: communicate with big table
+    return (username == "ss") && (password == "123");
+}
+
+
+
+
+
+
+
+
+// ------------ post request handlers -------------
+
+void loginHandler(int fd, const string & contentStr)
+{
+    istringstream iss_content(contentStr);
+    string username, password, tmp;
+    getline(iss_content, tmp, '='); // username
+    getline(iss_content, username, '&');
+    getline(iss_content, tmp, '='); // password
+    getline(iss_content, password, '&');
+
+    log( fd, "%s, %s", username.c_str(), password.c_str());
+
+    if (verifyUsernameAndPassword(username, password))
+    {
+        header.clear();
+        header.set_cookie = "username=" + username;
+
+
+        // direct to new page
+        sendFileToClient(fd, "/profile.html");
+    }
+    else
+    {
+        // TODO: invalid username or password
+        log( fd, "Invalid %s %s", username.c_str(), password.c_str());
+
+        // do_write(fd, &HTTP_400_invalid_username.at(0), (int)HTTP_400_invalid_username.size());
+        // GeneralHeader header400;
+        // header400.content_type = "text/html";
+        // header400.content_length = HTML_400_PAGE.size();
+        // separate line
+        // do_write(fd, &CRLF.at(0), CRLF.size());
+
+        header.clear();
+        sendFileToClient(fd, "/index-login");
+
+
+        // do_write(fd, &HTML_400_PAGE.at(0), HTML_400_PAGE.size());
+    }
+}
+
+
+
+
+// {uri, FunctionHandler}
+const unordered_map<string, FunctionHandler> postRequestHandlers({
+    {"/", &loginHandler}
+});
