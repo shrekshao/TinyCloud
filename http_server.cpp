@@ -1,4 +1,5 @@
 #include "http_server.h"
+#include "http_server_grpc.h"
 
 void* httpClientThread(void* params)
 {
@@ -7,9 +8,13 @@ void* httpClientThread(void* params)
   int comm_fd = *p;
   delete p;
 
-//   printDebugMessage(comm_fd, "New connection\n");
 
-//   do_write(comm_fd, &msgGreeting.at(0), msgGreeting.size());
+//   // test grpc
+//   GreeterClient greeter(grpc::CreateChannel(
+//       "localhost:50051", grpc::InsecureChannelCredentials()));
+  
+//   string reply = greeter.SayHello("fuck");
+//   cerr << reply << endl << endl;
 
 
   stringstream ss;
@@ -73,7 +78,7 @@ void* httpClientThread(void* params)
             string contentStr(contentBuf);
             // contentStr += "\n";
             // printDebugMessage(comm_fd, contentStr);
-            log( comm_fd, "%d, %s", contentLength, contentStr.c_str());
+            HttpDebugLog( comm_fd, "%d, %s", contentLength, contentStr.c_str());
 
             delete [] contentBuf;
 
@@ -81,7 +86,7 @@ void* httpClientThread(void* params)
             if (it == postRequestHandlers.end())
             {
                 // 400 not valid uri post
-                log( comm_fd, "Invalid post url request: %s", uri.c_str());
+                HttpDebugLog( comm_fd, "Invalid post url request: %s", uri.c_str());
                 send400Page(comm_fd);
             }
             else
