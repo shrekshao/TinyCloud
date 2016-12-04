@@ -19,7 +19,7 @@ GRPC_CC_OUTPUT = grpc_backend/
 vpath %.proto $(PROTOS_PATH)
 vpath %.pb.cc $(GRPC_CC_OUTPUT)
 vpath %.grpc.pb.cc $(GRPC_CC_OUTPUT)
-vpath %..pb.o $(GRPC_CC_OUTPUT)
+vpath %.pb.o $(GRPC_CC_OUTPUT)
 vpath %.grpc.pb.o $(GRPC_CC_OUTPUT)
 
 all: $(TARGETS)
@@ -38,4 +38,4 @@ http_server: backend.pb.o backend.grpc.pb.o http_server.o
 
 
 clean:
-	rm -fv $(TARGETS)
+	rm -fv $(TARGETS) *.o *.pb.h *.pb.cc

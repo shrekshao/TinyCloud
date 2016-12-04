@@ -55,13 +55,13 @@ class ServerContext;
 
 namespace backend {
 
-// The greeting service definition.
+// The storage service definition.
 class Storage GRPC_FINAL {
  public:
   class StubInterface {
    public:
     virtual ~StubInterface() {}
-    // Sends a greeting
+    // Get file list
     virtual ::grpc::Status GetFileList(::grpc::ClientContext* context, const ::backend::GetFileListRequest& request, ::backend::GetFileListReply* response) = 0;
     std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::backend::GetFileListReply>> AsyncGetFileList(::grpc::ClientContext* context, const ::backend::GetFileListRequest& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::backend::GetFileListReply>>(AsyncGetFileListRaw(context, request, cq));
@@ -88,7 +88,7 @@ class Storage GRPC_FINAL {
    public:
     Service();
     virtual ~Service();
-    // Sends a greeting
+    // Get file list
     virtual ::grpc::Status GetFileList(::grpc::ServerContext* context, const ::backend::GetFileListRequest* request, ::backend::GetFileListReply* response);
   };
   template <class BaseClass>
