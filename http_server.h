@@ -1,3 +1,5 @@
+#pragma once
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -75,7 +77,7 @@ const unordered_map<string, string> extToFileCat({
 
 
 
-#define log(fd, a...) do { \
+#define HttpDebugLog(fd, a...) do { \
 if (outputDebug) {\
 struct timeval tv; \
 fprintf(stdout, "[%d] ", fd); \
@@ -385,7 +387,7 @@ void loginHandler(int fd, const string & contentStr)
     getline(iss_content, tmp, '='); // password
     getline(iss_content, password, '&');
 
-    log( fd, "%s, %s", username.c_str(), password.c_str());
+    HttpDebugLog( fd, "%s, %s", username.c_str(), password.c_str());
 
     if (verifyUsernameAndPassword(username, password))
     {
@@ -399,7 +401,7 @@ void loginHandler(int fd, const string & contentStr)
     else
     {
         // TODO: invalid username or password
-        log( fd, "Invalid %s %s", username.c_str(), password.c_str());
+        HttpDebugLog( fd, "Invalid %s %s", username.c_str(), password.c_str());
 
         // do_write(fd, &HTTP_400_invalid_username.at(0), (int)HTTP_400_invalid_username.size());
         // GeneralHeader header400;
