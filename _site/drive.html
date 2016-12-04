@@ -34,12 +34,12 @@
                 <div class="panel panel-default">
                     <div class="panel-heading"><strong>Upload files</strong> <small> </small></div>
                     <div class="panel-body">
-                        <form id="js-upload-form">
-                            <input id="input-1" type="file" class="file">
-                            <!--<div class="input-group">
-                                <input id="input-1" type="file" class="file">
-                                <input type="text" id="fake-file-input-name" disabled="disabled" placeholder="File not selected" class="form-control">
-                            </div>-->
+                        <form id="js-upload-form" method="post" action="/drive" enctype="multipart/form-data">
+                            <!--<input id="input-1" type="file" class="file">-->
+                            <div class="input-group">
+                                <input id="input-1" type="file">
+                                <input type="submit" value="Submit">
+                            </div>
                         </form> 
                         
                         <br />
