@@ -9,12 +9,12 @@ void* httpClientThread(void* params)
   delete p;
 
 
-  // test grpc
-  GreeterClient greeter(grpc::CreateChannel(
-      "localhost:50051", grpc::InsecureChannelCredentials()));
+//   // test grpc
+//   GreeterClient greeter(grpc::CreateChannel(
+//       "localhost:50051", grpc::InsecureChannelCredentials()));
   
-  string reply = greeter.SayHello("fuck");
-  cerr << reply << endl << endl;
+//   string reply = greeter.SayHello("fuck");
+//   cerr << reply << endl << endl;
 
 
   stringstream ss;

@@ -418,10 +418,55 @@ void loginHandler(int fd, const string & contentStr)
     }
 }
 
+void uploadFileHandler(int fd, const string & contentStr)
+{
+    istringstream iss_content(contentStr);
+    string username, password, tmp;
+    getline(iss_content, tmp, '='); // username
+    getline(iss_content, username, '&');
+    getline(iss_content, tmp, '='); // password
+    getline(iss_content, password, '&');
+
+    HttpDebugLog( fd, "%s, %s", username.c_str(), password.c_str());
+
+    if (verifyUsernameAndPassword(username, password))
+    {
+        header.clear();
+        header.set_cookie = "username=" + username;
+
+
+        // direct to new page
+        sendFileToClient(fd, "/profile.html");
+    }
+    else
+    {
+        // TODO: invalid username or password
+        HttpDebugLog( fd, "Invalid %s %s", username.c_str(), password.c_str());
+
+        // do_write(fd, &HTTP_400_invalid_username.at(0), (int)HTTP_400_invalid_username.size());
+        // GeneralHeader header400;
+        // header400.content_type = "text/html";
+        // header400.content_length = HTML_400_PAGE.size();
+        // separate line
+        // do_write(fd, &CRLF.at(0), CRLF.size());
+
+        header.clear();
+        sendFileToClient(fd, "/index-login");
+
+
+        // do_write(fd, &HTML_400_PAGE.at(0), HTML_400_PAGE.size());
+    }
+}
+
+
+
+
+
 
 
 
 // {uri, FunctionHandler}
 const unordered_map<string, FunctionHandler> postRequestHandlers({
     {"/", &loginHandler}
+    , {"/", &uploadFileHandler}
 });
