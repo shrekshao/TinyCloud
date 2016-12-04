@@ -29,28 +29,25 @@
 
 syntax = "proto3";
 
-option java_multiple_files = true;
-option java_package = "io.grpc.examples.helloworld";
-option java_outer_classname = "HelloWorldProto";
+//option java_multiple_files = true;
+//option java_package = "io.grpc.examples.helloworld";
+//option java_outer_classname = "HelloWorldProto";
 option objc_class_prefix = "HLW";
 
-package helloworld;
+package backend;
 
 // The greeting service definition.
-service Greeter {
+service Storage {
   // Sends a greeting
-  rpc SayHello (HelloRequest) returns (HelloReply) {}
-
-  // Sends another greeting
-  rpc SayHelloAgain (HelloRequest) returns (HelloReply) {}
+  rpc GetFileList (GetFileListRequest) returns (GetFileListReply) {}
 }
 
 // The request message containing the user's name.
-message HelloRequest {
-  string name = 1;
+message GetFileListRequest {
+  string foldername = 1;
 }
 
 // The response message containing the greetings
-message HelloReply {
-  string message = 1;
+message GetFileListReply {
+  map<string, string> filelist= 1;
 }
