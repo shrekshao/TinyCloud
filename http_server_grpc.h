@@ -3,11 +3,11 @@
 #include <iostream>
 #include <memory>
 #include <string>
+#include <map>
 
 #include <grpc++/grpc++.h>
 
-// TODO: include .grpc.pb.h
-#include "helloworld.grpc.pb.h"
+#include "grpc_backend/backend.grpc.pb.h"
 
 using namespace std;
 
@@ -15,58 +15,48 @@ using grpc::Channel;
 using grpc::ClientContext;
 using grpc::Status;
 
-// TODO: proto namespace
+using backend::GetFileListRequest;
+using backend::GetFileListReply;
+using backend::Storage;
 
-
-
-// class FileSystemClient {
-//  public:
-//   FileSystemClient(std::shared_ptr<Channel> channel)
-//       : stub_(Greeter::NewStub(channel)) {}
-
-
-
-
-
-
-// helloworld test
-
-using helloworld::HelloRequest;
-using helloworld::HelloReply;
-using helloworld::Greeter;
-
-class GreeterClient {
+class FileSystemClient {
  public:
-  GreeterClient(std::shared_ptr<Channel> channel)
-      : stub_(Greeter::NewStub(channel)) {}
+  FileSystemClient(std::shared_ptr<Channel> channel)
+      : stub_(Storage::NewStub(channel)) {}
 
-  // Assambles the client's payload, sends it and presents the response back
-  // from the server.
-  std::string SayHello(const std::string& user) {
+  // return if rpc succeed
+  bool GetFileList(const std::string& foldername
+        , std::map<std::string, std::string> & fileList) {
     // Data we are sending to the server.
-    HelloRequest request;
-    request.set_name(user);
+    GetFileListRequest request;
+    request.set_foldername(foldername);
 
     // Container for the data we expect from the server.
-    HelloReply reply;
+    GetFileListReply reply;
 
     // Context for the client. It could be used to convey extra information to
     // the server and/or tweak certain RPC behaviors.
     ClientContext context;
 
     // The actual RPC.
-    Status status = stub_->SayHello(&context, request, &reply);
+    Status status = stub_->GetFileList(&context, request, &reply);
 
     // Act upon its status.
     if (status.ok()) {
-      return reply.message();
+      // return reply.message();
+
+      // std::map<std::string, std::string> fileList(reply.filelist().begin(),
+      //                               reply.filelist().end());
+
+      fileList = std::map<std::string, std::string>(reply.filelist().begin(), reply.filelist().end());
+      return true;
     } else {
       std::cout << status.error_code() << ": " << status.error_message()
                 << std::endl;
-      return "RPC failed";
+      return false;
     }
   }
 
  private:
-  std::unique_ptr<Greeter::Stub> stub_;
+  std::unique_ptr<Storage::Stub> stub_;
 };
