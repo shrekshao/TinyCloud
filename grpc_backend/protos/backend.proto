@@ -36,18 +36,18 @@ option objc_class_prefix = "HLW";
 
 package backend;
 
-// The greeting service definition.
+// The storage service definition.
 service Storage {
-  // Sends a greeting
+  // Get file list
   rpc GetFileList (GetFileListRequest) returns (GetFileListReply) {}
 }
 
-// The request message containing the user's name.
+// The request message containing the user/folder's name.
 message GetFileListRequest {
   string foldername = 1;
 }
 
-// The response message containing the greetings
+// The response message containing the files
 message GetFileListReply {
   map<string, string> filelist= 1;
 }
