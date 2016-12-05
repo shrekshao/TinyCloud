@@ -72,6 +72,8 @@ const unordered_map<string, string> extToFileCat({
     ,{"bmp", "image"}
 
     ,{"pdf", "application"}
+    ,{"ppt", "application"}
+    ,{"pptx", "application"}
 });
 
 
