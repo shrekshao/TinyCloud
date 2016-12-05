@@ -72,7 +72,7 @@ public:
         // traverse all the sub dir
         for (string s : path)
         {
-            cout << s + "\n";
+            // cout << s + "\n";
             Node* temp = node_finder(s, curr_node);
             if (temp == NULL)
             {
@@ -93,7 +93,34 @@ public:
     void delete_directory (string username, string delete_directory)
     {
         vector<string> path = directory_parser(delete_directory);
+        path.insert(path.begin(), username);
+        int index = 1;
+        int v_size = path.size();
         // delete the file
+
+        // first, we need to make sure that the user has its own folder
+        // under root directory
+        Node* curr_node = root;
+        // traverse all the sub dir
+        for (string s : path)
+        {
+            // if it is in the second last layer
+            if (index == v_size)
+            {
+                // the curr_node is still pointing to the previous layer
+                // delete on stack
+                delete curr_node->children[s];
+                // delete on map
+                curr_node->children.erase(s);
+            }
+            // cout << s + "\n";
+            Node* temp = node_finder(s, curr_node);
+            if (temp == NULL)
+                return;
+            // iterated to next level
+            curr_node = temp;
+            index++;
+        }
     }
 
     // suppliments function
@@ -150,16 +177,26 @@ public:
 int main(int argc, char *argv[]) {
     // create a root "/usr" as a the root node
     // root : usr, is_file : false
+    cout << "\n";
+    cout << "before deletion: \n";
     File_System* file_system = new File_System();
     file_system->insert_directory("wuzhengx", "file10/file20/index.html");
     file_system->insert_directory("wuzhengx", "file10/file21/index.html");
     file_system->insert_directory("wuzhengx", "file10/file22/index.html");
     file_system->insert_directory("wuzhengx", "file10/file23/index.html");
-
     vector<string> result = file_system->display_directory("wuzhengx", "file10");
     for (string s : result)
     {
         cout << s + "\n";
     }
 
+    cout << "\n";
+    cout << "after deletion: \n";
+    // testing the delete
+    file_system->delete_directory("wuzhengx", "file10/file23");
+    vector<string> result_2 = file_system->display_directory("wuzhengx", "file10");
+    for (string s : result_2)
+    {
+        cout << s + "\n";
+    }
 }
