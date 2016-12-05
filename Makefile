@@ -24,7 +24,7 @@ vpath %.grpc.pb.o $(GRPC_CC_OUTPUT)
 
 all: $(TARGETS)
 
-http_server: backend.pb.o backend.grpc.pb.o http_server.o
+http_server: $(GRPC_CC_OUTPUT)backend.pb.o $(GRPC_CC_OUTPUT)backend.grpc.pb.o http_server.o
 	$(CXX) $^ $(LDFLAGS) -std=c++11 -o $@
 
 
