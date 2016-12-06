@@ -29,24 +29,38 @@ Indexer indexer_service;
 class StorageServiceImpl final : public Storage::Service {
     Status GetFileList(ServerContext* context, const FileListRequest* request, FileListReply* reply) override {
         map<string, Node*> res;
-        indexer_service.display(request->foldername(), res);
-        for (map<string, Node*>::iterator it = res.begin(); it != res.end(); ++it) {
-            backend::FileInfo fi;
-            fi.set_name(it->second->name);
-            fi.set_is_file(it->second->is_file);
-            (*reply->mutable_filelist())[it->first] = fi;
+        int success = indexer_service.display(request->foldername(), res);
+        if (success == 1) {
+            for (map<string, Node*>::iterator it = res.begin(); it != res.end(); ++it) {
+                backend::FileInfo fi;
+                fi.set_name(it->second->name);
+                fi.set_is_file(it->second->is_file);
+                (*reply->mutable_filelist())[it->first] = fi;
+            }
+
+            return Status::OK;
+        } else {
+            return Status::CANCELLED;
         }
-        return Status::OK;
     }
 
     Status InsertFileList(ServerContext* context, const FileListRequest* request, FileListReply* reply) override {
-        indexer_service.insert(request->foldername(), request->is_file());
-        return Status::OK;
+        int success = indexer_service.insert(request->foldername(), request->is_file());
+        if (success == 1) {
+            return Status::OK;
+        } else {
+            return Status::CANCELLED;
+        }
+
     }
 
     Status DeleteFileList(ServerContext* context, const FileListRequest* request, FileListReply* reply) override {
-        indexer_service.delet(request->foldername());
-        return Status::OK;
+        int success = indexer_service.delet(request->foldername());
+        if (success == 1) {
+            return Status::OK;
+        } else {
+            return Status::CANCELLED;
+        }
     }
 };
 
