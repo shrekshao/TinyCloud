@@ -9,12 +9,27 @@ void* httpClientThread(void* params)
   delete p;
 
 
-//   // test grpc
-//   GreeterClient greeter(grpc::CreateChannel(
+// // --------- test grpc ---------------
+//   FileSystemClient fsClient(grpc::CreateChannel(
 //       "localhost:50051", grpc::InsecureChannelCredentials()));
   
-//   string reply = greeter.SayHello("fuck");
-//   cerr << reply << endl << endl;
+// //   string reply = greeter.SayHello("fuck");
+// //   cerr << reply << endl << endl;
+
+//   std::map<std::string, std::string> fileList;
+//   if (fsClient.GetFileList("ss", fileList))
+//   {
+//       for (const auto & f : fileList)
+//       {
+//           cerr << f.first << "," << f.second << endl;
+//       }
+//   }
+//   else
+//   {
+
+//   }
+
+//   // --------------------------------------
 
 
   stringstream ss;

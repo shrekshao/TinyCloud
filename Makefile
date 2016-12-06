@@ -14,22 +14,28 @@ GRPC_CPP_PLUGIN_PATH ?= `which $(GRPC_CPP_PLUGIN)`
 
 PROTOS_PATH = grpc_backend/protos
 
+GRPC_CC_OUTPUT = grpc_backend/
+
 vpath %.proto $(PROTOS_PATH)
+vpath %.pb.cc $(GRPC_CC_OUTPUT)
+vpath %.grpc.pb.cc $(GRPC_CC_OUTPUT)
+vpath %.pb.o $(GRPC_CC_OUTPUT)
+vpath %.grpc.pb.o $(GRPC_CC_OUTPUT)
 
 all: $(TARGETS)
 
-http_server: helloworld.pb.o helloworld.grpc.pb.o http_server.o
+http_server: $(GRPC_CC_OUTPUT)backend.pb.o $(GRPC_CC_OUTPUT)backend.grpc.pb.o http_server.o
 	$(CXX) $^ $(LDFLAGS) -std=c++11 -o $@
 
 
 .PRECIOUS: %.grpc.pb.cc
 %.grpc.pb.cc: %.proto
-	$(PROTOC) -I $(PROTOS_PATH) --grpc_out=. --plugin=protoc-gen-grpc=$(GRPC_CPP_PLUGIN_PATH) $<
+	$(PROTOC) -I $(PROTOS_PATH) --grpc_out=$(GRPC_CC_OUTPUT) --plugin=protoc-gen-grpc=$(GRPC_CPP_PLUGIN_PATH) $<
 
 .PRECIOUS: %.pb.cc
 %.pb.cc: %.proto
-	$(PROTOC) -I $(PROTOS_PATH) --cpp_out=. $<
+	$(PROTOC) -I $(PROTOS_PATH) --cpp_out=$(GRPC_CC_OUTPUT) $<
 
 
 clean:
-	rm -fv $(TARGETS)
+	rm -fv $(TARGETS) *.o *.pb.h *.pb.cc
