@@ -57,8 +57,8 @@
                         <!-- Upload Finished -->
                         <div class="js-upload-finished">
                             <h4>Files</h4>
-                            <div class="list-group"> 
-                                <a href="download_test/cis505project.pdf" class="list-group-item list-group-item-danger" download>
+                            <div class="list-group" id="file-list"> 
+                                <!--<a href="download_test/cis505project.pdf" class="list-group-item list-group-item-danger" download>
                                     <span class="badge alert-danger pull-right">20-11-2014</span>
                                     cis505project.pdf
                                 </a>
@@ -76,9 +76,9 @@
                                 <a href="#" class="list-group-item list-group-item-success">
                                     <span class="badge alert-success pull-right">23-11-2014</span>
                                     what-the-fuck.pdf
-                                </a>
+                                </a>-->
 
-                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -108,27 +108,76 @@
 
 <script>
 
-    function onSelectFiles() {
-        var fileViewer = $('#file-viewer')[0];
-        var txt = "";
-
-        if (fileViewer.files.length == 0) {
-            txt = "Select one or more files.";
-        } else {
-            for (var i = 0; i < fileViewer.files.length; i++) {
-                txt += fileViewer.files[i].name + " ";
-                console.log(fileViewer.files[i].name);
-            }
-        }
-
-        $('#file-name').text(txt);
+    function appendFileRow(key, info) {
+        var row = `<a href="${key}" class="list-group-item list-group-item-success" download>
+                        <span class="badge alert-success pull-right">${info.date}</span>
+                            ${info.name}
+                        </a>`;
+        $('#file-list').append(row);
     }
+
 
     $(function(){
         'use strict';
 
+
+        // get user name root folder
+        $.ajax({
+            url: '/get-file-list',
+            type: 'post',
+            data: '/',
+            contentType: 'text',
+            beforeSend: function(xhr){
+                console.log('beforeSend');
+                if (xhr.overrideMimeType)
+                {
+                    console.log('override app json');
+                    xhr.overrideMimeType("application/json");
+                }
+            },
+            dataType: 'json',
+            // dataType: 'application/json',
+            // dataType: 'text',
+
+            success: function(result){
+                // console.log('success');
+                console.log(result);
+
+                for (var key in result) {
+                    appendFileRow(key, result[key]);
+                }
+            }
+        });
+
+
+
+
+
+
+
+
+
+
+
+
         // UPLOAD CLASS DEFINITION
         // ======================
+
+        // function onSelectFiles() {
+        //     var fileViewer = $('#file-viewer')[0];
+        //     var txt = "";
+
+        //     if (fileViewer.files.length == 0) {
+        //         txt = "Select one or more files.";
+        //     } else {
+        //         for (var i = 0; i < fileViewer.files.length; i++) {
+        //             txt += fileViewer.files[i].name + " ";
+        //             console.log(fileViewer.files[i].name);
+        //         }
+        //     }
+
+        //     $('#file-name').text(txt);
+        // }
 
         var dropZone = document.getElementById('drop-zone');
         var uploadForm = document.getElementById('js-upload-form');
@@ -166,6 +215,10 @@
             this.className = 'upload-drop-zone';
             return false;
         }
+
+
+
+        
     });
 </script>
 
