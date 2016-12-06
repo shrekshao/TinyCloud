@@ -20,7 +20,8 @@
 
 using namespace std;
 
-typedef void (*FunctionHandler)(int, const string &);
+typedef void (*FunctionHandlerGet)(int);
+typedef void (*FunctionHandlerPost)(int, const string &);
 
 
 
@@ -28,14 +29,14 @@ typedef void (*FunctionHandler)(int, const string &);
 
 //#include "utils.h"
 
-bool outputAuthor = false;
-bool outputDebug = false;
-int port = 10000;
+static bool outputAuthor = false;
+static bool outputDebug = false;
+static int port = 10000;
 
-const int BUFFER_SIZE = 50;
+static const int BUFFER_SIZE = 50;
 // unordered_set<int> fdSet;
-const int NUM_FD = 1000; 
-bool fdArray[NUM_FD] = {};  // all elements 0
+static const int NUM_FD = 1000; 
+static bool fdArray[NUM_FD] = {};  // all elements 0
 
 
 enum ReceivingStatus{
@@ -47,24 +48,24 @@ enum ReceivingStatus{
 };
 
 // ----------------- const status msg ----------------
-const string CRLF = "\r\n";
-const string LF = "\n";
-const string HTTP_OK = "HTTP/1.1 200 OK\r\n";
-const string HTTP_400 = "HTTP/1.1 400 BAD REQUEST\r\n";
-const string HTTP_400_invalid_username = "HTTP/1.1 400 INVALID USERNAME OR PASSWORD\r\n";
-const string HTTP_404 = "HTTP/1.1 404 NOT FOUND\r\n";
-const string HTTP_HEADER_SERVER = "Server: tinycloud\r\n";
+static const string CRLF = "\r\n";
+static const string LF = "\n";
+static const string HTTP_OK = "HTTP/1.1 200 OK\r\n";
+static const string HTTP_400 = "HTTP/1.1 400 BAD REQUEST\r\n";
+static const string HTTP_400_invalid_username = "HTTP/1.1 400 INVALID USERNAME OR PASSWORD\r\n";
+static const string HTTP_404 = "HTTP/1.1 404 NOT FOUND\r\n";
+static const string HTTP_HEADER_SERVER = "Server: tinycloud\r\n";
 
-const string HTML_400_PAGE = "400 Bad Request\r\nWrong request URL\r\n";
-const string HTML_404_PAGE = "404 Not Found\r\nThe requested URL was not found on this server.\r\n";
-
-
-const string siteRoot = "_site/";
+static const string HTML_400_PAGE = "400 Bad Request\r\nWrong request URL\r\n";
+static const string HTML_404_PAGE = "404 Not Found\r\nThe requested URL was not found on this server.\r\n";
 
 
+static const string siteRoot = "_site/";
 
-const unordered_set<string> textFileExtensions ({"txt", "html", "css", "js"});
-const unordered_map<string, string> extToFileCat({
+
+
+static const unordered_set<string> textFileExtensions ({"txt", "html", "css", "js"});
+static const unordered_map<string, string> extToFileCat({
     {"jpg", "image"}
     ,{"jpeg", "image"}
     ,{"png", "image"}
@@ -138,7 +139,7 @@ struct GeneralHeader
 GeneralHeader header;
 
 // uri, function handler
-// unordered_map<string, FunctionHandler> uri_to_handlers;
+// unordered_map<string, FunctionHandlerPost> uri_to_handlers;
 
 
 
@@ -219,6 +220,7 @@ void send404Page(int fd)
     GeneralHeader header404;
     header404.content_type = "text/html";
     header404.content_length = HTML_404_PAGE.size();
+    header404.send(fd);
     // separate line
     do_write(fd, &CRLF.at(0), CRLF.size());
 
@@ -232,10 +234,27 @@ void send400Page(int fd)
     GeneralHeader header400;
     header400.content_type = "text/html";
     header400.content_length = HTML_400_PAGE.size();
+    header400.send(fd);
     // separate line
     do_write(fd, &CRLF.at(0), CRLF.size());
 
     do_write(fd, &HTML_400_PAGE.at(0), HTML_400_PAGE.size());
+}
+
+void sendData(int fd, const string & dataType, const string & data)
+{
+    // HttpDebugLog( fd, "get file list: %s", folder.c_str());
+
+    do_write(fd, &HTTP_OK.at(0), (int)HTTP_OK.size());
+
+    GeneralHeader header200Data;
+    header200Data.content_type = dataType;
+    header200Data.content_length = data.size();
+    header200Data.send(fd);
+    // separate line
+    do_write(fd, &CRLF.at(0), CRLF.size());
+
+    do_write(fd, &data.at(0), data.size());
 }
 
 
@@ -361,6 +380,38 @@ void sendFileToClient(int fd, const string & uri)
 }
 
 
+
+// // --------- get request handlers --------------
+// void getFileListHandler(int fd)
+// {
+
+// }
+// // {uri, FunctionHandlerGet}
+// static const unordered_map<string, FunctionHandlerGet> getRequestHandlers({
+//     {"/drive-get-list", &getFileListHandler}
+// });
+
+
+// void handleGetRequest(int fd, const string & uri)
+// {
+//     auto it = getRequestHandlers.find(uri);
+
+//     if (it == getRequestHandlers.end())
+//     {
+//         // pure get file
+//         sendFileToClient(fd, uri);
+//     }
+//     else
+//     {
+//         // functional url
+//         (*(it->second))(fd);
+//     }
+// }
+
+
+
+
+
 /**
 * @ return: if username and password is valid
 */
@@ -422,53 +473,71 @@ void loginHandler(int fd, const string & contentStr)
 
 void uploadFileHandler(int fd, const string & contentStr)
 {
-    istringstream iss_content(contentStr);
-    string username, password, tmp;
-    getline(iss_content, tmp, '='); // username
-    getline(iss_content, username, '&');
-    getline(iss_content, tmp, '='); // password
-    getline(iss_content, password, '&');
-
-    HttpDebugLog( fd, "%s, %s", username.c_str(), password.c_str());
-
-    if (verifyUsernameAndPassword(username, password))
-    {
-        header.clear();
-        header.set_cookie = "username=" + username;
+    // TODO
+}
 
 
-        // direct to new page
-        sendFileToClient(fd, "/profile.html");
-    }
-    else
-    {
-        // TODO: invalid username or password
-        HttpDebugLog( fd, "Invalid %s %s", username.c_str(), password.c_str());
 
-        // do_write(fd, &HTTP_400_invalid_username.at(0), (int)HTTP_400_invalid_username.size());
-        // GeneralHeader header400;
-        // header400.content_type = "text/html";
-        // header400.content_length = HTML_400_PAGE.size();
-        // separate line
-        // do_write(fd, &CRLF.at(0), CRLF.size());
+void getFilelistHandler(int fd, const string & folder)
+{
+    // Current for test
+    // TODO: grpc ask for file list
 
-        header.clear();
-        sendFileToClient(fd, "/index-login");
+    HttpDebugLog( fd, "get file list: %s", folder.c_str());
+    
+    
+    
 
 
-        // do_write(fd, &HTML_400_PAGE.at(0), HTML_400_PAGE.size());
-    }
+    // temp test
+    string file_list_json;
+
+    file_list_json += "{";
+
+    // file-key , display info
+    file_list_json += "\"download_test/cis505project.pdf\"";
+    file_list_json += ":";
+    file_list_json += "{\"name\":\"cis505project.pdf\", \"date\":\"12-05-2016\"}";
+
+    file_list_json += ",";
+    file_list_json += "\"download_test/lecture18.pptx\"";
+    file_list_json += ":";
+    file_list_json += "{\"name\":\"lecture18.pptx\", \"date\":\"12-01-2016\"}";
+
+
+    file_list_json += "}";
+
+
+    HttpDebugLog( fd, "send file list json:\n %s", file_list_json.c_str());
+
+    // header.clear();
+    sendData(fd, "application/json", file_list_json);
+    // sendData(fd, "json", file_list_json);
+    // sendData(fd, "text", file_list_json);
 }
 
 
 
 
-
-
-
-
-// {uri, FunctionHandler}
-const unordered_map<string, FunctionHandler> postRequestHandlers({
+// {uri, FunctionHandlerPost}
+static const unordered_map<string, FunctionHandlerPost> postRequestHandlers({
     {"/", &loginHandler}
-    , {"/", &uploadFileHandler}
+    , {"/drive", &uploadFileHandler}
+    , {"/get-file-list", &getFilelistHandler}
 });
+
+
+void handlePostRequest(int fd, const string & uri, const string & contentStr)
+{
+    auto it = postRequestHandlers.find(uri);
+    if (it == postRequestHandlers.end())
+    {
+        // 400 not valid uri post
+        HttpDebugLog( fd, "Invalid post url request: %s", uri.c_str());
+        send400Page(fd);
+    }
+    else
+    {
+        (*(it->second))(fd, contentStr);
+    }
+}

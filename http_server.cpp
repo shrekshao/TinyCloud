@@ -97,17 +97,19 @@ void* httpClientThread(void* params)
 
             delete [] contentBuf;
 
-            auto it = postRequestHandlers.find(uri);
-            if (it == postRequestHandlers.end())
-            {
-                // 400 not valid uri post
-                HttpDebugLog( comm_fd, "Invalid post url request: %s", uri.c_str());
-                send400Page(comm_fd);
-            }
-            else
-            {
-                (*(it->second))(comm_fd, contentStr);
-            }
+            // auto it = postRequestHandlers.find(uri);
+            // if (it == postRequestHandlers.end())
+            // {
+            //     // 400 not valid uri post
+            //     HttpDebugLog( comm_fd, "Invalid post url request: %s", uri.c_str());
+            //     send400Page(comm_fd);
+            // }
+            // else
+            // {
+            //     (*(it->second))(comm_fd, contentStr);
+            // }
+
+            handlePostRequest(comm_fd, uri, contentStr);
             
             continue;
         }
@@ -259,26 +261,6 @@ void* httpClientThread(void* params)
 
 
 
-// void renderLoginPage(int comm_fd)
-// {
-//   // http 200 ok
-//   do_write(comm_fd, &HTTP_OK.at(0), HTTP_OK.size());
-
-//   // headers
-
-//   // // date
-//   // char timestamp[30];
-//   // time_t rawtime;
-//   // time(&rawtime);
-//   // struct tm *timeinfo = localtime(&rawtime);
-//   // strftime(timestamp, 30, "%c", timeinfo);
-
-//   // do_write(comm_fd, &CRLF.at(0), CRLF.size());
-
-//   sendFileToClient(comm_fd, "index.html");
-// }
-
-
 
 
 
@@ -353,15 +335,6 @@ int main(int argc, char *argv[])
   {
     fprintf(stderr, "*** Author: Shuai Shao (sshuai)\n");
   }
-
-
-
-//   // init page uri handlers
-//   // TODO: Or parse all files transmissiable
-//   uri_to_handlers.emplace("/", &sendFileToClient);
-//   uri_to_handlers.emplace("/main.css", &sendFileToClient);
-
-
 
 
 
