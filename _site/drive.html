@@ -6,6 +6,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
     <link rel="stylesheet" href="css/main.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 </head>
@@ -108,24 +109,14 @@
 
 <script>
 
-    function appendFileRow(key, info) {
-        var row = `<a href="${key}" class="list-group-item list-group-item-success" download>
-                        <span class="badge alert-success pull-right">${info.date}</span>
-                            ${info.name}
-                        </a>`;
-        $('#file-list').append(row);
-    }
 
+    function getFileListAjax(folder) {
+        $('#file-list').html('');
 
-    $(function(){
-        'use strict';
-
-
-        // get user name root folder
         $.ajax({
             url: '/get-file-list',
             type: 'post',
-            data: '/',
+            data: folder,
             contentType: 'text',
             beforeSend: function(xhr){
                 console.log('beforeSend');
@@ -148,8 +139,35 @@
                 }
             }
         });
+    }
 
 
+
+    function appendFileRow(key, info) {
+        var row;
+        if (info['folder']) {
+            // folder
+            row = `<button class="list-group-item list-group-item-success" onclick="getFileListAjax('${key}')">
+                        <span class="badge alert-success pull-right">${info.date}</span>
+                          <i class="fa fa-folder"></i>  ${info.name} 
+                    </button>`;
+        } else {
+            // file
+            row = `<a href="${key}" class="list-group-item list-group-item-success" download>
+                        <span class="badge alert-success pull-right">${info.date}</span>
+                          <i class="fa fa-file-o"></i>  ${info.name}
+                    </a>`;
+        }
+        
+        $('#file-list').append(row);
+    }
+
+
+    $(function(){
+        'use strict';
+
+
+        getFileListAjax('/');
 
 
 

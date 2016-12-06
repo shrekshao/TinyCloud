@@ -494,15 +494,40 @@ void getFilelistHandler(int fd, const string & folder)
 
     file_list_json += "{";
 
-    // file-key , display info
-    file_list_json += "\"download_test/cis505project.pdf\"";
-    file_list_json += ":";
-    file_list_json += "{\"name\":\"cis505project.pdf\", \"date\":\"12-05-2016\"}";
+    if (folder == "/")
+    {
+        // file-key , display info
+        file_list_json += "\"av\"";
+        file_list_json += ":";
+        file_list_json += "{\"name\":\"av\", \"date\":\"12-01-2015\", \"folder\":1}";
 
-    file_list_json += ",";
-    file_list_json += "\"download_test/lecture18.pptx\"";
-    file_list_json += ":";
-    file_list_json += "{\"name\":\"lecture18.pptx\", \"date\":\"12-01-2016\"}";
+        file_list_json += ",";
+        file_list_json += "\"download_test/cis505project.pdf\"";
+        file_list_json += ":";
+        file_list_json += "{\"name\":\"cis505project.pdf\", \"date\":\"12-05-2016\"}";
+
+        file_list_json += ",";
+        file_list_json += "\"download_test/lecture18.pptx\"";
+        file_list_json += ":";
+        file_list_json += "{\"name\":\"lecture18.pptx\", \"date\":\"12-01-2016\"}";
+
+        file_list_json += ",";
+        file_list_json += "\"download_test/profile.html\"";
+        file_list_json += ":";
+        file_list_json += "{\"name\":\"profile.html\", \"date\":\"12-19-2016\"}";
+    }
+    else if (folder == "av")
+    {
+        file_list_json += "\"/\"";
+        file_list_json += ":";
+        file_list_json += "{\"name\":\"..\", \"date\":\"10-01-2015\", \"folder\":1}";
+
+        file_list_json += ",";
+        file_list_json += "\"download_test/di_pose.png\"";
+        file_list_json += ":";
+        file_list_json += "{\"name\":\"di_pose.png\", \"date\":\"11-22-2015\"}";
+    }
+    
 
 
     file_list_json += "}";
