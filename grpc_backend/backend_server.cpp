@@ -18,18 +18,34 @@ using grpc::Server;
 using grpc::ServerBuilder;
 using grpc::ServerContext;
 using grpc::Status;
-using backend::GetFileListRequest;
-using backend::GetFileListReply;
+using backend::FileListRequest;
+using backend::FileListReply;
 using backend::Storage;
 
 // Indexer service in-memory storage
-Indexer indexer_service();
+Indexer indexer_service;
 
 // Logic and data behind the server's behavior.
 class StorageServiceImpl final : public Storage::Service {
-    Status GetFileList(ServerContext* context, const GetFileListRequest* request, GetFileListReply* reply) override {
-        indexer_service.display(request->foldername());
-        (*reply->mutable_filelist())[request->foldername()] = "test";
+    Status GetFileList(ServerContext* context, const FileListRequest* request, FileListReply* reply) override {
+        map<string, Node*> res;
+        indexer_service.display(request->foldername(), res);
+        for (map<string, Node*>::iterator it = res.begin(); it != res.end(); ++it) {
+            backend::FileInfo fi;
+            fi.set_name(it->second->name);
+            fi.set_is_file(it->second->is_file);
+            (*reply->mutable_filelist())[it->first] = fi;
+        }
+        return Status::OK;
+    }
+
+    Status InsertFileList(ServerContext* context, const FileListRequest* request, FileListReply* reply) override {
+        indexer_service.insert(request->foldername(), request->is_file());
+        return Status::OK;
+    }
+
+    Status DeleteFileList(ServerContext* context, const FileListRequest* request, FileListReply* reply) override {
+        indexer_service.delet(request->foldername());
         return Status::OK;
     }
 };

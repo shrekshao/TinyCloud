@@ -16,26 +16,25 @@ Indexer::Indexer() : root("usr"){
 /*
  *  Display the files and directories under the cur_dir
  */
-map<string, Node> Indexer::display(string cur_dir) {
-    map<string, Node> children_files; // return variable
+int Indexer::display(string cur_dir, map<string, Node*> res) {
     vector<string> path = directory_parser(cur_dir); // parse the path into vector<string>
 
-    Node cur_node = root;
+    Node* cur_node = &root;
     // traverse all the sub dir
     for (string s : path) {
         Node *temp = node_finder(s, cur_node);
         if (temp == NULL) {
             // ERROR
-            return NULL;
+            return -1;
         }
         // iterated to next level
-        cur_node = *temp;
+        cur_node = temp;
     }
 
-    for (map<string, Node>::iterator it = cur_node.children.begin(); it != cur_node.children.end(); ++it) {
-        children_files[it->first] = it->second;
+    for (map<string, Node*>::iterator it = cur_node->children.begin(); it != cur_node->children.end(); ++it) {
+        res.emplace(it->first, it->second);
     }
-    return children_files;
+    return 1;
 }
 
 /*
@@ -44,24 +43,25 @@ map<string, Node> Indexer::display(string cur_dir) {
 int Indexer::insert(string new_dir, bool is_file) {
     vector<string> path = directory_parser(new_dir);
     // traverse all the sub dir
-    Node cur_node = root;
+    Node* cur_node = &root;
     int i;
     for (i = 0; i < path.size()-1;  i++) {
-        Node *temp = node_finder(path[i], cur_node);
+        Node* temp = node_finder(path[i], cur_node);
         if (temp == NULL) {
             // ERROR
             return -1;
         }
         // iterated to next level
-        cur_node = *temp;
+        cur_node = temp;
     }
 
-    if (cur_node.is_file) {
+    if (cur_node->is_file) {
         // Cannot create under a file
         return -1;
     }
 
-    cur_node.children.emplace(path[i-1], path[i], is_file);
+    Node n = Node(path[i], is_file);
+    cur_node->children.emplace(path[i-1], &n);
 
     return 1;
 }
@@ -73,25 +73,25 @@ int Indexer::delet(string del_dir) {
     vector<string> path = directory_parser(del_dir);
 
     // traverse all the sub dir
-    Node cur_node = root;
+    Node* cur_node = &root;
     int i;
     for (i = 0; i < path.size()-1;  i++) {
-        Node *temp = node_finder(path[i], cur_node);
+        Node* temp = node_finder(path[i], cur_node);
         if (temp == NULL) {
             // ERROR
             return -1;
         }
         // iterated to next level
-        cur_node = *temp;
+        cur_node = temp;
     }
 
-    if (cur_node.is_file) {
+    if (cur_node->is_file) {
         // Cannot delete under a file
         return -1;
     }
 
     // delete a file/directory
-    cur_node.children.erase(path[i]);
+    cur_node->children.erase(path[i]);
 
     return 1;
 }
@@ -119,9 +119,9 @@ vector<string> Indexer::directory_parser(string directory) {
 }
 
 // node finder
-Node* Indexer::node_finder(string target_name, Node node) {
-    if (node.children.count(target_name)) {
-        return &node.children[target_name];
+Node* Indexer::node_finder(string target_name, Node *node) {
+    if (node->children.count(target_name)) {
+        return node->children[target_name];
     }
     return NULL;
 }
