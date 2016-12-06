@@ -43,10 +43,13 @@ PROTOS_PATH = protos
 
 vpath %.proto $(PROTOS_PATH)
 
-all: backend_server
+all: backend_server storage_server
 
-backend_server: backend.pb.o backend.grpc.pb.o backend_server.o
+storage_server: backend.pb.o backend.grpc.pb.o backend_server.o storage_server.o
 	$(CXX) $^ $(LDFLAGS) -o $@
+backend_server: backend.pb.o backend.grpc.pb.o backend_server.o storage_server.o
+	$(CXX) $^ $(LDFLAGS) -o $@
+
 
 
 .PRECIOUS: %.grpc.pb.cc

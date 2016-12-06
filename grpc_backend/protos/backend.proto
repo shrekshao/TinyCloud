@@ -51,3 +51,8 @@ message GetFileListRequest {
 message GetFileListReply {
   map<string, string> filelist= 1;
 }
+
+message FileInfo {
+    string name = 1;
+    bool is_file = 2;
+}

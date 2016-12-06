@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="TinyCloud"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="gcc"/>
+		<Option virtualFolders="CMake Files\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="/home/tianli/upenn/cis505/TinyCloud/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/tianli/upenn/cis505/TinyCloud/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/tianli/upenn/cis505/TinyCloud/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/tianli/upenn/cis505/TinyCloud/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/tianli/upenn/cis505/TinyCloud/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="/home/tianli/upenn/cis505/TinyCloud/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/tianli/upenn/cis505/TinyCloud/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/tianli/upenn/cis505/TinyCloud/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/tianli/upenn/cis505/TinyCloud/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/tianli/upenn/cis505/TinyCloud/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="/home/tianli/upenn/cis505/TinyCloud/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/tianli/upenn/cis505/TinyCloud/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/tianli/upenn/cis505/TinyCloud/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/tianli/upenn/cis505/TinyCloud/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/tianli/upenn/cis505/TinyCloud/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="TinyCloud">
+				<Option output="/home/tianli/upenn/cis505/TinyCloud/cmake-build-debug/TinyCloud" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/tianli/upenn/cis505/TinyCloud/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+					<Add directory="/usr/include/c++/5"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
+					<Add directory="/usr/include/c++/5/backward"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/tianli/upenn/cis505/TinyCloud/cmake-build-debug/Makefile&quot;  VERBOSE=1 TinyCloud"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/tianli/upenn/cis505/TinyCloud/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/tianli/upenn/cis505/TinyCloud/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/tianli/upenn/cis505/TinyCloud/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="TinyCloud/fast">
+				<Option output="/home/tianli/upenn/cis505/TinyCloud/cmake-build-debug/TinyCloud" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/tianli/upenn/cis505/TinyCloud/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+					<Add directory="/usr/include/c++/5"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
+					<Add directory="/usr/include/c++/5/backward"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/tianli/upenn/cis505/TinyCloud/cmake-build-debug/Makefile&quot;  VERBOSE=1 TinyCloud/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/tianli/upenn/cis505/TinyCloud/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/tianli/upenn/cis505/TinyCloud/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/tianli/upenn/cis505/TinyCloud/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="/home/tianli/upenn/cis505/TinyCloud/Makefile">
+			<Option target="TinyCloud"/>
+		</Unit>
+		<Unit filename="/home/tianli/upenn/cis505/TinyCloud/README">
+			<Option target="TinyCloud"/>
+		</Unit>
+		<Unit filename="/home/tianli/upenn/cis505/TinyCloud/README.md">
+			<Option target="TinyCloud"/>
+		</Unit>
+		<Unit filename="/home/tianli/upenn/cis505/TinyCloud/_site/assets/img/Di-new-avatar.png">
+			<Option target="TinyCloud"/>
+		</Unit>
+		<Unit filename="/home/tianli/upenn/cis505/TinyCloud/_site/assets/img/drive.png">
+			<Option target="TinyCloud"/>
+		</Unit>
+		<Unit filename="/home/tianli/upenn/cis505/TinyCloud/_site/assets/img/gmail.png">
+			<Option target="TinyCloud"/>
+		</Unit>
+		<Unit filename="/home/tianli/upenn/cis505/TinyCloud/_site/css/main.css">
+			<Option target="TinyCloud"/>
+		</Unit>
+		<Unit filename="/home/tianli/upenn/cis505/TinyCloud/_site/drive.html">
+			<Option target="TinyCloud"/>
+		</Unit>
+		<Unit filename="/home/tianli/upenn/cis505/TinyCloud/_site/index-login.html">
+			<Option target="TinyCloud"/>
+		</Unit>
+		<Unit filename="/home/tianli/upenn/cis505/TinyCloud/_site/index.html">
+			<Option target="TinyCloud"/>
+		</Unit>
+		<Unit filename="/home/tianli/upenn/cis505/TinyCloud/_site/profile.html">
+			<Option target="TinyCloud"/>
+		</Unit>
+		<Unit filename="/home/tianli/upenn/cis505/TinyCloud/grpc_backend/backend_server.cpp">
+			<Option target="TinyCloud"/>
+		</Unit>
+		<Unit filename="/home/tianli/upenn/cis505/TinyCloud/grpc_backend/protos/backend.proto">
+			<Option target="TinyCloud"/>
+		</Unit>
+		<Unit filename="/home/tianli/upenn/cis505/TinyCloud/grpc_backend/storage_server.cpp">
+			<Option target="TinyCloud"/>
+		</Unit>
+		<Unit filename="/home/tianli/upenn/cis505/TinyCloud/grpc_backend/storage_service.cpp">
+			<Option target="TinyCloud"/>
+		</Unit>
+		<Unit filename="/home/tianli/upenn/cis505/TinyCloud/grpc_backend/storage_service.h">
+			<Option target="TinyCloud"/>
+		</Unit>
+		<Unit filename="/home/tianli/upenn/cis505/TinyCloud/http_server.cpp">
+			<Option target="TinyCloud"/>
+		</Unit>
+		<Unit filename="/home/tianli/upenn/cis505/TinyCloud/http_server.h">
+			<Option target="TinyCloud"/>
+		</Unit>
+		<Unit filename="/home/tianli/upenn/cis505/TinyCloud/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>

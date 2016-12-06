@@ -10,6 +10,7 @@
 #include <grpc++/grpc++.h>
 
 #include "backend.grpc.pb.h"
+#include "Indexer.h"
 
 using namespace std;
 
@@ -21,11 +22,13 @@ using backend::GetFileListRequest;
 using backend::GetFileListReply;
 using backend::Storage;
 
+// Indexer service in-memory storage
+Indexer indexer_service();
+
 // Logic and data behind the server's behavior.
-class GreeterServiceImpl final : public Storage::Service {
-    Status GetFileList(ServerContext* context, const GetFileListRequest* request,
-                    GetFileListReply* reply) override {
-        std::string prefix("Hello ");
+class StorageServiceImpl final : public Storage::Service {
+    Status GetFileList(ServerContext* context, const GetFileListRequest* request, GetFileListReply* reply) override {
+        indexer_service.display(request->foldername());
         (*reply->mutable_filelist())[request->foldername()] = "test";
         return Status::OK;
     }
@@ -33,7 +36,7 @@ class GreeterServiceImpl final : public Storage::Service {
 
 void RunServer() {
     std::string server_address("0.0.0.0:50051");
-    GreeterServiceImpl service;
+    StorageServiceImpl service;
 
     ServerBuilder builder;
     // Listen on the given address without any authentication mechanism.

@@ -1,0 +1,1 @@
+/usr/bin/c++   -g   CMakeFiles/TinyCloud.dir/http_server.cpp.o CMakeFiles/TinyCloud.dir/grpc_backend/backend_server.cpp.o CMakeFiles/TinyCloud.dir/grpc_backend/storage_server.cpp.o CMakeFiles/TinyCloud.dir/grpc_backend/storage_service.cpp.o  -o TinyCloud 
