@@ -20,8 +20,8 @@
 
 using namespace std;
 
-typedef void (*FunctionHandlerGet)(int);
-typedef void (*FunctionHandlerPost)(int, const string &);
+typedef void (*FunctionHandlerGet)(int fd);
+typedef void (*FunctionHandlerPost)(int fd, const string & contentStr, string & threadUsername);
 
 
 
@@ -431,7 +431,7 @@ bool verifyUsernameAndPassword(const string & username, const string & password)
 
 // ------------ post request handlers -------------
 
-void loginHandler(int fd, const string & contentStr)
+void loginHandler(int fd, const string & contentStr, string & threadUsername)
 {
     istringstream iss_content(contentStr);
     string username, password, tmp;
@@ -446,6 +446,8 @@ void loginHandler(int fd, const string & contentStr)
     {
         header.clear();
         header.set_cookie = "username=" + username;
+
+        threadUsername = username;
 
 
         // direct to new page
@@ -471,14 +473,14 @@ void loginHandler(int fd, const string & contentStr)
     }
 }
 
-void uploadFileHandler(int fd, const string & contentStr)
+void uploadFileHandler(int fd, const string & contentStr, string & threadUsername)
 {
     // TODO
 }
 
 
 
-void getFilelistHandler(int fd, const string & folder)
+void getFilelistHandler(int fd, const string & folder, string & threadUsername)
 {
     // Current for test
     // TODO: grpc ask for file list
@@ -552,7 +554,7 @@ static const unordered_map<string, FunctionHandlerPost> postRequestHandlers({
 });
 
 
-void handlePostRequest(int fd, const string & uri, const string & contentStr)
+void handlePostRequest(int fd, const string & uri, const string & contentStr, string & threadUsername)
 {
     auto it = postRequestHandlers.find(uri);
     if (it == postRequestHandlers.end())
@@ -563,6 +565,6 @@ void handlePostRequest(int fd, const string & uri, const string & contentStr)
     }
     else
     {
-        (*(it->second))(fd, contentStr);
+        (*(it->second))(fd, contentStr, threadUsername);
     }
 }

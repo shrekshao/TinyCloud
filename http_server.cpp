@@ -47,6 +47,8 @@ void* httpClientThread(void* params)
   unordered_map<string, string> headersReceived;
   string uri;
 
+  string threadUsername = "";
+
 
   while (true)
   {
@@ -109,7 +111,7 @@ void* httpClientThread(void* params)
             //     (*(it->second))(comm_fd, contentStr);
             // }
 
-            handlePostRequest(comm_fd, uri, contentStr);
+            handlePostRequest(comm_fd, uri, contentStr, threadUsername);
             
             continue;
         }
@@ -228,6 +230,30 @@ void* httpClientThread(void* params)
                 // no content
                 receivingStatus = waiting_request;
                 
+
+                auto it = headersReceived.find("Cookie");
+                if (it != headersReceived.end())
+                {
+                    // has cookie username
+                    // assume already login
+                    
+                    istringstream iss_content(it->second);
+                    string tmp;
+                    getline(iss_content, tmp, '='); // username
+                    getline(iss_content, threadUsername, '&');
+                    
+                    if (uri == "/")
+                    {
+                        uri = "/profile";
+                    }
+                }
+                else
+                {
+                    // uri = "/";
+                }
+                
+
+
                 header.clear();
                 sendFileToClient(comm_fd, uri);
             }
@@ -239,6 +265,8 @@ void* httpClientThread(void* params)
             string headerAttr = curInput.substr(0, curInput.size() - 1);
             string value;
             getline(iss, value);
+
+
             headersReceived.emplace(headerAttr, value);
         }
         else
