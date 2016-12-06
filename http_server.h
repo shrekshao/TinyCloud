@@ -473,6 +473,24 @@ void loginHandler(int fd, const string & contentStr, string & threadUsername)
     }
 }
 
+void registerHandler(int fd, const string & contentStr, string & threadUsername)
+{
+    istringstream iss_content(contentStr);
+    string username, password, tmp;
+    getline(iss_content, tmp, '='); // username
+    getline(iss_content, username, '&');
+    getline(iss_content, tmp, '='); // password
+    getline(iss_content, password, '&');
+    // confirm password
+
+    HttpDebugLog( fd, "Register New User: %s, %s", username.c_str(), password.c_str());
+
+    header.clear();
+    sendFileToClient(fd, "/");
+}
+
+
+
 void uploadFileHandler(int fd, const string & contentStr, string & threadUsername)
 {
     // TODO
@@ -549,6 +567,7 @@ void getFilelistHandler(int fd, const string & folder, string & threadUsername)
 // {uri, FunctionHandlerPost}
 static const unordered_map<string, FunctionHandlerPost> postRequestHandlers({
     {"/", &loginHandler}
+    , {"/register", &registerHandler}
     , {"/drive", &uploadFileHandler}
     , {"/get-file-list", &getFilelistHandler}
 });
