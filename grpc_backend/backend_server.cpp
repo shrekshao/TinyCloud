@@ -20,10 +20,15 @@ using grpc::ServerContext;
 using grpc::Status;
 using backend::FileListRequest;
 using backend::FileListReply;
+using backend::Empty;
+using backend::FileChunk;
 using backend::Storage;
 
 // Indexer service in-memory storage
 Indexer indexer_service;
+
+// File service in-memory storage
+BigTabler bigtable_service;
 
 // Logic and data behind the server's behavior.
 class StorageServiceImpl final : public Storage::Service {
@@ -44,14 +49,22 @@ class StorageServiceImpl final : public Storage::Service {
         }
     }
 
-    Status InsertFileList(ServerContext* context, const FileListRequest* request, FileListReply* reply) override {
+    Status InsertFileList(ServerContext* context, const FileListRequest* request, Empty* reply) override {
         int success = indexer_service.insert(request->foldername(), request->is_file());
         if (success == 1) {
             return Status::OK;
         } else {
             return Status::CANCELLED;
         }
+    }
 
+    Status PutFile(ServerContext* context, const FileChunk* request, Empty* reply) override {
+        int success = .put(request->filename(), request->data());
+        if (success == 1) {
+            return Status::OK;
+        } else {
+            return Status::CANCELLED;
+        }
     }
 };
 
