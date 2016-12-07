@@ -1,5 +1,5 @@
 #include "http_server.h"
-#include "http_server_grpc.h"
+
 
 void* httpClientThread(void* params)
 {
@@ -30,6 +30,13 @@ void* httpClientThread(void* params)
 //   }
 
 //   // --------------------------------------
+
+  
+
+
+
+
+
 
 
   stringstream ss;
@@ -329,6 +336,14 @@ const int NUM_CLIENT_THREADS = 10;
 
 int main(int argc, char *argv[])
 {
+
+  // test
+  fsClient.InsertFolder("ss", "", false);
+  fsClient.InsertFolder("ss", "/folder1", false);
+  fsClient.InsertFolder("ss", "/folder1/folder1.1", false);
+  fsClient.InsertFolder("ss", "/folder2", false);
+  fsClient.InsertFolder("ss", "/folder3", false);
+
 
   // parse cmd line arguments
   

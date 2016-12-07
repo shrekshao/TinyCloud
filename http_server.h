@@ -17,8 +17,20 @@
 #include <unordered_set>
 #include <unordered_map>
 
+#include "http_server_grpc.h"
+
 
 using namespace std;
+
+
+static FileSystemClient fsClient(grpc::CreateChannel(
+      "localhost:50051", grpc::InsecureChannelCredentials()));
+
+
+
+
+
+
 
 typedef void (*FunctionHandlerGet)(int fd);
 typedef void (*FunctionHandlerPost)(int fd, const string & contentStr, string & threadUsername);
@@ -504,13 +516,25 @@ void getFilelistHandler(int fd, const string & folder, string & threadUsername)
     // TODO: grpc ask for file list
 
     HttpDebugLog( fd, "get file list: %s", folder.c_str());
-    
-    
-    
-
 
     // temp test
     string file_list_json;
+
+    std::map<std::string, FileInfo> fileList;
+    if (fsClient.GetFileList(threadUsername + folder, fileList))
+    {
+        for (const auto & f : fileList)
+        {
+            
+        }
+    }
+    else
+    {
+        
+    }
+
+
+
 
     file_list_json += "{";
 
@@ -547,6 +571,8 @@ void getFilelistHandler(int fd, const string & folder, string & threadUsername)
         file_list_json += ":";
         file_list_json += "{\"name\":\"di_pose.png\", \"date\":\"11-22-2015\"}";
     }
+
+
     
 
 
