@@ -33,13 +33,13 @@ Indexer indexer_service;
 // Logic and data behind the server's behavior.
 class StorageServiceImpl final : public Storage::Service {
     Status GetFileList(ServerContext* context, const FileListRequest* request, FileListReply* reply) override {
-        map<string, Node*> res;
+        map<string, Node> res;
         int success = indexer_service.display(request->foldername(), res);
         if (success == 1) {
-            for (map<string, Node*>::iterator it = res.begin(); it != res.end(); ++it) {
+            for (map<string, Node>::iterator it = res.begin(); it != res.end(); ++it) {
                 backend::FileInfo fi;
-                fi.set_name(it->second->name);
-                fi.set_is_file(it->second->is_file);
+                fi.set_name(it->second.name);
+                fi.set_is_file(it->second.is_file);
                 (*reply->mutable_filelist())[it->first] = fi;
             }
 
@@ -66,7 +66,7 @@ class StorageServiceImpl final : public Storage::Service {
             return Status::CANCELLED;
         }
     }
-    */
+*/
 };
 
 void RunServer() {
