@@ -28,7 +28,7 @@ using backend::Storage;
 Indexer indexer_service;
 
 // File service in-memory storage
-BigTabler bigtable_service;
+//BigTabler bigtable_service;
 
 // Logic and data behind the server's behavior.
 class StorageServiceImpl final : public Storage::Service {
@@ -57,7 +57,7 @@ class StorageServiceImpl final : public Storage::Service {
             return Status::CANCELLED;
         }
     }
-
+/*
     Status PutFile(ServerContext* context, const FileChunk* request, Empty* reply) override {
         int success = .put(request->filename(), request->data());
         if (success == 1) {
@@ -66,6 +66,7 @@ class StorageServiceImpl final : public Storage::Service {
             return Status::CANCELLED;
         }
     }
+    */
 };
 
 void RunServer() {
