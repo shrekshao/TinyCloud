@@ -1,0 +1,3 @@
+/home/tianli/upenn/cis505/TinyCloud/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/tianli/upenn/cis505/TinyCloud/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/home/tianli/upenn/cis505/TinyCloud/cmake-build-debug/CMakeFiles/TinyCloud.dir

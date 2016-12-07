@@ -39,15 +39,40 @@ package backend;
 // The storage service definition.
 service Storage {
   // Get file list
-  rpc GetFileList (GetFileListRequest) returns (GetFileListReply) {}
+  rpc GetFileList (FileListRequest) returns (FileListReply) {}
+  // Insert a directory
+  rpc InsertFileList (FileListRequest) returns (Empty) {}
+  // Upload a file
+  rpc PutFile (FileChunk) returns (Empty) {}
+  // Get a file
+  rpc GetFile (FileListRequest) returns (FileChunk) {}
+  // Delete a file
+  rpc DeleteFile (FileListRequest) returns (Empty) {}
 }
 
 // The request message containing the user/folder's name.
-message GetFileListRequest {
+message FileListRequest {
   string foldername = 1;
+  bool is_file = 2;
 }
 
 // The response message containing the files
-message GetFileListReply {
-  map<string, string> filelist= 1;
+message FileListReply {
+  map<string, FileInfo> filelist= 1;
+}
+
+message FileInfo {
+    string name = 1;
+    bool is_file = 2;
+}
+
+message FileChunk {
+    string filename = 1;
+    int64 length = 2;
+    string filetype = 3;
+    bytes data = 4;
+}
+
+message Empty {
+
 }

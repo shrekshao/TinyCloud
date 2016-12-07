@@ -21,13 +21,16 @@ namespace backend {
 
 namespace {
 
-const ::google::protobuf::Descriptor* GetFileListRequest_descriptor_ = NULL;
+const ::google::protobuf::Descriptor* FileListRequest_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
-  GetFileListRequest_reflection_ = NULL;
-const ::google::protobuf::Descriptor* GetFileListReply_descriptor_ = NULL;
+  FileListRequest_reflection_ = NULL;
+const ::google::protobuf::Descriptor* FileListReply_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
-  GetFileListReply_reflection_ = NULL;
-const ::google::protobuf::Descriptor* GetFileListReply_FilelistEntry_descriptor_ = NULL;
+  FileListReply_reflection_ = NULL;
+const ::google::protobuf::Descriptor* FileListReply_FilelistEntry_descriptor_ = NULL;
+const ::google::protobuf::Descriptor* FileInfo_descriptor_ = NULL;
+const ::google::protobuf::internal::GeneratedMessageReflection*
+  FileInfo_reflection_ = NULL;
 
 }  // namespace
 
@@ -39,37 +42,54 @@ void protobuf_AssignDesc_backend_2eproto() {
     ::google::protobuf::DescriptorPool::generated_pool()->FindFileByName(
       "backend.proto");
   GOOGLE_CHECK(file != NULL);
-  GetFileListRequest_descriptor_ = file->message_type(0);
-  static const int GetFileListRequest_offsets_[1] = {
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(GetFileListRequest, foldername_),
+  FileListRequest_descriptor_ = file->message_type(0);
+  static const int FileListRequest_offsets_[2] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(FileListRequest, foldername_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(FileListRequest, is_file_),
   };
-  GetFileListRequest_reflection_ =
+  FileListRequest_reflection_ =
     ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
-      GetFileListRequest_descriptor_,
-      GetFileListRequest::default_instance_,
-      GetFileListRequest_offsets_,
+      FileListRequest_descriptor_,
+      FileListRequest::default_instance_,
+      FileListRequest_offsets_,
       -1,
       -1,
       -1,
-      sizeof(GetFileListRequest),
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(GetFileListRequest, _internal_metadata_),
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(GetFileListRequest, _is_default_instance_));
-  GetFileListReply_descriptor_ = file->message_type(1);
-  static const int GetFileListReply_offsets_[1] = {
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(GetFileListReply, filelist_),
+      sizeof(FileListRequest),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(FileListRequest, _internal_metadata_),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(FileListRequest, _is_default_instance_));
+  FileListReply_descriptor_ = file->message_type(1);
+  static const int FileListReply_offsets_[1] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(FileListReply, filelist_),
   };
-  GetFileListReply_reflection_ =
+  FileListReply_reflection_ =
     ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
-      GetFileListReply_descriptor_,
-      GetFileListReply::default_instance_,
-      GetFileListReply_offsets_,
+      FileListReply_descriptor_,
+      FileListReply::default_instance_,
+      FileListReply_offsets_,
       -1,
       -1,
       -1,
-      sizeof(GetFileListReply),
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(GetFileListReply, _internal_metadata_),
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(GetFileListReply, _is_default_instance_));
-  GetFileListReply_FilelistEntry_descriptor_ = GetFileListReply_descriptor_->nested_type(0);
+      sizeof(FileListReply),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(FileListReply, _internal_metadata_),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(FileListReply, _is_default_instance_));
+  FileListReply_FilelistEntry_descriptor_ = FileListReply_descriptor_->nested_type(0);
+  FileInfo_descriptor_ = file->message_type(2);
+  static const int FileInfo_offsets_[2] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(FileInfo, name_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(FileInfo, is_file_),
+  };
+  FileInfo_reflection_ =
+    ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
+      FileInfo_descriptor_,
+      FileInfo::default_instance_,
+      FileInfo_offsets_,
+      -1,
+      -1,
+      -1,
+      sizeof(FileInfo),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(FileInfo, _internal_metadata_),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(FileInfo, _is_default_instance_));
 }
 
 namespace {
@@ -84,27 +104,31 @@ void protobuf_RegisterTypes(const ::std::string&) GOOGLE_ATTRIBUTE_COLD;
 void protobuf_RegisterTypes(const ::std::string&) {
   protobuf_AssignDescriptorsOnce();
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
-      GetFileListRequest_descriptor_, &GetFileListRequest::default_instance());
+      FileListRequest_descriptor_, &FileListRequest::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
-      GetFileListReply_descriptor_, &GetFileListReply::default_instance());
+      FileListReply_descriptor_, &FileListReply::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
-        GetFileListReply_FilelistEntry_descriptor_,
+        FileListReply_FilelistEntry_descriptor_,
         ::google::protobuf::internal::MapEntry<
             ::std::string,
-            ::std::string,
+            ::backend::FileInfo,
             ::google::protobuf::internal::WireFormatLite::TYPE_STRING,
-            ::google::protobuf::internal::WireFormatLite::TYPE_STRING,
+            ::google::protobuf::internal::WireFormatLite::TYPE_MESSAGE,
             0>::CreateDefaultInstance(
-                GetFileListReply_FilelistEntry_descriptor_));
+                FileListReply_FilelistEntry_descriptor_));
+  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
+      FileInfo_descriptor_, &FileInfo::default_instance());
 }
 
 }  // namespace
 
 void protobuf_ShutdownFile_backend_2eproto() {
-  delete GetFileListRequest::default_instance_;
-  delete GetFileListRequest_reflection_;
-  delete GetFileListReply::default_instance_;
-  delete GetFileListReply_reflection_;
+  delete FileListRequest::default_instance_;
+  delete FileListRequest_reflection_;
+  delete FileListReply::default_instance_;
+  delete FileListReply_reflection_;
+  delete FileInfo::default_instance_;
+  delete FileInfo_reflection_;
 }
 
 void protobuf_AddDesc_backend_2eproto() GOOGLE_ATTRIBUTE_COLD;
@@ -115,20 +139,27 @@ void protobuf_AddDesc_backend_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
   ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
-    "\n\rbackend.proto\022\007backend\"(\n\022GetFileListR"
-    "equest\022\022\n\nfoldername\030\001 \001(\t\"~\n\020GetFileLis"
-    "tReply\0229\n\010filelist\030\001 \003(\0132\'.backend.GetFi"
-    "leListReply.FilelistEntry\032/\n\rFilelistEnt"
-    "ry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\0012R\n\007St"
-    "orage\022G\n\013GetFileList\022\033.backend.GetFileLi"
-    "stRequest\032\031.backend.GetFileListReply\"\000B\006"
-    "\242\002\003HLWb\006proto3", 294);
+    "\n\rbackend.proto\022\007backend\"6\n\017FileListRequ"
+    "est\022\022\n\nfoldername\030\001 \001(\t\022\017\n\007is_file\030\002 \001(\010"
+    "\"\213\001\n\rFileListReply\0226\n\010filelist\030\001 \003(\0132$.b"
+    "ackend.FileListReply.FilelistEntry\032B\n\rFi"
+    "lelistEntry\022\013\n\003key\030\001 \001(\t\022 \n\005value\030\002 \001(\0132"
+    "\021.backend.FileInfo:\0028\001\")\n\010FileInfo\022\014\n\004na"
+    "me\030\001 \001(\t\022\017\n\007is_file\030\002 \001(\0102\330\001\n\007Storage\022A\n"
+    "\013GetFileList\022\030.backend.FileListRequest\032\026"
+    ".backend.FileListReply\"\000\022D\n\016InsertFileLi"
+    "st\022\030.backend.FileListRequest\032\026.backend.F"
+    "ileListReply\"\000\022D\n\016DeleteFileList\022\030.backe"
+    "nd.FileListRequest\032\026.backend.FileListRep"
+    "ly\"\000B\006\242\002\003HLWb\006proto3", 500);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "backend.proto", &protobuf_RegisterTypes);
-  GetFileListRequest::default_instance_ = new GetFileListRequest();
-  GetFileListReply::default_instance_ = new GetFileListReply();
-  GetFileListRequest::default_instance_->InitAsDefaultInstance();
-  GetFileListReply::default_instance_->InitAsDefaultInstance();
+  FileListRequest::default_instance_ = new FileListRequest();
+  FileListReply::default_instance_ = new FileListReply();
+  FileInfo::default_instance_ = new FileInfo();
+  FileListRequest::default_instance_->InitAsDefaultInstance();
+  FileListReply::default_instance_->InitAsDefaultInstance();
+  FileInfo::default_instance_->InitAsDefaultInstance();
   ::google::protobuf::internal::OnShutdown(&protobuf_ShutdownFile_backend_2eproto);
 }
 
@@ -142,80 +173,83 @@ struct StaticDescriptorInitializer_backend_2eproto {
 // ===================================================================
 
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
-const int GetFileListRequest::kFoldernameFieldNumber;
+const int FileListRequest::kFoldernameFieldNumber;
+const int FileListRequest::kIsFileFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
-GetFileListRequest::GetFileListRequest()
+FileListRequest::FileListRequest()
   : ::google::protobuf::Message(), _internal_metadata_(NULL) {
   SharedCtor();
-  // @@protoc_insertion_point(constructor:backend.GetFileListRequest)
+  // @@protoc_insertion_point(constructor:backend.FileListRequest)
 }
 
-void GetFileListRequest::InitAsDefaultInstance() {
+void FileListRequest::InitAsDefaultInstance() {
   _is_default_instance_ = true;
 }
 
-GetFileListRequest::GetFileListRequest(const GetFileListRequest& from)
+FileListRequest::FileListRequest(const FileListRequest& from)
   : ::google::protobuf::Message(),
     _internal_metadata_(NULL) {
   SharedCtor();
   MergeFrom(from);
-  // @@protoc_insertion_point(copy_constructor:backend.GetFileListRequest)
+  // @@protoc_insertion_point(copy_constructor:backend.FileListRequest)
 }
 
-void GetFileListRequest::SharedCtor() {
+void FileListRequest::SharedCtor() {
     _is_default_instance_ = false;
   ::google::protobuf::internal::GetEmptyString();
   _cached_size_ = 0;
   foldername_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  is_file_ = false;
 }
 
-GetFileListRequest::~GetFileListRequest() {
-  // @@protoc_insertion_point(destructor:backend.GetFileListRequest)
+FileListRequest::~FileListRequest() {
+  // @@protoc_insertion_point(destructor:backend.FileListRequest)
   SharedDtor();
 }
 
-void GetFileListRequest::SharedDtor() {
+void FileListRequest::SharedDtor() {
   foldername_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   if (this != default_instance_) {
   }
 }
 
-void GetFileListRequest::SetCachedSize(int size) const {
+void FileListRequest::SetCachedSize(int size) const {
   GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
   _cached_size_ = size;
   GOOGLE_SAFE_CONCURRENT_WRITES_END();
 }
-const ::google::protobuf::Descriptor* GetFileListRequest::descriptor() {
+const ::google::protobuf::Descriptor* FileListRequest::descriptor() {
   protobuf_AssignDescriptorsOnce();
-  return GetFileListRequest_descriptor_;
+  return FileListRequest_descriptor_;
 }
 
-const GetFileListRequest& GetFileListRequest::default_instance() {
+const FileListRequest& FileListRequest::default_instance() {
   if (default_instance_ == NULL) protobuf_AddDesc_backend_2eproto();
   return *default_instance_;
 }
 
-GetFileListRequest* GetFileListRequest::default_instance_ = NULL;
+FileListRequest* FileListRequest::default_instance_ = NULL;
 
-GetFileListRequest* GetFileListRequest::New(::google::protobuf::Arena* arena) const {
-  GetFileListRequest* n = new GetFileListRequest;
+FileListRequest* FileListRequest::New(::google::protobuf::Arena* arena) const {
+  FileListRequest* n = new FileListRequest;
   if (arena != NULL) {
     arena->Own(n);
   }
   return n;
 }
 
-void GetFileListRequest::Clear() {
-// @@protoc_insertion_point(message_clear_start:backend.GetFileListRequest)
+void FileListRequest::Clear() {
+// @@protoc_insertion_point(message_clear_start:backend.FileListRequest)
   foldername_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  is_file_ = false;
 }
 
-bool GetFileListRequest::MergePartialFromCodedStream(
+bool FileListRequest::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
 #define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
   ::google::protobuf::uint32 tag;
-  // @@protoc_insertion_point(parse_start:backend.GetFileListRequest)
+  // @@protoc_insertion_point(parse_start:backend.FileListRequest)
   for (;;) {
     ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
     tag = p.first;
@@ -229,7 +263,22 @@ bool GetFileListRequest::MergePartialFromCodedStream(
           DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
             this->foldername().data(), this->foldername().length(),
             ::google::protobuf::internal::WireFormatLite::PARSE,
-            "backend.GetFileListRequest.foldername"));
+            "backend.FileListRequest.foldername"));
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(16)) goto parse_is_file;
+        break;
+      }
+
+      // optional bool is_file = 2;
+      case 2: {
+        if (tag == 16) {
+         parse_is_file:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   bool, ::google::protobuf::internal::WireFormatLite::TYPE_BOOL>(
+                 input, &is_file_)));
+
         } else {
           goto handle_unusual;
         }
@@ -250,50 +299,60 @@ bool GetFileListRequest::MergePartialFromCodedStream(
     }
   }
 success:
-  // @@protoc_insertion_point(parse_success:backend.GetFileListRequest)
+  // @@protoc_insertion_point(parse_success:backend.FileListRequest)
   return true;
 failure:
-  // @@protoc_insertion_point(parse_failure:backend.GetFileListRequest)
+  // @@protoc_insertion_point(parse_failure:backend.FileListRequest)
   return false;
 #undef DO_
 }
 
-void GetFileListRequest::SerializeWithCachedSizes(
+void FileListRequest::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:backend.GetFileListRequest)
+  // @@protoc_insertion_point(serialize_start:backend.FileListRequest)
   // optional string foldername = 1;
   if (this->foldername().size() > 0) {
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->foldername().data(), this->foldername().length(),
       ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "backend.GetFileListRequest.foldername");
+      "backend.FileListRequest.foldername");
     ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
       1, this->foldername(), output);
   }
 
-  // @@protoc_insertion_point(serialize_end:backend.GetFileListRequest)
+  // optional bool is_file = 2;
+  if (this->is_file() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteBool(2, this->is_file(), output);
+  }
+
+  // @@protoc_insertion_point(serialize_end:backend.FileListRequest)
 }
 
-::google::protobuf::uint8* GetFileListRequest::InternalSerializeWithCachedSizesToArray(
+::google::protobuf::uint8* FileListRequest::InternalSerializeWithCachedSizesToArray(
     bool deterministic, ::google::protobuf::uint8* target) const {
-  // @@protoc_insertion_point(serialize_to_array_start:backend.GetFileListRequest)
+  // @@protoc_insertion_point(serialize_to_array_start:backend.FileListRequest)
   // optional string foldername = 1;
   if (this->foldername().size() > 0) {
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->foldername().data(), this->foldername().length(),
       ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "backend.GetFileListRequest.foldername");
+      "backend.FileListRequest.foldername");
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
         1, this->foldername(), target);
   }
 
-  // @@protoc_insertion_point(serialize_to_array_end:backend.GetFileListRequest)
+  // optional bool is_file = 2;
+  if (this->is_file() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteBoolToArray(2, this->is_file(), target);
+  }
+
+  // @@protoc_insertion_point(serialize_to_array_end:backend.FileListRequest)
   return target;
 }
 
-int GetFileListRequest::ByteSize() const {
-// @@protoc_insertion_point(message_byte_size_start:backend.GetFileListRequest)
+int FileListRequest::ByteSize() const {
+// @@protoc_insertion_point(message_byte_size_start:backend.FileListRequest)
   int total_size = 0;
 
   // optional string foldername = 1;
@@ -303,31 +362,36 @@ int GetFileListRequest::ByteSize() const {
         this->foldername());
   }
 
+  // optional bool is_file = 2;
+  if (this->is_file() != 0) {
+    total_size += 1 + 1;
+  }
+
   GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
   _cached_size_ = total_size;
   GOOGLE_SAFE_CONCURRENT_WRITES_END();
   return total_size;
 }
 
-void GetFileListRequest::MergeFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:backend.GetFileListRequest)
+void FileListRequest::MergeFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:backend.FileListRequest)
   if (GOOGLE_PREDICT_FALSE(&from == this)) {
     ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
   }
-  const GetFileListRequest* source = 
-      ::google::protobuf::internal::DynamicCastToGenerated<const GetFileListRequest>(
+  const FileListRequest* source = 
+      ::google::protobuf::internal::DynamicCastToGenerated<const FileListRequest>(
           &from);
   if (source == NULL) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:backend.GetFileListRequest)
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:backend.FileListRequest)
     ::google::protobuf::internal::ReflectionOps::Merge(from, this);
   } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:backend.GetFileListRequest)
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:backend.FileListRequest)
     MergeFrom(*source);
   }
 }
 
-void GetFileListRequest::MergeFrom(const GetFileListRequest& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:backend.GetFileListRequest)
+void FileListRequest::MergeFrom(const FileListRequest& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:backend.FileListRequest)
   if (GOOGLE_PREDICT_FALSE(&from == this)) {
     ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
   }
@@ -335,90 +399,108 @@ void GetFileListRequest::MergeFrom(const GetFileListRequest& from) {
 
     foldername_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.foldername_);
   }
+  if (from.is_file() != 0) {
+    set_is_file(from.is_file());
+  }
 }
 
-void GetFileListRequest::CopyFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:backend.GetFileListRequest)
+void FileListRequest::CopyFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:backend.FileListRequest)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
-void GetFileListRequest::CopyFrom(const GetFileListRequest& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:backend.GetFileListRequest)
+void FileListRequest::CopyFrom(const FileListRequest& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:backend.FileListRequest)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
-bool GetFileListRequest::IsInitialized() const {
+bool FileListRequest::IsInitialized() const {
 
   return true;
 }
 
-void GetFileListRequest::Swap(GetFileListRequest* other) {
+void FileListRequest::Swap(FileListRequest* other) {
   if (other == this) return;
   InternalSwap(other);
 }
-void GetFileListRequest::InternalSwap(GetFileListRequest* other) {
+void FileListRequest::InternalSwap(FileListRequest* other) {
   foldername_.Swap(&other->foldername_);
+  std::swap(is_file_, other->is_file_);
   _internal_metadata_.Swap(&other->_internal_metadata_);
   std::swap(_cached_size_, other->_cached_size_);
 }
 
-::google::protobuf::Metadata GetFileListRequest::GetMetadata() const {
+::google::protobuf::Metadata FileListRequest::GetMetadata() const {
   protobuf_AssignDescriptorsOnce();
   ::google::protobuf::Metadata metadata;
-  metadata.descriptor = GetFileListRequest_descriptor_;
-  metadata.reflection = GetFileListRequest_reflection_;
+  metadata.descriptor = FileListRequest_descriptor_;
+  metadata.reflection = FileListRequest_reflection_;
   return metadata;
 }
 
 #if PROTOBUF_INLINE_NOT_IN_HEADERS
-// GetFileListRequest
+// FileListRequest
 
 // optional string foldername = 1;
-void GetFileListRequest::clear_foldername() {
+void FileListRequest::clear_foldername() {
   foldername_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
- const ::std::string& GetFileListRequest::foldername() const {
-  // @@protoc_insertion_point(field_get:backend.GetFileListRequest.foldername)
+ const ::std::string& FileListRequest::foldername() const {
+  // @@protoc_insertion_point(field_get:backend.FileListRequest.foldername)
   return foldername_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
- void GetFileListRequest::set_foldername(const ::std::string& value) {
+ void FileListRequest::set_foldername(const ::std::string& value) {
   
   foldername_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:backend.GetFileListRequest.foldername)
+  // @@protoc_insertion_point(field_set:backend.FileListRequest.foldername)
 }
- void GetFileListRequest::set_foldername(const char* value) {
+ void FileListRequest::set_foldername(const char* value) {
   
   foldername_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:backend.GetFileListRequest.foldername)
+  // @@protoc_insertion_point(field_set_char:backend.FileListRequest.foldername)
 }
- void GetFileListRequest::set_foldername(const char* value, size_t size) {
+ void FileListRequest::set_foldername(const char* value, size_t size) {
   
   foldername_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:backend.GetFileListRequest.foldername)
+  // @@protoc_insertion_point(field_set_pointer:backend.FileListRequest.foldername)
 }
- ::std::string* GetFileListRequest::mutable_foldername() {
+ ::std::string* FileListRequest::mutable_foldername() {
   
-  // @@protoc_insertion_point(field_mutable:backend.GetFileListRequest.foldername)
+  // @@protoc_insertion_point(field_mutable:backend.FileListRequest.foldername)
   return foldername_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
- ::std::string* GetFileListRequest::release_foldername() {
-  // @@protoc_insertion_point(field_release:backend.GetFileListRequest.foldername)
+ ::std::string* FileListRequest::release_foldername() {
+  // @@protoc_insertion_point(field_release:backend.FileListRequest.foldername)
   
   return foldername_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
- void GetFileListRequest::set_allocated_foldername(::std::string* foldername) {
+ void FileListRequest::set_allocated_foldername(::std::string* foldername) {
   if (foldername != NULL) {
     
   } else {
     
   }
   foldername_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), foldername);
-  // @@protoc_insertion_point(field_set_allocated:backend.GetFileListRequest.foldername)
+  // @@protoc_insertion_point(field_set_allocated:backend.FileListRequest.foldername)
+}
+
+// optional bool is_file = 2;
+void FileListRequest::clear_is_file() {
+  is_file_ = false;
+}
+ bool FileListRequest::is_file() const {
+  // @@protoc_insertion_point(field_get:backend.FileListRequest.is_file)
+  return is_file_;
+}
+ void FileListRequest::set_is_file(bool value) {
+  
+  is_file_ = value;
+  // @@protoc_insertion_point(field_set:backend.FileListRequest.is_file)
 }
 
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
@@ -426,108 +508,104 @@ void GetFileListRequest::clear_foldername() {
 // ===================================================================
 
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
-const int GetFileListReply::kFilelistFieldNumber;
+const int FileListReply::kFilelistFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
-GetFileListReply::GetFileListReply()
+FileListReply::FileListReply()
   : ::google::protobuf::Message(), _internal_metadata_(NULL) {
   SharedCtor();
-  // @@protoc_insertion_point(constructor:backend.GetFileListReply)
+  // @@protoc_insertion_point(constructor:backend.FileListReply)
 }
 
-void GetFileListReply::InitAsDefaultInstance() {
+void FileListReply::InitAsDefaultInstance() {
   _is_default_instance_ = true;
 }
 
-GetFileListReply::GetFileListReply(const GetFileListReply& from)
+FileListReply::FileListReply(const FileListReply& from)
   : ::google::protobuf::Message(),
     _internal_metadata_(NULL) {
   SharedCtor();
   MergeFrom(from);
-  // @@protoc_insertion_point(copy_constructor:backend.GetFileListReply)
+  // @@protoc_insertion_point(copy_constructor:backend.FileListReply)
 }
 
-void GetFileListReply::SharedCtor() {
+void FileListReply::SharedCtor() {
     _is_default_instance_ = false;
   ::google::protobuf::internal::GetEmptyString();
   _cached_size_ = 0;
   filelist_.SetAssignDescriptorCallback(
       protobuf_AssignDescriptorsOnce);
   filelist_.SetEntryDescriptor(
-      &::backend::GetFileListReply_FilelistEntry_descriptor_);
+      &::backend::FileListReply_FilelistEntry_descriptor_);
 }
 
-GetFileListReply::~GetFileListReply() {
-  // @@protoc_insertion_point(destructor:backend.GetFileListReply)
+FileListReply::~FileListReply() {
+  // @@protoc_insertion_point(destructor:backend.FileListReply)
   SharedDtor();
 }
 
-void GetFileListReply::SharedDtor() {
+void FileListReply::SharedDtor() {
   if (this != default_instance_) {
   }
 }
 
-void GetFileListReply::SetCachedSize(int size) const {
+void FileListReply::SetCachedSize(int size) const {
   GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
   _cached_size_ = size;
   GOOGLE_SAFE_CONCURRENT_WRITES_END();
 }
-const ::google::protobuf::Descriptor* GetFileListReply::descriptor() {
+const ::google::protobuf::Descriptor* FileListReply::descriptor() {
   protobuf_AssignDescriptorsOnce();
-  return GetFileListReply_descriptor_;
+  return FileListReply_descriptor_;
 }
 
-const GetFileListReply& GetFileListReply::default_instance() {
+const FileListReply& FileListReply::default_instance() {
   if (default_instance_ == NULL) protobuf_AddDesc_backend_2eproto();
   return *default_instance_;
 }
 
-GetFileListReply* GetFileListReply::default_instance_ = NULL;
+FileListReply* FileListReply::default_instance_ = NULL;
 
-GetFileListReply* GetFileListReply::New(::google::protobuf::Arena* arena) const {
-  GetFileListReply* n = new GetFileListReply;
+FileListReply* FileListReply::New(::google::protobuf::Arena* arena) const {
+  FileListReply* n = new FileListReply;
   if (arena != NULL) {
     arena->Own(n);
   }
   return n;
 }
 
-void GetFileListReply::Clear() {
-// @@protoc_insertion_point(message_clear_start:backend.GetFileListReply)
+void FileListReply::Clear() {
+// @@protoc_insertion_point(message_clear_start:backend.FileListReply)
   filelist_.Clear();
 }
 
-bool GetFileListReply::MergePartialFromCodedStream(
+bool FileListReply::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
 #define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
   ::google::protobuf::uint32 tag;
-  // @@protoc_insertion_point(parse_start:backend.GetFileListReply)
+  // @@protoc_insertion_point(parse_start:backend.FileListReply)
   for (;;) {
     ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // map<string, string> filelist = 1;
+      // map<string, .backend.FileInfo> filelist = 1;
       case 1: {
         if (tag == 10) {
           DO_(input->IncrementRecursionDepth());
          parse_loop_filelist:
-          GetFileListReply_FilelistEntry::Parser< ::google::protobuf::internal::MapField<
-              ::std::string, ::std::string,
+          FileListReply_FilelistEntry::Parser< ::google::protobuf::internal::MapField<
+              ::std::string, ::backend::FileInfo,
               ::google::protobuf::internal::WireFormatLite::TYPE_STRING,
-              ::google::protobuf::internal::WireFormatLite::TYPE_STRING,
+              ::google::protobuf::internal::WireFormatLite::TYPE_MESSAGE,
               0 >,
-            ::google::protobuf::Map< ::std::string, ::std::string > > parser(&filelist_);
+            ::google::protobuf::Map< ::std::string, ::backend::FileInfo > > parser(&filelist_);
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
               input, &parser));
           DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
             parser.key().data(), parser.key().length(),
             ::google::protobuf::internal::WireFormatLite::PARSE,
-            "backend.GetFileListReply.FilelistEntry.key"));
-          DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-            parser.value().data(), parser.value().length(),
-            ::google::protobuf::internal::WireFormatLite::PARSE,
-            "backend.GetFileListReply.FilelistEntry.value"));
+            "backend.FileListReply.FilelistEntry.key"));
         } else {
           goto handle_unusual;
         }
@@ -550,20 +628,20 @@ bool GetFileListReply::MergePartialFromCodedStream(
     }
   }
 success:
-  // @@protoc_insertion_point(parse_success:backend.GetFileListReply)
+  // @@protoc_insertion_point(parse_success:backend.FileListReply)
   return true;
 failure:
-  // @@protoc_insertion_point(parse_failure:backend.GetFileListReply)
+  // @@protoc_insertion_point(parse_failure:backend.FileListReply)
   return false;
 #undef DO_
 }
 
-void GetFileListReply::SerializeWithCachedSizes(
+void FileListReply::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:backend.GetFileListReply)
-  // map<string, string> filelist = 1;
+  // @@protoc_insertion_point(serialize_start:backend.FileListReply)
+  // map<string, .backend.FileInfo> filelist = 1;
   if (!this->filelist().empty()) {
-    typedef ::google::protobuf::Map< ::std::string, ::std::string >::const_pointer
+    typedef ::google::protobuf::Map< ::std::string, ::backend::FileInfo >::const_pointer
         ConstPtr;
     typedef ConstPtr SortItem;
     typedef ::google::protobuf::internal::CompareByDerefFirst<SortItem> Less;
@@ -572,11 +650,7 @@ void GetFileListReply::SerializeWithCachedSizes(
         ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
           p->first.data(), p->first.length(),
           ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-          "backend.GetFileListReply.FilelistEntry.key");
-        ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-          p->second.data(), p->second.length(),
-          ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-          "backend.GetFileListReply.FilelistEntry.value");
+          "backend.FileListReply.FilelistEntry.key");
       }
     };
 
@@ -584,15 +658,15 @@ void GetFileListReply::SerializeWithCachedSizes(
         this->filelist().size() > 1) {
       ::google::protobuf::scoped_array<SortItem> items(
           new SortItem[this->filelist().size()]);
-      typedef ::google::protobuf::Map< ::std::string, ::std::string >::size_type size_type;
+      typedef ::google::protobuf::Map< ::std::string, ::backend::FileInfo >::size_type size_type;
       size_type n = 0;
-      for (::google::protobuf::Map< ::std::string, ::std::string >::const_iterator
+      for (::google::protobuf::Map< ::std::string, ::backend::FileInfo >::const_iterator
           it = this->filelist().begin();
           it != this->filelist().end(); ++it, ++n) {
         items[n] = SortItem(&*it);
       }
       ::std::sort(&items[0], &items[n], Less());
-      ::google::protobuf::scoped_ptr<GetFileListReply_FilelistEntry> entry;
+      ::google::protobuf::scoped_ptr<FileListReply_FilelistEntry> entry;
       for (size_type i = 0; i < n; i++) {
         entry.reset(filelist_.NewEntryWrapper(
             items[i]->first, items[i]->second));
@@ -601,8 +675,8 @@ void GetFileListReply::SerializeWithCachedSizes(
         Utf8Check::Check(items[i]);
       }
     } else {
-      ::google::protobuf::scoped_ptr<GetFileListReply_FilelistEntry> entry;
-      for (::google::protobuf::Map< ::std::string, ::std::string >::const_iterator
+      ::google::protobuf::scoped_ptr<FileListReply_FilelistEntry> entry;
+      for (::google::protobuf::Map< ::std::string, ::backend::FileInfo >::const_iterator
           it = this->filelist().begin();
           it != this->filelist().end(); ++it) {
         entry.reset(filelist_.NewEntryWrapper(
@@ -614,15 +688,15 @@ void GetFileListReply::SerializeWithCachedSizes(
     }
   }
 
-  // @@protoc_insertion_point(serialize_end:backend.GetFileListReply)
+  // @@protoc_insertion_point(serialize_end:backend.FileListReply)
 }
 
-::google::protobuf::uint8* GetFileListReply::InternalSerializeWithCachedSizesToArray(
+::google::protobuf::uint8* FileListReply::InternalSerializeWithCachedSizesToArray(
     bool deterministic, ::google::protobuf::uint8* target) const {
-  // @@protoc_insertion_point(serialize_to_array_start:backend.GetFileListReply)
-  // map<string, string> filelist = 1;
+  // @@protoc_insertion_point(serialize_to_array_start:backend.FileListReply)
+  // map<string, .backend.FileInfo> filelist = 1;
   if (!this->filelist().empty()) {
-    typedef ::google::protobuf::Map< ::std::string, ::std::string >::const_pointer
+    typedef ::google::protobuf::Map< ::std::string, ::backend::FileInfo >::const_pointer
         ConstPtr;
     typedef ConstPtr SortItem;
     typedef ::google::protobuf::internal::CompareByDerefFirst<SortItem> Less;
@@ -631,11 +705,7 @@ void GetFileListReply::SerializeWithCachedSizes(
         ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
           p->first.data(), p->first.length(),
           ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-          "backend.GetFileListReply.FilelistEntry.key");
-        ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-          p->second.data(), p->second.length(),
-          ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-          "backend.GetFileListReply.FilelistEntry.value");
+          "backend.FileListReply.FilelistEntry.key");
       }
     };
 
@@ -643,15 +713,15 @@ void GetFileListReply::SerializeWithCachedSizes(
         this->filelist().size() > 1) {
       ::google::protobuf::scoped_array<SortItem> items(
           new SortItem[this->filelist().size()]);
-      typedef ::google::protobuf::Map< ::std::string, ::std::string >::size_type size_type;
+      typedef ::google::protobuf::Map< ::std::string, ::backend::FileInfo >::size_type size_type;
       size_type n = 0;
-      for (::google::protobuf::Map< ::std::string, ::std::string >::const_iterator
+      for (::google::protobuf::Map< ::std::string, ::backend::FileInfo >::const_iterator
           it = this->filelist().begin();
           it != this->filelist().end(); ++it, ++n) {
         items[n] = SortItem(&*it);
       }
       ::std::sort(&items[0], &items[n], Less());
-      ::google::protobuf::scoped_ptr<GetFileListReply_FilelistEntry> entry;
+      ::google::protobuf::scoped_ptr<FileListReply_FilelistEntry> entry;
       for (size_type i = 0; i < n; i++) {
         entry.reset(filelist_.NewEntryWrapper(
             items[i]->first, items[i]->second));
@@ -662,8 +732,8 @@ void GetFileListReply::SerializeWithCachedSizes(
         Utf8Check::Check(items[i]);
       }
     } else {
-      ::google::protobuf::scoped_ptr<GetFileListReply_FilelistEntry> entry;
-      for (::google::protobuf::Map< ::std::string, ::std::string >::const_iterator
+      ::google::protobuf::scoped_ptr<FileListReply_FilelistEntry> entry;
+      for (::google::protobuf::Map< ::std::string, ::backend::FileInfo >::const_iterator
           it = this->filelist().begin();
           it != this->filelist().end(); ++it) {
         entry.reset(filelist_.NewEntryWrapper(
@@ -677,19 +747,19 @@ void GetFileListReply::SerializeWithCachedSizes(
     }
   }
 
-  // @@protoc_insertion_point(serialize_to_array_end:backend.GetFileListReply)
+  // @@protoc_insertion_point(serialize_to_array_end:backend.FileListReply)
   return target;
 }
 
-int GetFileListReply::ByteSize() const {
-// @@protoc_insertion_point(message_byte_size_start:backend.GetFileListReply)
+int FileListReply::ByteSize() const {
+// @@protoc_insertion_point(message_byte_size_start:backend.FileListReply)
   int total_size = 0;
 
-  // map<string, string> filelist = 1;
+  // map<string, .backend.FileInfo> filelist = 1;
   total_size += 1 * this->filelist_size();
   {
-    ::google::protobuf::scoped_ptr<GetFileListReply_FilelistEntry> entry;
-    for (::google::protobuf::Map< ::std::string, ::std::string >::const_iterator
+    ::google::protobuf::scoped_ptr<FileListReply_FilelistEntry> entry;
+    for (::google::protobuf::Map< ::std::string, ::backend::FileInfo >::const_iterator
         it = this->filelist().begin();
         it != this->filelist().end(); ++it) {
       entry.reset(filelist_.NewEntryWrapper(it->first, it->second));
@@ -704,87 +774,422 @@ int GetFileListReply::ByteSize() const {
   return total_size;
 }
 
-void GetFileListReply::MergeFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:backend.GetFileListReply)
+void FileListReply::MergeFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:backend.FileListReply)
   if (GOOGLE_PREDICT_FALSE(&from == this)) {
     ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
   }
-  const GetFileListReply* source = 
-      ::google::protobuf::internal::DynamicCastToGenerated<const GetFileListReply>(
+  const FileListReply* source = 
+      ::google::protobuf::internal::DynamicCastToGenerated<const FileListReply>(
           &from);
   if (source == NULL) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:backend.GetFileListReply)
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:backend.FileListReply)
     ::google::protobuf::internal::ReflectionOps::Merge(from, this);
   } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:backend.GetFileListReply)
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:backend.FileListReply)
     MergeFrom(*source);
   }
 }
 
-void GetFileListReply::MergeFrom(const GetFileListReply& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:backend.GetFileListReply)
+void FileListReply::MergeFrom(const FileListReply& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:backend.FileListReply)
   if (GOOGLE_PREDICT_FALSE(&from == this)) {
     ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
   }
   filelist_.MergeFrom(from.filelist_);
 }
 
-void GetFileListReply::CopyFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:backend.GetFileListReply)
+void FileListReply::CopyFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:backend.FileListReply)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
-void GetFileListReply::CopyFrom(const GetFileListReply& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:backend.GetFileListReply)
+void FileListReply::CopyFrom(const FileListReply& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:backend.FileListReply)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
-bool GetFileListReply::IsInitialized() const {
+bool FileListReply::IsInitialized() const {
 
   return true;
 }
 
-void GetFileListReply::Swap(GetFileListReply* other) {
+void FileListReply::Swap(FileListReply* other) {
   if (other == this) return;
   InternalSwap(other);
 }
-void GetFileListReply::InternalSwap(GetFileListReply* other) {
+void FileListReply::InternalSwap(FileListReply* other) {
   filelist_.Swap(&other->filelist_);
   _internal_metadata_.Swap(&other->_internal_metadata_);
   std::swap(_cached_size_, other->_cached_size_);
 }
 
-::google::protobuf::Metadata GetFileListReply::GetMetadata() const {
+::google::protobuf::Metadata FileListReply::GetMetadata() const {
   protobuf_AssignDescriptorsOnce();
   ::google::protobuf::Metadata metadata;
-  metadata.descriptor = GetFileListReply_descriptor_;
-  metadata.reflection = GetFileListReply_reflection_;
+  metadata.descriptor = FileListReply_descriptor_;
+  metadata.reflection = FileListReply_reflection_;
   return metadata;
 }
 
 #if PROTOBUF_INLINE_NOT_IN_HEADERS
-// GetFileListReply
+// FileListReply
 
-// map<string, string> filelist = 1;
-int GetFileListReply::filelist_size() const {
+// map<string, .backend.FileInfo> filelist = 1;
+int FileListReply::filelist_size() const {
   return filelist_.size();
 }
-void GetFileListReply::clear_filelist() {
+void FileListReply::clear_filelist() {
   filelist_.Clear();
 }
- const ::google::protobuf::Map< ::std::string, ::std::string >&
-GetFileListReply::filelist() const {
-  // @@protoc_insertion_point(field_map:backend.GetFileListReply.filelist)
+ const ::google::protobuf::Map< ::std::string, ::backend::FileInfo >&
+FileListReply::filelist() const {
+  // @@protoc_insertion_point(field_map:backend.FileListReply.filelist)
   return filelist_.GetMap();
 }
- ::google::protobuf::Map< ::std::string, ::std::string >*
-GetFileListReply::mutable_filelist() {
-  // @@protoc_insertion_point(field_mutable_map:backend.GetFileListReply.filelist)
+ ::google::protobuf::Map< ::std::string, ::backend::FileInfo >*
+FileListReply::mutable_filelist() {
+  // @@protoc_insertion_point(field_mutable_map:backend.FileListReply.filelist)
   return filelist_.MutableMap();
+}
+
+#endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
+
+// ===================================================================
+
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+const int FileInfo::kNameFieldNumber;
+const int FileInfo::kIsFileFieldNumber;
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+
+FileInfo::FileInfo()
+  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:backend.FileInfo)
+}
+
+void FileInfo::InitAsDefaultInstance() {
+  _is_default_instance_ = true;
+}
+
+FileInfo::FileInfo(const FileInfo& from)
+  : ::google::protobuf::Message(),
+    _internal_metadata_(NULL) {
+  SharedCtor();
+  MergeFrom(from);
+  // @@protoc_insertion_point(copy_constructor:backend.FileInfo)
+}
+
+void FileInfo::SharedCtor() {
+    _is_default_instance_ = false;
+  ::google::protobuf::internal::GetEmptyString();
+  _cached_size_ = 0;
+  name_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  is_file_ = false;
+}
+
+FileInfo::~FileInfo() {
+  // @@protoc_insertion_point(destructor:backend.FileInfo)
+  SharedDtor();
+}
+
+void FileInfo::SharedDtor() {
+  name_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  if (this != default_instance_) {
+  }
+}
+
+void FileInfo::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* FileInfo::descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return FileInfo_descriptor_;
+}
+
+const FileInfo& FileInfo::default_instance() {
+  if (default_instance_ == NULL) protobuf_AddDesc_backend_2eproto();
+  return *default_instance_;
+}
+
+FileInfo* FileInfo::default_instance_ = NULL;
+
+FileInfo* FileInfo::New(::google::protobuf::Arena* arena) const {
+  FileInfo* n = new FileInfo;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
+
+void FileInfo::Clear() {
+// @@protoc_insertion_point(message_clear_start:backend.FileInfo)
+  name_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  is_file_ = false;
+}
+
+bool FileInfo::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:backend.FileInfo)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // optional string name = 1;
+      case 1: {
+        if (tag == 10) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
+                input, this->mutable_name()));
+          DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+            this->name().data(), this->name().length(),
+            ::google::protobuf::internal::WireFormatLite::PARSE,
+            "backend.FileInfo.name"));
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(16)) goto parse_is_file;
+        break;
+      }
+
+      // optional bool is_file = 2;
+      case 2: {
+        if (tag == 16) {
+         parse_is_file:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   bool, ::google::protobuf::internal::WireFormatLite::TYPE_BOOL>(
+                 input, &is_file_)));
+
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectAtEnd()) goto success;
+        break;
+      }
+
+      default: {
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          goto success;
+        }
+        DO_(::google::protobuf::internal::WireFormatLite::SkipField(input, tag));
+        break;
+      }
+    }
+  }
+success:
+  // @@protoc_insertion_point(parse_success:backend.FileInfo)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:backend.FileInfo)
+  return false;
+#undef DO_
+}
+
+void FileInfo::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:backend.FileInfo)
+  // optional string name = 1;
+  if (this->name().size() > 0) {
+    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+      this->name().data(), this->name().length(),
+      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
+      "backend.FileInfo.name");
+    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
+      1, this->name(), output);
+  }
+
+  // optional bool is_file = 2;
+  if (this->is_file() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteBool(2, this->is_file(), output);
+  }
+
+  // @@protoc_insertion_point(serialize_end:backend.FileInfo)
+}
+
+::google::protobuf::uint8* FileInfo::InternalSerializeWithCachedSizesToArray(
+    bool deterministic, ::google::protobuf::uint8* target) const {
+  // @@protoc_insertion_point(serialize_to_array_start:backend.FileInfo)
+  // optional string name = 1;
+  if (this->name().size() > 0) {
+    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+      this->name().data(), this->name().length(),
+      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
+      "backend.FileInfo.name");
+    target =
+      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
+        1, this->name(), target);
+  }
+
+  // optional bool is_file = 2;
+  if (this->is_file() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteBoolToArray(2, this->is_file(), target);
+  }
+
+  // @@protoc_insertion_point(serialize_to_array_end:backend.FileInfo)
+  return target;
+}
+
+int FileInfo::ByteSize() const {
+// @@protoc_insertion_point(message_byte_size_start:backend.FileInfo)
+  int total_size = 0;
+
+  // optional string name = 1;
+  if (this->name().size() > 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::StringSize(
+        this->name());
+  }
+
+  // optional bool is_file = 2;
+  if (this->is_file() != 0) {
+    total_size += 1 + 1;
+  }
+
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = total_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void FileInfo::MergeFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:backend.FileInfo)
+  if (GOOGLE_PREDICT_FALSE(&from == this)) {
+    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
+  }
+  const FileInfo* source = 
+      ::google::protobuf::internal::DynamicCastToGenerated<const FileInfo>(
+          &from);
+  if (source == NULL) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:backend.FileInfo)
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:backend.FileInfo)
+    MergeFrom(*source);
+  }
+}
+
+void FileInfo::MergeFrom(const FileInfo& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:backend.FileInfo)
+  if (GOOGLE_PREDICT_FALSE(&from == this)) {
+    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
+  }
+  if (from.name().size() > 0) {
+
+    name_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.name_);
+  }
+  if (from.is_file() != 0) {
+    set_is_file(from.is_file());
+  }
+}
+
+void FileInfo::CopyFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:backend.FileInfo)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void FileInfo::CopyFrom(const FileInfo& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:backend.FileInfo)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool FileInfo::IsInitialized() const {
+
+  return true;
+}
+
+void FileInfo::Swap(FileInfo* other) {
+  if (other == this) return;
+  InternalSwap(other);
+}
+void FileInfo::InternalSwap(FileInfo* other) {
+  name_.Swap(&other->name_);
+  std::swap(is_file_, other->is_file_);
+  _internal_metadata_.Swap(&other->_internal_metadata_);
+  std::swap(_cached_size_, other->_cached_size_);
+}
+
+::google::protobuf::Metadata FileInfo::GetMetadata() const {
+  protobuf_AssignDescriptorsOnce();
+  ::google::protobuf::Metadata metadata;
+  metadata.descriptor = FileInfo_descriptor_;
+  metadata.reflection = FileInfo_reflection_;
+  return metadata;
+}
+
+#if PROTOBUF_INLINE_NOT_IN_HEADERS
+// FileInfo
+
+// optional string name = 1;
+void FileInfo::clear_name() {
+  name_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ const ::std::string& FileInfo::name() const {
+  // @@protoc_insertion_point(field_get:backend.FileInfo.name)
+  return name_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void FileInfo::set_name(const ::std::string& value) {
+  
+  name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:backend.FileInfo.name)
+}
+ void FileInfo::set_name(const char* value) {
+  
+  name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:backend.FileInfo.name)
+}
+ void FileInfo::set_name(const char* value, size_t size) {
+  
+  name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:backend.FileInfo.name)
+}
+ ::std::string* FileInfo::mutable_name() {
+  
+  // @@protoc_insertion_point(field_mutable:backend.FileInfo.name)
+  return name_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ ::std::string* FileInfo::release_name() {
+  // @@protoc_insertion_point(field_release:backend.FileInfo.name)
+  
+  return name_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void FileInfo::set_allocated_name(::std::string* name) {
+  if (name != NULL) {
+    
+  } else {
+    
+  }
+  name_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), name);
+  // @@protoc_insertion_point(field_set_allocated:backend.FileInfo.name)
+}
+
+// optional bool is_file = 2;
+void FileInfo::clear_is_file() {
+  is_file_ = false;
+}
+ bool FileInfo::is_file() const {
+  // @@protoc_insertion_point(field_get:backend.FileInfo.is_file)
+  return is_file_;
+}
+ void FileInfo::set_is_file(bool value) {
+  
+  is_file_ = value;
+  // @@protoc_insertion_point(field_set:backend.FileInfo.is_file)
 }
 
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
