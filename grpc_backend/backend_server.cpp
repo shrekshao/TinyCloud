@@ -53,15 +53,6 @@ class StorageServiceImpl final : public Storage::Service {
         }
 
     }
-
-    Status DeleteFileList(ServerContext* context, const FileListRequest* request, FileListReply* reply) override {
-        int success = indexer_service.delet(request->foldername());
-        if (success == 1) {
-            return Status::OK;
-        } else {
-            return Status::CANCELLED;
-        }
-    }
 };
 
 void RunServer() {
