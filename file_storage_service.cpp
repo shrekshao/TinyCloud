@@ -14,6 +14,12 @@
 #include <thread>
 #include <thread>
 #include <chrono>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <sys/file.h>
+#include <fcntl.h>
+#include <errno.h>
+#include <unistd.h>
 
 // define const
 const int MAX_BUFFER_SIZE = 1000000;
@@ -26,6 +32,8 @@ typedef uint8_t byte;
 // file class
 class File {
 public:
+    string username;
+    string filename;
     unsigned int buffer_start;
     unsigned int content_length;
     string content_type;
@@ -40,15 +48,21 @@ public:
     }
 };
 
+/*
+ * global shared accros threads
+ */
 vector<File*> deleted_files;
+// define multilevel map. map within a map.
+// this is the in memory big table
+map<string, map<string, File*> > big_table;
+// we need to know what ss_file saved what
+// file
+map<string, vector<File*> > ss_table_mapping;
 
 class Storage_System
 {
 private:
     byte ss_buffer[MAX_BUFFER_SIZE];
-    // define multilevel map. map within a map.
-    // this is the in memory big table
-    map<string, map<string, File*> > big_table;
     // the current pointer
     int curr_pointer;
     // the server index
@@ -100,18 +114,36 @@ public:
 
             // push into the disk
             string filename = server_index + to_string(file_index);
-            ofstream outfile(filename);
-            outfile.write((char *)&content[0], curr_buffer_size);
+            //ofstream outfile(filename);
+            //outfile.write((char *)&content[0], curr_buffer_size);
+
+            // lock the file and push into the disk
+            int fd = open(filename.c_str(), O_RDWR | O_CREAT, 0666);
+            int rc = flock(fd, LOCK_EX | LOCK_NB); // grab exclusive lock, fail if can't obtain.
+            if (rc)
+            {
+                cout<<"Write cannot be performed! System Error!\n"<<endl;
+            }
+            else
+            {
+                int ret_out = write (fd, &content, (ssize_t) curr_buffer_size);
+            }
+            flock(fd,LOCK_UN);
+            close(fd);
 
             // put the file metainfo in big table
             File *file = new File();
             file->buffer_start = 0;
             file->content_length = curr_buffer_size;
+            file->username = username;
+            file->filename = file_name;
             file->content_type = extension;
             file->is_flushed = true;
             file->disk_filename = filename;
             file->is_deleted = false;
             big_table[username][file_name] = file;
+            // we need to mark this file with this ss_table name
+            ss_table_mapping[filename].push_back(file);
 
         } else if (curr_pointer + curr_buffer_size >= MAX_BUFFER_SIZE)
         {
@@ -122,18 +154,36 @@ public:
 
             // write the current buffer to the disk first
             string filename = server_index + to_string(file_index);
-            ofstream outfile(filename);
-            outfile.write((char *)&ss_buffer[0], strlen((char*)ss_buffer));
+            //ofstream outfile(filename);
+            //outfile.write((char *)&ss_buffer[0], strlen((char*)ss_buffer));
             curr_pointer = 0;
+
+            // lock the file and push into the disk
+            int fd = open(filename.c_str(), O_RDWR | O_CREAT, 0666);
+            int rc = flock(fd, LOCK_EX | LOCK_NB); // grab exclusive lock, fail if can't obtain.
+            if (rc)
+            {
+                cout<<"Write cannot be performed! System Error!\n"<<endl;
+            }
+            else
+            {
+                long ret_out = write (fd, &ss_buffer, (ssize_t) strlen((char*)ss_buffer));
+            }
+            flock(fd,LOCK_UN);
+            close(fd);
 
             // put the file metainfo in big table
             File *file = new File();
             file->buffer_start = 0;
             file->content_length = curr_buffer_size;
+            file->username = username;
+            file->filename = file_name;
             file->content_type = extension;
             file->is_flushed = false;
             file->is_deleted = false;
             big_table[username][file_name] = file;
+            // we need to mark this file with this ss_table name
+            ss_table_mapping[filename].push_back(file);
 
             // write the the new file to the buffer
             for (int i = 0; i < curr_buffer_size; i++)
@@ -149,10 +199,19 @@ public:
             File *file = new File();
             file->buffer_start = curr_pointer;
             file->content_length = curr_buffer_size;
+            file->username = username;
+            file->filename = file_name;
             file->content_type = extension;
             file->is_flushed = false;
             file->is_deleted = false;
+            // we need to assume that the buffer might be
+            // pushed into the disk, and we need to mark
+            // the file using this disk ss_table filename
+            string filename = server_index + to_string(file_index);
+            file->disk_filename = filename;
             big_table[username][file_name] = file;
+            // we need to mark this file with this ss_table name
+            ss_table_mapping[filename].push_back(file);
 
             // write the the new file to the buffer
             for (int i = 0; i < curr_buffer_size; i++) {
@@ -184,14 +243,21 @@ public:
         {
             // read from the disk file
             string filename = big_table[username][file_name]->disk_filename;
-            FILE *f = fopen(filename.c_str(), "rb");
-            fseek(f, 0, SEEK_END);
-            long fsize = ftell(f);
-            fseek(f, 0, SEEK_SET);
-            char *temp_ss_buffer = (char *)malloc(fsize + 1);
-            fread(temp_ss_buffer, fsize, 1, f);
-            fclose(f);
-            temp_ss_buffer[fsize] = 0;
+            char temp_ss_buffer[MAX_BUFFER_SIZE];
+            // read the file and lock the file from the disk
+            int fd = open(filename.c_str(), O_RDONLY);
+            int rc = flock(fd, LOCK_EX | LOCK_NB); // grab exclusive lock, fail if can't obtain.
+            if (rc)
+            {
+                cout<<"Write cannot be performed! System Error!\n"<<endl;
+            }
+            else
+            {
+                long ret_out = read (fd, &temp_ss_buffer, (ssize_t) MAX_BUFFER_SIZE);
+            }
+            flock(fd,LOCK_UN);
+            close(fd);
+
 
             int index = 0;
             for(int i = file->buffer_start; i < file->buffer_start + file->content_length; i++) {
@@ -228,31 +294,56 @@ void garbage_collector() {
         {
             // delete from a file
             // read from the disk file
+
             string filename = ff->disk_filename;
-            FILE *f = fopen(filename.c_str(), "rb");
-            fseek(f, 0, SEEK_END);
-            long fsize = ftell(f);
-            fseek(f, 0, SEEK_SET);
-            char *temp_ss_buffer = (char *)malloc(fsize + 1);
-            fread(temp_ss_buffer, fsize, 1, f);
-            fclose(f);
-            temp_ss_buffer[fsize] = 0;
 
-            // update all pointers of all the other
-            // files saved in this file
+            // read the file and lock the file from the disk
+            int fd = open(filename.c_str(), O_RDONLY);
+            int rc = flock(fd, LOCK_EX | LOCK_NB); // grab exclusive lock, fail if can't obtain.
+            if (rc)
+            {
+                cout<<"Write cannot be performed! System Error!\n"<<endl;
+            }
+            else
+            {
+                struct stat buf;
+                fstat(fd, &buf);
+                long fsize = buf.st_size;
+                char temp_ss_buffer[fsize];
+
+                // updated the saved file
+                for (int i = ff->buffer_start + ff->content_length; i < fsize; i++) {
+                    char temp = temp_ss_buffer[i];
+                    temp_ss_buffer[i-ff->content_length] = temp;
+                }
+                // modify the actual length of the byte in the file
+                temp_ss_buffer[fsize-ff->content_length] = 0;
+
+                // update all other files saved in this ss_table
+                for (File *f_update : ss_table_mapping[filename]) {
+                    if (f_update->buffer_start > ff->buffer_start) {
+                        f_update->buffer_start -= ff->content_length;
+                    }
+                }
+                // update new length of the file
+                long ret_out = write (fd, &temp_ss_buffer, (ssize_t) fsize-ff->content_length);
+            }
+            // release the lock
+            flock(fd,LOCK_UN);
+            // close the fd
+            close(fd);
+            // delete from the deleted map
+            big_table[ff->username].erase(ff->filename);
+            // delete from the ss table file map
+            int obj_index = 0;
+            for( int i = 0 ; i < ss_table_mapping[filename].size(); i++)
+                if(ss_table_mapping[filename][i]->filename.compare(ff->filename) == 0)
+                    obj_index = i;
+            ss_table_mapping[filename].erase(ss_table_mapping[filename].begin() + obj_index);
+            // delete the referenced object at the end
+            delete ff;
 
         }
-        else
-        {
-            // delete in memory
-
-        }
-        // we need to delete from the map
-
-        // delete from the deleted map
-
-        // delete the referenced object at the end
-
     }
 }
 
