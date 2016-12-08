@@ -10,6 +10,8 @@
 #include <string>
 #include <sys/stat.h>
 #include <map>
+#include <boost/thread.hpp>
+#include <boost/filesystem.hpp>
 
 using namespace std;
 
@@ -29,11 +31,10 @@ public:
 
 class Indexer {
     Node root;
-    vector<string> directory_parser (string directory);
-    Node* node_finder(string target_name, Node &node);
+    Node* node_finder(string target_name, Node* node);
 public:
     Indexer();
-    int display(string cur_dir, map<string, Node> res);
+    int display(string cur_dir, map<string, Node> &res);
     int insert(string new_dir, bool is_file = false);
     int delet(string del_dir);
 };
