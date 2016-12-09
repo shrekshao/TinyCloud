@@ -41,7 +41,7 @@ void BigTabler::put (string username, string file_name, unsigned char file_conte
         outfile.write( (char*) &file_content[0], file_size);
 
         // put the file metainfo in big table
-        big_table.emplace(username, make_pair(file_name, FileMeta(cur_pt, file_size, file_name, file_type, to_string(file_id), true, false)));
+        big_table.emplace(username, map(file_name, FileMeta(cur_pt, file_size, file_name, file_type, to_string(file_id), true, false)));
 
         // clear buffer
         memset(&memtable[0], 0, cur_pt);
@@ -53,7 +53,8 @@ void BigTabler::put (string username, string file_name, unsigned char file_conte
         }
 
         // put the file metainfo in big table
-        big_table.emplace(username, make_pair(file_name, FileMeta(cur_pt, file_size, file_name, file_type, NULL, false, false)));
+        big_table.emplace(username, map());
+        big_table[username].emplace(file_name, FileMeta(cur_pt, file_size, file_name, file_type, NULL, false, false));
 
         cur_pt += file_size;
     }

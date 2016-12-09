@@ -59,7 +59,7 @@ class BigTabler {
     byte memtable[MAX_BUFFER_SIZE];
     unsigned int cur_pt; // the current buffer pointer
 
-    map<string, map<string, FileMeta*> > big_table; // define multilevel map. map within a map.
+    map<string, map<string, FileMeta>> big_table; // define multilevel map. map within a map.
 public:
     BigTabler (string s);
     void put (string username, string file_name, unsigned char content[], string type, unsigned int file_size);
