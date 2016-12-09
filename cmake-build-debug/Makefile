@@ -111,6 +111,19 @@ depend:
 .PHONY : depend
 
 #=============================================================================
+# Target rules for targets named BoostTest
+
+# Build rule for target.
+BoostTest: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 BoostTest
+.PHONY : BoostTest
+
+# fast build rule for target.
+BoostTest/fast:
+	$(MAKE) -f CMakeFiles/BoostTest.dir/build.make CMakeFiles/BoostTest.dir/build
+.PHONY : BoostTest/fast
+
+#=============================================================================
 # Target rules for targets named TinyCloud
 
 # Build rule for target.
@@ -122,6 +135,60 @@ TinyCloud: cmake_check_build_system
 TinyCloud/fast:
 	$(MAKE) -f CMakeFiles/TinyCloud.dir/build.make CMakeFiles/TinyCloud.dir/build
 .PHONY : TinyCloud/fast
+
+grpc_backend/BigTabler.o: grpc_backend/BigTabler.cpp.o
+
+.PHONY : grpc_backend/BigTabler.o
+
+# target to build an object file
+grpc_backend/BigTabler.cpp.o:
+	$(MAKE) -f CMakeFiles/TinyCloud.dir/build.make CMakeFiles/TinyCloud.dir/grpc_backend/BigTabler.cpp.o
+.PHONY : grpc_backend/BigTabler.cpp.o
+
+grpc_backend/BigTabler.i: grpc_backend/BigTabler.cpp.i
+
+.PHONY : grpc_backend/BigTabler.i
+
+# target to preprocess a source file
+grpc_backend/BigTabler.cpp.i:
+	$(MAKE) -f CMakeFiles/TinyCloud.dir/build.make CMakeFiles/TinyCloud.dir/grpc_backend/BigTabler.cpp.i
+.PHONY : grpc_backend/BigTabler.cpp.i
+
+grpc_backend/BigTabler.s: grpc_backend/BigTabler.cpp.s
+
+.PHONY : grpc_backend/BigTabler.s
+
+# target to generate assembly for a file
+grpc_backend/BigTabler.cpp.s:
+	$(MAKE) -f CMakeFiles/TinyCloud.dir/build.make CMakeFiles/TinyCloud.dir/grpc_backend/BigTabler.cpp.s
+.PHONY : grpc_backend/BigTabler.cpp.s
+
+grpc_backend/Indexer.o: grpc_backend/Indexer.cpp.o
+
+.PHONY : grpc_backend/Indexer.o
+
+# target to build an object file
+grpc_backend/Indexer.cpp.o:
+	$(MAKE) -f CMakeFiles/TinyCloud.dir/build.make CMakeFiles/TinyCloud.dir/grpc_backend/Indexer.cpp.o
+.PHONY : grpc_backend/Indexer.cpp.o
+
+grpc_backend/Indexer.i: grpc_backend/Indexer.cpp.i
+
+.PHONY : grpc_backend/Indexer.i
+
+# target to preprocess a source file
+grpc_backend/Indexer.cpp.i:
+	$(MAKE) -f CMakeFiles/TinyCloud.dir/build.make CMakeFiles/TinyCloud.dir/grpc_backend/Indexer.cpp.i
+.PHONY : grpc_backend/Indexer.cpp.i
+
+grpc_backend/Indexer.s: grpc_backend/Indexer.cpp.s
+
+.PHONY : grpc_backend/Indexer.s
+
+# target to generate assembly for a file
+grpc_backend/Indexer.cpp.s:
+	$(MAKE) -f CMakeFiles/TinyCloud.dir/build.make CMakeFiles/TinyCloud.dir/grpc_backend/Indexer.cpp.s
+.PHONY : grpc_backend/Indexer.cpp.s
 
 grpc_backend/backend_server.o: grpc_backend/backend_server.cpp.o
 
@@ -150,59 +217,59 @@ grpc_backend/backend_server.cpp.s:
 	$(MAKE) -f CMakeFiles/TinyCloud.dir/build.make CMakeFiles/TinyCloud.dir/grpc_backend/backend_server.cpp.s
 .PHONY : grpc_backend/backend_server.cpp.s
 
-grpc_backend/storage_server.o: grpc_backend/storage_server.cpp.o
+grpc_backend/file_wu.o: grpc_backend/file_wu.cpp.o
 
-.PHONY : grpc_backend/storage_server.o
-
-# target to build an object file
-grpc_backend/storage_server.cpp.o:
-	$(MAKE) -f CMakeFiles/TinyCloud.dir/build.make CMakeFiles/TinyCloud.dir/grpc_backend/storage_server.cpp.o
-.PHONY : grpc_backend/storage_server.cpp.o
-
-grpc_backend/storage_server.i: grpc_backend/storage_server.cpp.i
-
-.PHONY : grpc_backend/storage_server.i
-
-# target to preprocess a source file
-grpc_backend/storage_server.cpp.i:
-	$(MAKE) -f CMakeFiles/TinyCloud.dir/build.make CMakeFiles/TinyCloud.dir/grpc_backend/storage_server.cpp.i
-.PHONY : grpc_backend/storage_server.cpp.i
-
-grpc_backend/storage_server.s: grpc_backend/storage_server.cpp.s
-
-.PHONY : grpc_backend/storage_server.s
-
-# target to generate assembly for a file
-grpc_backend/storage_server.cpp.s:
-	$(MAKE) -f CMakeFiles/TinyCloud.dir/build.make CMakeFiles/TinyCloud.dir/grpc_backend/storage_server.cpp.s
-.PHONY : grpc_backend/storage_server.cpp.s
-
-grpc_backend/storage_service.o: grpc_backend/storage_service.cpp.o
-
-.PHONY : grpc_backend/storage_service.o
+.PHONY : grpc_backend/file_wu.o
 
 # target to build an object file
-grpc_backend/storage_service.cpp.o:
-	$(MAKE) -f CMakeFiles/TinyCloud.dir/build.make CMakeFiles/TinyCloud.dir/grpc_backend/storage_service.cpp.o
-.PHONY : grpc_backend/storage_service.cpp.o
+grpc_backend/file_wu.cpp.o:
+	$(MAKE) -f CMakeFiles/TinyCloud.dir/build.make CMakeFiles/TinyCloud.dir/grpc_backend/file_wu.cpp.o
+.PHONY : grpc_backend/file_wu.cpp.o
 
-grpc_backend/storage_service.i: grpc_backend/storage_service.cpp.i
+grpc_backend/file_wu.i: grpc_backend/file_wu.cpp.i
 
-.PHONY : grpc_backend/storage_service.i
+.PHONY : grpc_backend/file_wu.i
 
 # target to preprocess a source file
-grpc_backend/storage_service.cpp.i:
-	$(MAKE) -f CMakeFiles/TinyCloud.dir/build.make CMakeFiles/TinyCloud.dir/grpc_backend/storage_service.cpp.i
-.PHONY : grpc_backend/storage_service.cpp.i
+grpc_backend/file_wu.cpp.i:
+	$(MAKE) -f CMakeFiles/TinyCloud.dir/build.make CMakeFiles/TinyCloud.dir/grpc_backend/file_wu.cpp.i
+.PHONY : grpc_backend/file_wu.cpp.i
 
-grpc_backend/storage_service.s: grpc_backend/storage_service.cpp.s
+grpc_backend/file_wu.s: grpc_backend/file_wu.cpp.s
 
-.PHONY : grpc_backend/storage_service.s
+.PHONY : grpc_backend/file_wu.s
 
 # target to generate assembly for a file
-grpc_backend/storage_service.cpp.s:
-	$(MAKE) -f CMakeFiles/TinyCloud.dir/build.make CMakeFiles/TinyCloud.dir/grpc_backend/storage_service.cpp.s
-.PHONY : grpc_backend/storage_service.cpp.s
+grpc_backend/file_wu.cpp.s:
+	$(MAKE) -f CMakeFiles/TinyCloud.dir/build.make CMakeFiles/TinyCloud.dir/grpc_backend/file_wu.cpp.s
+.PHONY : grpc_backend/file_wu.cpp.s
+
+grpc_backend/filelist_wu.o: grpc_backend/filelist_wu.cpp.o
+
+.PHONY : grpc_backend/filelist_wu.o
+
+# target to build an object file
+grpc_backend/filelist_wu.cpp.o:
+	$(MAKE) -f CMakeFiles/TinyCloud.dir/build.make CMakeFiles/TinyCloud.dir/grpc_backend/filelist_wu.cpp.o
+.PHONY : grpc_backend/filelist_wu.cpp.o
+
+grpc_backend/filelist_wu.i: grpc_backend/filelist_wu.cpp.i
+
+.PHONY : grpc_backend/filelist_wu.i
+
+# target to preprocess a source file
+grpc_backend/filelist_wu.cpp.i:
+	$(MAKE) -f CMakeFiles/TinyCloud.dir/build.make CMakeFiles/TinyCloud.dir/grpc_backend/filelist_wu.cpp.i
+.PHONY : grpc_backend/filelist_wu.cpp.i
+
+grpc_backend/filelist_wu.s: grpc_backend/filelist_wu.cpp.s
+
+.PHONY : grpc_backend/filelist_wu.s
+
+# target to generate assembly for a file
+grpc_backend/filelist_wu.cpp.s:
+	$(MAKE) -f CMakeFiles/TinyCloud.dir/build.make CMakeFiles/TinyCloud.dir/grpc_backend/filelist_wu.cpp.s
+.PHONY : grpc_backend/filelist_wu.cpp.s
 
 http_server.o: http_server.cpp.o
 
@@ -238,17 +305,24 @@ help:
 	@echo "... clean"
 	@echo "... depend"
 	@echo "... edit_cache"
+	@echo "... BoostTest"
 	@echo "... rebuild_cache"
 	@echo "... TinyCloud"
+	@echo "... grpc_backend/BigTabler.o"
+	@echo "... grpc_backend/BigTabler.i"
+	@echo "... grpc_backend/BigTabler.s"
+	@echo "... grpc_backend/Indexer.o"
+	@echo "... grpc_backend/Indexer.i"
+	@echo "... grpc_backend/Indexer.s"
 	@echo "... grpc_backend/backend_server.o"
 	@echo "... grpc_backend/backend_server.i"
 	@echo "... grpc_backend/backend_server.s"
-	@echo "... grpc_backend/storage_server.o"
-	@echo "... grpc_backend/storage_server.i"
-	@echo "... grpc_backend/storage_server.s"
-	@echo "... grpc_backend/storage_service.o"
-	@echo "... grpc_backend/storage_service.i"
-	@echo "... grpc_backend/storage_service.s"
+	@echo "... grpc_backend/file_wu.o"
+	@echo "... grpc_backend/file_wu.i"
+	@echo "... grpc_backend/file_wu.s"
+	@echo "... grpc_backend/filelist_wu.o"
+	@echo "... grpc_backend/filelist_wu.i"
+	@echo "... grpc_backend/filelist_wu.s"
 	@echo "... http_server.o"
 	@echo "... http_server.i"
 	@echo "... http_server.s"

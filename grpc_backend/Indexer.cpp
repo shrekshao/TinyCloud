@@ -74,7 +74,6 @@ int Indexer::insert(string new_dir, bool is_file) {
 /*
  *  Delete a file/directory in the hierarchy structure
  */
-
 int Indexer::delet(string del_dir) {
     boost::filesystem::path p1(del_dir);
 

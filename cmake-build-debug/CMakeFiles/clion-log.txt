@@ -1,4 +1,22 @@
 /home/tianli/local/CLion/clion-2016.3/bin/cmake/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /home/tianli/upenn/cis505/TinyCloud
+-- Boost version: 1.58.0
+-- Found the following Boost libraries:
+--   system
+--   filesystem
+-- Boost_INCLUDE_DIRS: /usr/include
+-- Boost_LIBRARIES: /usr/lib/x86_64-linux-gnu/libboost_system.so;/usr/lib/x86_64-linux-gnu/libboost_filesystem.so
+-- Boost_VERSION: 105800
 -- Configuring done
+CMake Error at CMakeLists.txt:38 (add_executable):
+  Cannot find source file:
+
+    main.cpp
+
+  Tried extensions .c .C .c++ .cc .cpp .cxx .m .M .mm .h .hh .h++ .hm .hpp
+  .hxx .in .txx
+
+
+CMake Error: CMake can not determine linker language for target: BoostTest
+CMake Error: Cannot determine link language for target "BoostTest".
 -- Generating done
 -- Build files have been written to: /home/tianli/upenn/cis505/TinyCloud/cmake-build-debug

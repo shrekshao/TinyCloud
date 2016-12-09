@@ -19,6 +19,7 @@ set(CMAKE_MAKEFILE_DEPENDS
   "/home/tianli/local/CLion/clion-2016.3/bin/cmake/share/cmake-3.6/Modules/Compiler/GNU-C.cmake"
   "/home/tianli/local/CLion/clion-2016.3/bin/cmake/share/cmake-3.6/Modules/Compiler/GNU-CXX.cmake"
   "/home/tianli/local/CLion/clion-2016.3/bin/cmake/share/cmake-3.6/Modules/Compiler/GNU.cmake"
+  "/home/tianli/local/CLion/clion-2016.3/bin/cmake/share/cmake-3.6/Modules/FindBoost.cmake"
   "/home/tianli/local/CLion/clion-2016.3/bin/cmake/share/cmake-3.6/Modules/Platform/Linux-GNU-C.cmake"
   "/home/tianli/local/CLion/clion-2016.3/bin/cmake/share/cmake-3.6/Modules/Platform/Linux-GNU-CXX.cmake"
   "/home/tianli/local/CLion/clion-2016.3/bin/cmake/share/cmake-3.6/Modules/Platform/Linux-GNU.cmake"
@@ -44,5 +45,6 @@ set(CMAKE_MAKEFILE_PRODUCTS
 
 # Dependency information for all targets:
 set(CMAKE_DEPEND_INFO_FILES
+  "CMakeFiles/BoostTest.dir/DependInfo.cmake"
   "CMakeFiles/TinyCloud.dir/DependInfo.cmake"
   )

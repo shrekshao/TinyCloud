@@ -105,71 +105,123 @@ CMakeFiles/TinyCloud.dir/grpc_backend/backend_server.cpp.o.provides: CMakeFiles/
 CMakeFiles/TinyCloud.dir/grpc_backend/backend_server.cpp.o.provides.build: CMakeFiles/TinyCloud.dir/grpc_backend/backend_server.cpp.o
 
 
-CMakeFiles/TinyCloud.dir/grpc_backend/storage_server.cpp.o: CMakeFiles/TinyCloud.dir/flags.make
-CMakeFiles/TinyCloud.dir/grpc_backend/storage_server.cpp.o: ../grpc_backend/storage_server.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/tianli/upenn/cis505/TinyCloud/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/TinyCloud.dir/grpc_backend/storage_server.cpp.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/TinyCloud.dir/grpc_backend/storage_server.cpp.o -c /home/tianli/upenn/cis505/TinyCloud/grpc_backend/storage_server.cpp
+CMakeFiles/TinyCloud.dir/grpc_backend/filelist_wu.cpp.o: CMakeFiles/TinyCloud.dir/flags.make
+CMakeFiles/TinyCloud.dir/grpc_backend/filelist_wu.cpp.o: ../grpc_backend/filelist_wu.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/tianli/upenn/cis505/TinyCloud/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/TinyCloud.dir/grpc_backend/filelist_wu.cpp.o"
+	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/TinyCloud.dir/grpc_backend/filelist_wu.cpp.o -c /home/tianli/upenn/cis505/TinyCloud/grpc_backend/filelist_wu.cpp
 
-CMakeFiles/TinyCloud.dir/grpc_backend/storage_server.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/TinyCloud.dir/grpc_backend/storage_server.cpp.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/tianli/upenn/cis505/TinyCloud/grpc_backend/storage_server.cpp > CMakeFiles/TinyCloud.dir/grpc_backend/storage_server.cpp.i
+CMakeFiles/TinyCloud.dir/grpc_backend/filelist_wu.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/TinyCloud.dir/grpc_backend/filelist_wu.cpp.i"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/tianli/upenn/cis505/TinyCloud/grpc_backend/filelist_wu.cpp > CMakeFiles/TinyCloud.dir/grpc_backend/filelist_wu.cpp.i
 
-CMakeFiles/TinyCloud.dir/grpc_backend/storage_server.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/TinyCloud.dir/grpc_backend/storage_server.cpp.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/tianli/upenn/cis505/TinyCloud/grpc_backend/storage_server.cpp -o CMakeFiles/TinyCloud.dir/grpc_backend/storage_server.cpp.s
+CMakeFiles/TinyCloud.dir/grpc_backend/filelist_wu.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/TinyCloud.dir/grpc_backend/filelist_wu.cpp.s"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/tianli/upenn/cis505/TinyCloud/grpc_backend/filelist_wu.cpp -o CMakeFiles/TinyCloud.dir/grpc_backend/filelist_wu.cpp.s
 
-CMakeFiles/TinyCloud.dir/grpc_backend/storage_server.cpp.o.requires:
+CMakeFiles/TinyCloud.dir/grpc_backend/filelist_wu.cpp.o.requires:
 
-.PHONY : CMakeFiles/TinyCloud.dir/grpc_backend/storage_server.cpp.o.requires
+.PHONY : CMakeFiles/TinyCloud.dir/grpc_backend/filelist_wu.cpp.o.requires
 
-CMakeFiles/TinyCloud.dir/grpc_backend/storage_server.cpp.o.provides: CMakeFiles/TinyCloud.dir/grpc_backend/storage_server.cpp.o.requires
-	$(MAKE) -f CMakeFiles/TinyCloud.dir/build.make CMakeFiles/TinyCloud.dir/grpc_backend/storage_server.cpp.o.provides.build
-.PHONY : CMakeFiles/TinyCloud.dir/grpc_backend/storage_server.cpp.o.provides
+CMakeFiles/TinyCloud.dir/grpc_backend/filelist_wu.cpp.o.provides: CMakeFiles/TinyCloud.dir/grpc_backend/filelist_wu.cpp.o.requires
+	$(MAKE) -f CMakeFiles/TinyCloud.dir/build.make CMakeFiles/TinyCloud.dir/grpc_backend/filelist_wu.cpp.o.provides.build
+.PHONY : CMakeFiles/TinyCloud.dir/grpc_backend/filelist_wu.cpp.o.provides
 
-CMakeFiles/TinyCloud.dir/grpc_backend/storage_server.cpp.o.provides.build: CMakeFiles/TinyCloud.dir/grpc_backend/storage_server.cpp.o
+CMakeFiles/TinyCloud.dir/grpc_backend/filelist_wu.cpp.o.provides.build: CMakeFiles/TinyCloud.dir/grpc_backend/filelist_wu.cpp.o
 
 
-CMakeFiles/TinyCloud.dir/grpc_backend/storage_service.cpp.o: CMakeFiles/TinyCloud.dir/flags.make
-CMakeFiles/TinyCloud.dir/grpc_backend/storage_service.cpp.o: ../grpc_backend/storage_service.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/tianli/upenn/cis505/TinyCloud/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/TinyCloud.dir/grpc_backend/storage_service.cpp.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/TinyCloud.dir/grpc_backend/storage_service.cpp.o -c /home/tianli/upenn/cis505/TinyCloud/grpc_backend/storage_service.cpp
+CMakeFiles/TinyCloud.dir/grpc_backend/Indexer.cpp.o: CMakeFiles/TinyCloud.dir/flags.make
+CMakeFiles/TinyCloud.dir/grpc_backend/Indexer.cpp.o: ../grpc_backend/Indexer.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/tianli/upenn/cis505/TinyCloud/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/TinyCloud.dir/grpc_backend/Indexer.cpp.o"
+	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/TinyCloud.dir/grpc_backend/Indexer.cpp.o -c /home/tianli/upenn/cis505/TinyCloud/grpc_backend/Indexer.cpp
 
-CMakeFiles/TinyCloud.dir/grpc_backend/storage_service.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/TinyCloud.dir/grpc_backend/storage_service.cpp.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/tianli/upenn/cis505/TinyCloud/grpc_backend/storage_service.cpp > CMakeFiles/TinyCloud.dir/grpc_backend/storage_service.cpp.i
+CMakeFiles/TinyCloud.dir/grpc_backend/Indexer.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/TinyCloud.dir/grpc_backend/Indexer.cpp.i"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/tianli/upenn/cis505/TinyCloud/grpc_backend/Indexer.cpp > CMakeFiles/TinyCloud.dir/grpc_backend/Indexer.cpp.i
 
-CMakeFiles/TinyCloud.dir/grpc_backend/storage_service.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/TinyCloud.dir/grpc_backend/storage_service.cpp.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/tianli/upenn/cis505/TinyCloud/grpc_backend/storage_service.cpp -o CMakeFiles/TinyCloud.dir/grpc_backend/storage_service.cpp.s
+CMakeFiles/TinyCloud.dir/grpc_backend/Indexer.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/TinyCloud.dir/grpc_backend/Indexer.cpp.s"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/tianli/upenn/cis505/TinyCloud/grpc_backend/Indexer.cpp -o CMakeFiles/TinyCloud.dir/grpc_backend/Indexer.cpp.s
 
-CMakeFiles/TinyCloud.dir/grpc_backend/storage_service.cpp.o.requires:
+CMakeFiles/TinyCloud.dir/grpc_backend/Indexer.cpp.o.requires:
 
-.PHONY : CMakeFiles/TinyCloud.dir/grpc_backend/storage_service.cpp.o.requires
+.PHONY : CMakeFiles/TinyCloud.dir/grpc_backend/Indexer.cpp.o.requires
 
-CMakeFiles/TinyCloud.dir/grpc_backend/storage_service.cpp.o.provides: CMakeFiles/TinyCloud.dir/grpc_backend/storage_service.cpp.o.requires
-	$(MAKE) -f CMakeFiles/TinyCloud.dir/build.make CMakeFiles/TinyCloud.dir/grpc_backend/storage_service.cpp.o.provides.build
-.PHONY : CMakeFiles/TinyCloud.dir/grpc_backend/storage_service.cpp.o.provides
+CMakeFiles/TinyCloud.dir/grpc_backend/Indexer.cpp.o.provides: CMakeFiles/TinyCloud.dir/grpc_backend/Indexer.cpp.o.requires
+	$(MAKE) -f CMakeFiles/TinyCloud.dir/build.make CMakeFiles/TinyCloud.dir/grpc_backend/Indexer.cpp.o.provides.build
+.PHONY : CMakeFiles/TinyCloud.dir/grpc_backend/Indexer.cpp.o.provides
 
-CMakeFiles/TinyCloud.dir/grpc_backend/storage_service.cpp.o.provides.build: CMakeFiles/TinyCloud.dir/grpc_backend/storage_service.cpp.o
+CMakeFiles/TinyCloud.dir/grpc_backend/Indexer.cpp.o.provides.build: CMakeFiles/TinyCloud.dir/grpc_backend/Indexer.cpp.o
+
+
+CMakeFiles/TinyCloud.dir/grpc_backend/file_wu.cpp.o: CMakeFiles/TinyCloud.dir/flags.make
+CMakeFiles/TinyCloud.dir/grpc_backend/file_wu.cpp.o: ../grpc_backend/file_wu.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/tianli/upenn/cis505/TinyCloud/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/TinyCloud.dir/grpc_backend/file_wu.cpp.o"
+	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/TinyCloud.dir/grpc_backend/file_wu.cpp.o -c /home/tianli/upenn/cis505/TinyCloud/grpc_backend/file_wu.cpp
+
+CMakeFiles/TinyCloud.dir/grpc_backend/file_wu.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/TinyCloud.dir/grpc_backend/file_wu.cpp.i"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/tianli/upenn/cis505/TinyCloud/grpc_backend/file_wu.cpp > CMakeFiles/TinyCloud.dir/grpc_backend/file_wu.cpp.i
+
+CMakeFiles/TinyCloud.dir/grpc_backend/file_wu.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/TinyCloud.dir/grpc_backend/file_wu.cpp.s"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/tianli/upenn/cis505/TinyCloud/grpc_backend/file_wu.cpp -o CMakeFiles/TinyCloud.dir/grpc_backend/file_wu.cpp.s
+
+CMakeFiles/TinyCloud.dir/grpc_backend/file_wu.cpp.o.requires:
+
+.PHONY : CMakeFiles/TinyCloud.dir/grpc_backend/file_wu.cpp.o.requires
+
+CMakeFiles/TinyCloud.dir/grpc_backend/file_wu.cpp.o.provides: CMakeFiles/TinyCloud.dir/grpc_backend/file_wu.cpp.o.requires
+	$(MAKE) -f CMakeFiles/TinyCloud.dir/build.make CMakeFiles/TinyCloud.dir/grpc_backend/file_wu.cpp.o.provides.build
+.PHONY : CMakeFiles/TinyCloud.dir/grpc_backend/file_wu.cpp.o.provides
+
+CMakeFiles/TinyCloud.dir/grpc_backend/file_wu.cpp.o.provides.build: CMakeFiles/TinyCloud.dir/grpc_backend/file_wu.cpp.o
+
+
+CMakeFiles/TinyCloud.dir/grpc_backend/BigTabler.cpp.o: CMakeFiles/TinyCloud.dir/flags.make
+CMakeFiles/TinyCloud.dir/grpc_backend/BigTabler.cpp.o: ../grpc_backend/BigTabler.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/tianli/upenn/cis505/TinyCloud/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/TinyCloud.dir/grpc_backend/BigTabler.cpp.o"
+	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/TinyCloud.dir/grpc_backend/BigTabler.cpp.o -c /home/tianli/upenn/cis505/TinyCloud/grpc_backend/BigTabler.cpp
+
+CMakeFiles/TinyCloud.dir/grpc_backend/BigTabler.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/TinyCloud.dir/grpc_backend/BigTabler.cpp.i"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/tianli/upenn/cis505/TinyCloud/grpc_backend/BigTabler.cpp > CMakeFiles/TinyCloud.dir/grpc_backend/BigTabler.cpp.i
+
+CMakeFiles/TinyCloud.dir/grpc_backend/BigTabler.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/TinyCloud.dir/grpc_backend/BigTabler.cpp.s"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/tianli/upenn/cis505/TinyCloud/grpc_backend/BigTabler.cpp -o CMakeFiles/TinyCloud.dir/grpc_backend/BigTabler.cpp.s
+
+CMakeFiles/TinyCloud.dir/grpc_backend/BigTabler.cpp.o.requires:
+
+.PHONY : CMakeFiles/TinyCloud.dir/grpc_backend/BigTabler.cpp.o.requires
+
+CMakeFiles/TinyCloud.dir/grpc_backend/BigTabler.cpp.o.provides: CMakeFiles/TinyCloud.dir/grpc_backend/BigTabler.cpp.o.requires
+	$(MAKE) -f CMakeFiles/TinyCloud.dir/build.make CMakeFiles/TinyCloud.dir/grpc_backend/BigTabler.cpp.o.provides.build
+.PHONY : CMakeFiles/TinyCloud.dir/grpc_backend/BigTabler.cpp.o.provides
+
+CMakeFiles/TinyCloud.dir/grpc_backend/BigTabler.cpp.o.provides.build: CMakeFiles/TinyCloud.dir/grpc_backend/BigTabler.cpp.o
 
 
 # Object files for target TinyCloud
 TinyCloud_OBJECTS = \
 "CMakeFiles/TinyCloud.dir/http_server.cpp.o" \
 "CMakeFiles/TinyCloud.dir/grpc_backend/backend_server.cpp.o" \
-"CMakeFiles/TinyCloud.dir/grpc_backend/storage_server.cpp.o" \
-"CMakeFiles/TinyCloud.dir/grpc_backend/storage_service.cpp.o"
+"CMakeFiles/TinyCloud.dir/grpc_backend/filelist_wu.cpp.o" \
+"CMakeFiles/TinyCloud.dir/grpc_backend/Indexer.cpp.o" \
+"CMakeFiles/TinyCloud.dir/grpc_backend/file_wu.cpp.o" \
+"CMakeFiles/TinyCloud.dir/grpc_backend/BigTabler.cpp.o"
 
 # External object files for target TinyCloud
 TinyCloud_EXTERNAL_OBJECTS =
 
 TinyCloud: CMakeFiles/TinyCloud.dir/http_server.cpp.o
 TinyCloud: CMakeFiles/TinyCloud.dir/grpc_backend/backend_server.cpp.o
-TinyCloud: CMakeFiles/TinyCloud.dir/grpc_backend/storage_server.cpp.o
-TinyCloud: CMakeFiles/TinyCloud.dir/grpc_backend/storage_service.cpp.o
+TinyCloud: CMakeFiles/TinyCloud.dir/grpc_backend/filelist_wu.cpp.o
+TinyCloud: CMakeFiles/TinyCloud.dir/grpc_backend/Indexer.cpp.o
+TinyCloud: CMakeFiles/TinyCloud.dir/grpc_backend/file_wu.cpp.o
+TinyCloud: CMakeFiles/TinyCloud.dir/grpc_backend/BigTabler.cpp.o
 TinyCloud: CMakeFiles/TinyCloud.dir/build.make
 TinyCloud: CMakeFiles/TinyCloud.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/tianli/upenn/cis505/TinyCloud/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Linking CXX executable TinyCloud"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/tianli/upenn/cis505/TinyCloud/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Linking CXX executable TinyCloud"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/TinyCloud.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
@@ -179,8 +231,10 @@ CMakeFiles/TinyCloud.dir/build: TinyCloud
 
 CMakeFiles/TinyCloud.dir/requires: CMakeFiles/TinyCloud.dir/http_server.cpp.o.requires
 CMakeFiles/TinyCloud.dir/requires: CMakeFiles/TinyCloud.dir/grpc_backend/backend_server.cpp.o.requires
-CMakeFiles/TinyCloud.dir/requires: CMakeFiles/TinyCloud.dir/grpc_backend/storage_server.cpp.o.requires
-CMakeFiles/TinyCloud.dir/requires: CMakeFiles/TinyCloud.dir/grpc_backend/storage_service.cpp.o.requires
+CMakeFiles/TinyCloud.dir/requires: CMakeFiles/TinyCloud.dir/grpc_backend/filelist_wu.cpp.o.requires
+CMakeFiles/TinyCloud.dir/requires: CMakeFiles/TinyCloud.dir/grpc_backend/Indexer.cpp.o.requires
+CMakeFiles/TinyCloud.dir/requires: CMakeFiles/TinyCloud.dir/grpc_backend/file_wu.cpp.o.requires
+CMakeFiles/TinyCloud.dir/requires: CMakeFiles/TinyCloud.dir/grpc_backend/BigTabler.cpp.o.requires
 
 .PHONY : CMakeFiles/TinyCloud.dir/requires
 
