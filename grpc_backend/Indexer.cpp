@@ -34,7 +34,7 @@ int Indexer::display(string cur_dir, map<string, Node> &res) {
         cur_node = temp;
     }
 
-    for (map<string, Node>::iterator it = cur_node->children.begin(); it != cur_node->children.end(); it++) {
+    for (map<string, Node>::iterator it = cur_node->children.begin(); it != cur_node->children.end(); ++it) {
         res.emplace(it->first, it->second);
     }
     return 1;

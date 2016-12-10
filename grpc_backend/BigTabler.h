@@ -5,6 +5,7 @@
 #ifndef TINYCLOUD_BIGTABLER_H
 #define TINYCLOUD_BIGTABLER_H
 
+#include <sys/mman.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/file.h>
@@ -22,6 +23,7 @@
 #include <string.h>
 #include <boost/filesystem.hpp>
 #include <boost/interprocess/sync/file_lock.hpp>
+#include <boost/interprocess/sync/sharable_lock.hpp>
 
 using namespace std;
 
@@ -61,10 +63,12 @@ class BigTabler {
     unsigned int cur_pt; // the current buffer pointer
 
     map<string, map<string, FileMeta>> big_table; // define multilevel map. map within a map.
+
+    vector<string> memtable_file; // Record file in memory
 public:
     BigTabler (string s);
-    void put (string username, string file_name, unsigned char content[], string type, unsigned int file_size);
-    byte* get (string username, string file_name);
+    int put (string username, string file_name, unsigned char content[], string type, unsigned int file_size);
+    int get (string username, string file_name, unsigned char* res, unsigned int res_size);
 };
 
 
