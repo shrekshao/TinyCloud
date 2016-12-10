@@ -29,7 +29,7 @@ using backend::Storage;
 Indexer indexer_service;
 
 // File service in-memory storage
-BigTabler bigtable_service;
+BigTabler bigtable_service("a");
 
 // Logic and data behind the server's behavior.
 class StorageServiceImpl final : public Storage::Service {
@@ -90,19 +90,19 @@ void RunServer() {
 }
 
 int main(int argc, char** argv) {
-    /* Indexer test
+    ///* Indexer test
     cout << indexer_service.insert("/tianli", false) << endl;
     cout << indexer_service.insert("/tianli/folder1", false) << endl;
     cout << indexer_service.insert("/tianli/folder2", false) << endl;
-    cout << indexer_service.insert("/tianli/folder3", false) << endl;
+    cout << indexer_service.insert("/tianli/file3", true) << endl;
     cout << indexer_service.insert("/tianli/folder1/folder1.1", false) << endl;
     map<string, Node> res;
     int success = indexer_service.display("/tianli", res);
     cout << success << endl;
     for (map<string, Node>::iterator it = res.begin(); it != res.end(); ++it) {
-        cout << it->first << endl;
+        cout << it->second.name << " " << it->second.is_file << endl;
     }
-    */
+    //*/
     RunServer();
 
     return 0;

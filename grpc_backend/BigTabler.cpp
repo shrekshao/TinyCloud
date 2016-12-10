@@ -41,7 +41,9 @@ void BigTabler::put (string username, string file_name, unsigned char file_conte
         outfile.write( (char*) &file_content[0], file_size);
 
         // put the file metainfo in big table
-        big_table.emplace(username, map(file_name, FileMeta(cur_pt, file_size, file_name, file_type, to_string(file_id), true, false)));
+
+        big_table.emplace(std::piecewise_construct, std::forward_as_tuple(username), std::forward_as_tuple());
+        big_table[username].emplace(std::piecewise_construct, std::forward_as_tuple(file_name), std::forward_as_tuple(cur_pt, file_size, file_name, file_type, to_string(file_id), true, false));
 
         // clear buffer
         memset(&memtable[0], 0, cur_pt);
@@ -53,8 +55,8 @@ void BigTabler::put (string username, string file_name, unsigned char file_conte
         }
 
         // put the file metainfo in big table
-        big_table.emplace(username, map());
-        big_table[username].emplace(file_name, FileMeta(cur_pt, file_size, file_name, file_type, NULL, false, false));
+        big_table.emplace(std::piecewise_construct, std::forward_as_tuple(username), std::forward_as_tuple());
+        big_table[username].emplace(std::piecewise_construct, std::forward_as_tuple(file_name), std::forward_as_tuple(cur_pt, file_size, file_name, file_type, string(), false, false));
 
         cur_pt += file_size;
     }
@@ -63,6 +65,7 @@ void BigTabler::put (string username, string file_name, unsigned char file_conte
 /*
  * Search for a file
  */
+/*
 byte* BigTabler::get (string username, string file_name) {
     FileMeta *file_meta = big_table[username][file_name];
     if (file_meta->is_deleted) {
@@ -100,3 +103,4 @@ byte* BigTabler::get (string username, string file_name) {
         }
     }
 }
+ */

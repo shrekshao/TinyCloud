@@ -24,6 +24,7 @@
 #include <boost/interprocess/sync/file_lock.hpp>
 
 using namespace std;
+
 typedef unsigned char byte;
 
 const int MAX_BUFFER_SIZE = 1000000000; // define const

@@ -43,11 +43,13 @@ PROTOS_PATH = protos
 
 vpath %.proto $(PROTOS_PATH)
 
-all: backend_server Indexer
+all: backend_server Indexer BigTabler
 
-Indexer: backend.pb.o backend.grpc.pb.o backend_server.o Indexer.o
+BigTabler: backend.pb.o backend.grpc.pb.o backend_server.o Indexer.o BigTabler.o
 	$(CXX) $^ $(LDFLAGS) -o $@
-backend_server: backend.pb.o backend.grpc.pb.o backend_server.o Indexer.o
+Indexer: backend.pb.o backend.grpc.pb.o backend_server.o Indexer.o BigTabler.o
+	$(CXX) $^ $(LDFLAGS) -o $@
+backend_server: backend.pb.o backend.grpc.pb.o backend_server.o Indexer.o BigTabler.o
 	$(CXX) $^ $(LDFLAGS) -o $@
 
 

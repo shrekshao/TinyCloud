@@ -66,7 +66,7 @@ int Indexer::insert(string new_dir, bool is_file) {
         return -1;
     }
 
-    cur_node->children.emplace(p1.filename().string(), Node(p1.filename().string(), is_file));
+    cur_node->children.emplace(std::piecewise_construct, std::forward_as_tuple(p1.filename().string()), std::forward_as_tuple(p1.filename().string(), is_file));
 
     return 1;
 }
