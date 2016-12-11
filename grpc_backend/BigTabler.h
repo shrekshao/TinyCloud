@@ -21,6 +21,7 @@
 #include <thread>
 #include <chrono>
 #include <string.h>
+#include <boost/thread.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/thread/locks.hpp>
 #include <boost/thread/lock_types.hpp>
@@ -31,6 +32,7 @@ using namespace std;
 typedef unsigned char byte;
 
 const int MAX_BUFFER_SIZE = 1000000000; // define const
+const int DELETE_BUFFER_TIME = 345600; // 4 days
 
 // file class
 class FileMeta {
@@ -67,6 +69,16 @@ class BigTabler {
 
     mutex put_m, delete_m; // mutex for put() and delet()
     map<string, boost::shared_mutex> sstable_mutex; // mutexs for sstable files on disk
+    map<string, mutex> deleted_files_mutex; // mutexs for deleted_files of each sstable
+
+    // predict function for remove_if in gc
+    struct predicate {
+        bool operator()(const pair<time_t, FileMeta> &pX) const {
+            time_t timer;
+            time(&timer);
+            return timer - DELETE_BUFFER_TIME > (&pX)->first;
+        }
+    };
 public:
     BigTabler (string s);
     int put (string username, string file_name, unsigned char content[], string type, unsigned int file_size);
@@ -74,6 +86,8 @@ public:
     int get (string username, string file_name, unsigned char* res, unsigned int res_size);
     int delet (string username, string file_name);
     int gc();
+    bool needClear(vector<pair<time_t, FileMeta>> &vec);
+    int clearSSTable(map<string, vector<pair<time_t, FileMeta>>>::iterator it, vector<pair<time_t, FileMeta>>::iterator ite);
 };
 
 

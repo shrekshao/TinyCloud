@@ -15,6 +15,7 @@ BigTabler::BigTabler (string s) {
     cur_pt = 0;
     server_id = s;
     file_id = 1;
+    deleted_files_mutex.emplace(piecewise_construct, forward_as_tuple(to_string(file_id)), forward_as_tuple());
 }
 
 /*
@@ -31,6 +32,8 @@ int BigTabler::put (string username, string file_name, unsigned char file_conten
     cout << "Current SS Buffer Length = " << (sizeof(ss_buffer)/sizeof(*ss_buffer)) << endl;
     cout << "\n";
     */
+    put_m.lock();
+
     // Check if there is already a file with this name
     if (big_table.find(username) == big_table.end()) {
         big_table.emplace(piecewise_construct, forward_as_tuple(username), forward_as_tuple());
@@ -63,7 +66,6 @@ int BigTabler::put (string username, string file_name, unsigned char file_conten
 
         // Change the memtable file_meta
         for(vector<string>::iterator it = memtable_file.begin(); it != memtable_file.end(); ++it) {
-            big_table.at(username).at(*it).sstable_name = to_string(file_id);
             big_table.at(username).at(*it).is_flushed = true;
         }
         memtable_file.clear();
@@ -73,6 +75,7 @@ int BigTabler::put (string username, string file_name, unsigned char file_conten
         cur_pt = 0;
 
         file_id++;
+        deleted_files_mutex.emplace(piecewise_construct, forward_as_tuple(to_string(file_id)), forward_as_tuple());
     } else {
         // write the the new file to the buffer
         for (int i = 0; i < file_size; i++) {
@@ -81,7 +84,7 @@ int BigTabler::put (string username, string file_name, unsigned char file_conten
         cur_pt += file_size;
 
         // put the file metainfo in big table
-        big_table.at(username).emplace(piecewise_construct, forward_as_tuple(file_name), forward_as_tuple(cur_pt, file_size, file_name, file_type, string(), false, false));
+        big_table.at(username).emplace(piecewise_construct, forward_as_tuple(file_name), forward_as_tuple(cur_pt, file_size, file_name, file_type, to_string(file_id), false, false));
 
         memtable_file.emplace(memtable_file.end(), file_name);
     }
@@ -122,15 +125,9 @@ int BigTabler::put (string username, string file_name, unsigned char orig_file_c
                 }
             }
 
-            delete_m.lock();
             delet(username, file_name);
-            delete_m.unlock();
 
-            put_m.lock();
-            int res = put(username, file_name, file_content, file_type, file_size);
-            put_m.unlock();
-
-            return res;
+            return put(username, file_name, file_content, file_type, file_size);
         }
     }
 }
@@ -213,6 +210,7 @@ int BigTabler::get (string username, string file_name, unsigned char* res, unsig
  *         -1   fail
  */
 int BigTabler::delet(string username, string file_name) {
+    delete_m.lock();
     if (big_table.find(username) == big_table.end() || big_table.at(username).find(file_name) == big_table.at(username).end()) {
         return -1;
     }
@@ -224,7 +222,9 @@ int BigTabler::delet(string username, string file_name) {
         string sstable = big_table.at(username).at(file_name).sstable_name;
         time_t timer;
         time(&timer);
+        deleted_files_mutex.at(sstable).lock();
         deleted_files.at(sstable).insert(deleted_files.at(sstable).end(), make_pair(timer, big_table.at(username).at(file_name)));
+        deleted_files_mutex.at(sstable).unlock();
         big_table.at(username).erase(file_name);
         return 1;
     }
@@ -236,5 +236,47 @@ int BigTabler::delet(string username, string file_name) {
  *         -1   error
  */
 int BigTabler::gc() {
+    for (map<string, vector<pair<time_t, FileMeta>>>::iterator it = deleted_files.begin(); it != deleted_files.end(); ++it) {
+        if (it->first.compare(to_string(file_id)) != 0) {
+            // Only clear sstable files, not memtable files
+            if (needClear(it->second)) {
+                // Exclusively lock the sstable
+                boost::upgrade_lock<boost::shared_mutex> lock(sstable_mutex.at(it->first));
+                boost::upgrade_to_unique_lock<boost::shared_mutex> uniqueLock(lock);
 
+                deleted_files_mutex.at(it->first).lock();
+                vector<pair<time_t, FileMeta>>::iterator ite = remove_if(it->second.begin(), it->second.end(), predicate());
+                if (clearSSTable(it, ite) == -1) {
+                    continue;
+                }
+                it->second.erase(ite, it->second.end());
+                deleted_files_mutex.at(it->first).unlock();
+            }
+        }
+    }
+}
+
+// Helper functions************************************************************************************************************
+
+/*
+ * Check if there is file need to be cleared from disk under a sstable
+ */
+bool BigTabler::needClear(vector<pair<time_t, FileMeta>> &vec) {
+    time_t timer;
+    time(&timer);
+    for (vector<pair<time_t, FileMeta>>::iterator ite = vec.begin(); ite != vec.end(); ++ite) {
+        if (timer-DELETE_BUFFER_TIME > ite->first) {
+            return true;
+        }
+    }
+    return false;
+}
+
+/*
+ * Clear part of the sstable
+ * return: 1    success
+ *         -1   fail
+ */
+int BigTabler::clearSSTable(map<string, vector<pair<time_t, FileMeta>>>::iterator it, vector<pair<time_t, FileMeta>>::iterator ite) {
+    return 1;
 }
