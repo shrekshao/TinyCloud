@@ -53,9 +53,6 @@ public:
 };
 
 class BigTabler {
-    mutex m;
-    vector<FileMeta*> deleted_files;
-
     string server_id; // the server id
     int file_id; // the file id on disk
 
@@ -65,10 +62,12 @@ class BigTabler {
     map<string, map<string, FileMeta>> big_table; // define multilevel map. map within a map.
 
     vector<string> memtable_file; // Record file in memory
+    vector<FileMeta> deleted_files; // Record deleted files, gc will handle the rest of work and update this vector
 public:
     BigTabler (string s);
     int put (string username, string file_name, unsigned char content[], string type, unsigned int file_size);
     int get (string username, string file_name, unsigned char* res, unsigned int res_size);
+    int delet (string username, string file_name);
 };
 
 

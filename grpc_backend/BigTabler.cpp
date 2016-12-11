@@ -31,6 +31,13 @@ int BigTabler::put (string username, string file_name, unsigned char file_conten
     cout << "Current SS Buffer Length = " << (sizeof(ss_buffer)/sizeof(*ss_buffer)) << endl;
     cout << "\n";
     */
+    // Check if there is already a file with this name
+    if (big_table.find(username) == big_table.end()) {
+        big_table.emplace(piecewise_construct, forward_as_tuple(username), forward_as_tuple());
+    } else if (big_table.at(username).find(file_name) != big_table.at(username).end()) {
+        return -1;
+    }
+
     if (cur_pt + file_size >= MAX_BUFFER_SIZE) {
         // if the buffer is overflow, push to disk
 
@@ -41,9 +48,8 @@ int BigTabler::put (string username, string file_name, unsigned char file_conten
         outfile.write((char*) &memtable[0], cur_pt);
         outfile.write((char*) &file_content[0], file_size);
         outfile.close();
-        // put the file metainfo in big table
 
-        big_table.emplace(piecewise_construct, forward_as_tuple(username), forward_as_tuple());
+        // put the file metainfo in big table
         big_table.at(username).emplace(piecewise_construct, forward_as_tuple(file_name), forward_as_tuple(cur_pt, file_size, file_name, file_type, to_string(file_id), true, false));
 
         // Change the memtable file_meta
@@ -66,11 +72,12 @@ int BigTabler::put (string username, string file_name, unsigned char file_conten
         cur_pt += file_size;
 
         // put the file metainfo in big table
-        big_table.emplace(piecewise_construct, forward_as_tuple(username), forward_as_tuple());
         big_table.at(username).emplace(piecewise_construct, forward_as_tuple(file_name), forward_as_tuple(cur_pt, file_size, file_name, file_type, string(), false, false));
 
         memtable_file.emplace(memtable_file.end(), file_name);
     }
+
+    return 1;
 }
 
 /*
@@ -79,6 +86,10 @@ int BigTabler::put (string username, string file_name, unsigned char file_conten
  *         -1   fail
  */
 int BigTabler::get (string username, string file_name, unsigned char* res, unsigned int res_size) {
+    if (big_table.find(username) == big_table.end() || big_table.at(username).find(file_name) == big_table.at(username).end()) {
+        return -1;
+    }
+
     FileMeta file_meta = big_table.at(username).at(file_name);
 
     if (file_meta.is_deleted) {
@@ -137,5 +148,26 @@ int BigTabler::get (string username, string file_name, unsigned char* res, unsig
             res[i] = memtable[file_meta.buffer_start+i];
         }
         return len;
+    }
+}
+
+/*
+ * Delete a file, only one call at a time
+ * return: 1    success
+ *         -1   fail
+ */
+int BigTabler::delet(string username, string file_name) {
+    if (big_table.find(username) == big_table.end() || big_table.at(username).find(file_name) == big_table.at(username).end()) {
+        return -1;
+    }
+
+    FileMeta file_meta = big_table.at(username).at(file_name);
+
+    if (file_meta.is_deleted) {
+        return 1;
+    } else {
+        file_meta.is_deleted = true;
+        deleted_files.emplace(deleted_files.end(), big_table.at(username).at(file_name));
+        return 1;
     }
 }
