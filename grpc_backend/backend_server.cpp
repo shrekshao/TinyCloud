@@ -23,6 +23,7 @@ using backend::FileListRequest;
 using backend::FileListReply;
 using backend::Empty;
 using backend::FileChunk;
+using backend::FileChunkRequest;
 using backend::Storage;
 
 // Indexer service in-memory storage
@@ -51,23 +52,52 @@ class StorageServiceImpl final : public Storage::Service {
     }
 
     Status InsertFileList(ServerContext* context, const FileListRequest* request, Empty* reply) override {
-        int success = indexer_service.insert(request->foldername(), request->is_file());
+        int success = indexer_service.insert(request->foldername(), false);
         if (success == 1) {
             return Status::OK;
         } else {
             return Status::CANCELLED;
         }
     }
-/*
+
     Status PutFile(ServerContext* context, const FileChunk* request, Empty* reply) override {
-        int success = .put(request->filename(), request->data());
+        int success1 = bigtable_service.put(request->username(), request->filename(), (unsigned char *) request->data().c_str(), request->filetype(), request->length());
+        int success2 = indexer_service.insert(request->username()+"/"+request->filename(), true);
+        if (success1 == 1 && success2 == 1) {
+            return Status::OK;
+        } else {
+            return Status::CANCELLED;
+        }
+    }
+
+    Status GetFile(ServerContext* context, const FileChunkRequest* request, FileChunk* reply) override {
+        FileMeta* file_meta = bigtable_service.getMeta(request->username(), request->filename());
+
+        if (file_meta == NULL) {
+            return Status::CANCELLED;
+        }
+
+        reply->set_username(file_meta->username);
+        reply->set_filename(file_meta->file_name);
+        reply->set_length(file_meta->file_length);
+        reply->set_filetype(file_meta->file_type);
+
+        int success = bigtable_service.get(request->username(), request->filename(), (unsigned char *) reply->data().c_str(), file_meta->file_length);
+        if (success > 0) {
+            return Status::OK;
+        } else {
+            return Status::CANCELLED;
+        }
+    }
+
+    Status DeleteFile(ServerContext* context, const FileChunkRequest* request, Empty* reply) override {
+        int success = bigtable_service.delet(request->username(), request->filename());
         if (success == 1) {
             return Status::OK;
         } else {
             return Status::CANCELLED;
         }
     }
-*/
 };
 
 void RunServer() {

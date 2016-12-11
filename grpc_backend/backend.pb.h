@@ -40,6 +40,7 @@ void protobuf_ShutdownFile_backend_2eproto();
 
 class Empty;
 class FileChunk;
+class FileChunkRequest;
 class FileInfo;
 class FileListReply;
 class FileListRequest;
@@ -330,6 +331,105 @@ class FileInfo : public ::google::protobuf::Message /* @@protoc_insertion_point(
 };
 // -------------------------------------------------------------------
 
+class FileChunkRequest : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:backend.FileChunkRequest) */ {
+ public:
+  FileChunkRequest();
+  virtual ~FileChunkRequest();
+
+  FileChunkRequest(const FileChunkRequest& from);
+
+  inline FileChunkRequest& operator=(const FileChunkRequest& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const FileChunkRequest& default_instance();
+
+  void Swap(FileChunkRequest* other);
+
+  // implements Message ----------------------------------------------
+
+  inline FileChunkRequest* New() const { return New(NULL); }
+
+  FileChunkRequest* New(::google::protobuf::Arena* arena) const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const FileChunkRequest& from);
+  void MergeFrom(const FileChunkRequest& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
+      bool deterministic, ::google::protobuf::uint8* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const {
+    return InternalSerializeWithCachedSizesToArray(false, output);
+  }
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(FileChunkRequest* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return _internal_metadata_.arena();
+  }
+  inline void* MaybeArenaPtr() const {
+    return _internal_metadata_.raw_arena_ptr();
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // optional string username = 1;
+  void clear_username();
+  static const int kUsernameFieldNumber = 1;
+  const ::std::string& username() const;
+  void set_username(const ::std::string& value);
+  void set_username(const char* value);
+  void set_username(const char* value, size_t size);
+  ::std::string* mutable_username();
+  ::std::string* release_username();
+  void set_allocated_username(::std::string* username);
+
+  // optional string filename = 2;
+  void clear_filename();
+  static const int kFilenameFieldNumber = 2;
+  const ::std::string& filename() const;
+  void set_filename(const ::std::string& value);
+  void set_filename(const char* value);
+  void set_filename(const char* value, size_t size);
+  ::std::string* mutable_filename();
+  ::std::string* release_filename();
+  void set_allocated_filename(::std::string* filename);
+
+  // @@protoc_insertion_point(class_scope:backend.FileChunkRequest)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  bool _is_default_instance_;
+  ::google::protobuf::internal::ArenaStringPtr username_;
+  ::google::protobuf::internal::ArenaStringPtr filename_;
+  mutable int _cached_size_;
+  friend void  protobuf_AddDesc_backend_2eproto();
+  friend void protobuf_AssignDesc_backend_2eproto();
+  friend void protobuf_ShutdownFile_backend_2eproto();
+
+  void InitAsDefaultInstance();
+  static FileChunkRequest* default_instance_;
+};
+// -------------------------------------------------------------------
+
 class FileChunk : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:backend.FileChunk) */ {
  public:
   FileChunk();
@@ -390,9 +490,20 @@ class FileChunk : public ::google::protobuf::Message /* @@protoc_insertion_point
 
   // accessors -------------------------------------------------------
 
-  // optional string filename = 1;
+  // optional string username = 1;
+  void clear_username();
+  static const int kUsernameFieldNumber = 1;
+  const ::std::string& username() const;
+  void set_username(const ::std::string& value);
+  void set_username(const char* value);
+  void set_username(const char* value, size_t size);
+  ::std::string* mutable_username();
+  ::std::string* release_username();
+  void set_allocated_username(::std::string* username);
+
+  // optional string filename = 2;
   void clear_filename();
-  static const int kFilenameFieldNumber = 1;
+  static const int kFilenameFieldNumber = 2;
   const ::std::string& filename() const;
   void set_filename(const ::std::string& value);
   void set_filename(const char* value);
@@ -401,15 +512,15 @@ class FileChunk : public ::google::protobuf::Message /* @@protoc_insertion_point
   ::std::string* release_filename();
   void set_allocated_filename(::std::string* filename);
 
-  // optional int64 length = 2;
+  // optional uint64 length = 3;
   void clear_length();
-  static const int kLengthFieldNumber = 2;
-  ::google::protobuf::int64 length() const;
-  void set_length(::google::protobuf::int64 value);
+  static const int kLengthFieldNumber = 3;
+  ::google::protobuf::uint64 length() const;
+  void set_length(::google::protobuf::uint64 value);
 
-  // optional string filetype = 3;
+  // optional string filetype = 4;
   void clear_filetype();
-  static const int kFiletypeFieldNumber = 3;
+  static const int kFiletypeFieldNumber = 4;
   const ::std::string& filetype() const;
   void set_filetype(const ::std::string& value);
   void set_filetype(const char* value);
@@ -418,9 +529,9 @@ class FileChunk : public ::google::protobuf::Message /* @@protoc_insertion_point
   ::std::string* release_filetype();
   void set_allocated_filetype(::std::string* filetype);
 
-  // optional bytes data = 4;
+  // optional bytes data = 5;
   void clear_data();
-  static const int kDataFieldNumber = 4;
+  static const int kDataFieldNumber = 5;
   const ::std::string& data() const;
   void set_data(const ::std::string& value);
   void set_data(const char* value);
@@ -434,8 +545,9 @@ class FileChunk : public ::google::protobuf::Message /* @@protoc_insertion_point
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   bool _is_default_instance_;
+  ::google::protobuf::internal::ArenaStringPtr username_;
   ::google::protobuf::internal::ArenaStringPtr filename_;
-  ::google::protobuf::int64 length_;
+  ::google::protobuf::uint64 length_;
   ::google::protobuf::internal::ArenaStringPtr filetype_;
   ::google::protobuf::internal::ArenaStringPtr data_;
   mutable int _cached_size_;
@@ -673,9 +785,145 @@ inline void FileInfo::set_is_file(bool value) {
 
 // -------------------------------------------------------------------
 
+// FileChunkRequest
+
+// optional string username = 1;
+inline void FileChunkRequest::clear_username() {
+  username_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline const ::std::string& FileChunkRequest::username() const {
+  // @@protoc_insertion_point(field_get:backend.FileChunkRequest.username)
+  return username_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void FileChunkRequest::set_username(const ::std::string& value) {
+  
+  username_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:backend.FileChunkRequest.username)
+}
+inline void FileChunkRequest::set_username(const char* value) {
+  
+  username_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:backend.FileChunkRequest.username)
+}
+inline void FileChunkRequest::set_username(const char* value, size_t size) {
+  
+  username_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:backend.FileChunkRequest.username)
+}
+inline ::std::string* FileChunkRequest::mutable_username() {
+  
+  // @@protoc_insertion_point(field_mutable:backend.FileChunkRequest.username)
+  return username_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline ::std::string* FileChunkRequest::release_username() {
+  // @@protoc_insertion_point(field_release:backend.FileChunkRequest.username)
+  
+  return username_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void FileChunkRequest::set_allocated_username(::std::string* username) {
+  if (username != NULL) {
+    
+  } else {
+    
+  }
+  username_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), username);
+  // @@protoc_insertion_point(field_set_allocated:backend.FileChunkRequest.username)
+}
+
+// optional string filename = 2;
+inline void FileChunkRequest::clear_filename() {
+  filename_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline const ::std::string& FileChunkRequest::filename() const {
+  // @@protoc_insertion_point(field_get:backend.FileChunkRequest.filename)
+  return filename_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void FileChunkRequest::set_filename(const ::std::string& value) {
+  
+  filename_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:backend.FileChunkRequest.filename)
+}
+inline void FileChunkRequest::set_filename(const char* value) {
+  
+  filename_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:backend.FileChunkRequest.filename)
+}
+inline void FileChunkRequest::set_filename(const char* value, size_t size) {
+  
+  filename_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:backend.FileChunkRequest.filename)
+}
+inline ::std::string* FileChunkRequest::mutable_filename() {
+  
+  // @@protoc_insertion_point(field_mutable:backend.FileChunkRequest.filename)
+  return filename_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline ::std::string* FileChunkRequest::release_filename() {
+  // @@protoc_insertion_point(field_release:backend.FileChunkRequest.filename)
+  
+  return filename_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void FileChunkRequest::set_allocated_filename(::std::string* filename) {
+  if (filename != NULL) {
+    
+  } else {
+    
+  }
+  filename_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), filename);
+  // @@protoc_insertion_point(field_set_allocated:backend.FileChunkRequest.filename)
+}
+
+// -------------------------------------------------------------------
+
 // FileChunk
 
-// optional string filename = 1;
+// optional string username = 1;
+inline void FileChunk::clear_username() {
+  username_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline const ::std::string& FileChunk::username() const {
+  // @@protoc_insertion_point(field_get:backend.FileChunk.username)
+  return username_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void FileChunk::set_username(const ::std::string& value) {
+  
+  username_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:backend.FileChunk.username)
+}
+inline void FileChunk::set_username(const char* value) {
+  
+  username_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:backend.FileChunk.username)
+}
+inline void FileChunk::set_username(const char* value, size_t size) {
+  
+  username_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:backend.FileChunk.username)
+}
+inline ::std::string* FileChunk::mutable_username() {
+  
+  // @@protoc_insertion_point(field_mutable:backend.FileChunk.username)
+  return username_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline ::std::string* FileChunk::release_username() {
+  // @@protoc_insertion_point(field_release:backend.FileChunk.username)
+  
+  return username_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void FileChunk::set_allocated_username(::std::string* username) {
+  if (username != NULL) {
+    
+  } else {
+    
+  }
+  username_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), username);
+  // @@protoc_insertion_point(field_set_allocated:backend.FileChunk.username)
+}
+
+// optional string filename = 2;
 inline void FileChunk::clear_filename() {
   filename_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -719,21 +967,21 @@ inline void FileChunk::set_allocated_filename(::std::string* filename) {
   // @@protoc_insertion_point(field_set_allocated:backend.FileChunk.filename)
 }
 
-// optional int64 length = 2;
+// optional uint64 length = 3;
 inline void FileChunk::clear_length() {
-  length_ = GOOGLE_LONGLONG(0);
+  length_ = GOOGLE_ULONGLONG(0);
 }
-inline ::google::protobuf::int64 FileChunk::length() const {
+inline ::google::protobuf::uint64 FileChunk::length() const {
   // @@protoc_insertion_point(field_get:backend.FileChunk.length)
   return length_;
 }
-inline void FileChunk::set_length(::google::protobuf::int64 value) {
+inline void FileChunk::set_length(::google::protobuf::uint64 value) {
   
   length_ = value;
   // @@protoc_insertion_point(field_set:backend.FileChunk.length)
 }
 
-// optional string filetype = 3;
+// optional string filetype = 4;
 inline void FileChunk::clear_filetype() {
   filetype_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -777,7 +1025,7 @@ inline void FileChunk::set_allocated_filetype(::std::string* filetype) {
   // @@protoc_insertion_point(field_set_allocated:backend.FileChunk.filetype)
 }
 
-// optional bytes data = 4;
+// optional bytes data = 5;
 inline void FileChunk::clear_data() {
   data_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -826,6 +1074,8 @@ inline void FileChunk::set_allocated_data(::std::string* data) {
 // Empty
 
 #endif  // !PROTOBUF_INLINE_NOT_IN_HEADERS
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

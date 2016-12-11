@@ -138,6 +138,19 @@ int BigTabler::put (string username, string file_name, unsigned char orig_file_c
 }
 
 /*
+ * Get file metainfo
+ * return: file_meta    success
+ *         NULL   fail
+ */
+FileMeta* BigTabler::getMeta (string username, string file_name) {
+    if (big_table.find(username) == big_table.end() || big_table.at(username).find(file_name) == big_table.at(username).end()) {
+        return NULL;
+    }
+
+    return &big_table.at(username).at(file_name);
+}
+
+/*
  * Search for a file, return in res
  * return: file size written >= 0    success
  *         -1   fail
@@ -147,11 +160,11 @@ int BigTabler::get (string username, string file_name, unsigned char* res, unsig
         return -1;
     }
 
-    FileMeta file_meta = big_table.at(username).at(file_name);
+    FileMeta *file_meta = &big_table.at(username).at(file_name);
 
-    if (file_meta.is_deleted) {
+    if (file_meta->is_deleted) {
         return -1;
-    } else if (file_meta.is_flushed) {
+    } else if (file_meta->is_flushed) {
         // Read from the disk sstable
         string sstable_name = big_table.at(username).at(file_name).sstable_name;
 
@@ -184,26 +197,26 @@ int BigTabler::get (string username, string file_name, unsigned char* res, unsig
             length = sb.st_size - start; /* Can't display bytes past end of file */
         }
 
-        unsigned char *addr = (unsigned char *) mmap(NULL, length + file_meta.buffer_start - pa_offset, PROT_READ, MAP_PRIVATE, fd, pa_offset);
+        unsigned char *addr = (unsigned char *) mmap(NULL, length + file_meta->buffer_start - pa_offset, PROT_READ, MAP_PRIVATE, fd, pa_offset);
         if (addr == MAP_FAILED) {
             fprintf(stderr, "mmap");
             return -1;
         }
 
-        int len = min(file_meta.file_length, res_size);
+        int len = min(file_meta->file_length, res_size);
         for (int i = 0; i < len; i++) {
-            res[i] = *(addr + file_meta.buffer_start - pa_offset + i);
+            res[i] = *(addr + file_meta->buffer_start - pa_offset + i);
         }
 
-        munmap(addr, length + file_meta.buffer_start - pa_offset);
+        munmap(addr, length + file_meta->buffer_start - pa_offset);
         close(fd);
 
         return len;
     } else {
         // Read from the memtable
-        int len = min(file_meta.file_length, res_size);
+        int len = min(file_meta->file_length, res_size);
         for (int i = 0; i < len; i++) {
-            res[i] = memtable[file_meta.buffer_start+i];
+            res[i] = memtable[file_meta->buffer_start+i];
         }
         return len;
     }
@@ -311,6 +324,7 @@ int BigTabler::clearSSTable(map<string, vector<pair<time_t, FileMeta>>>::iterato
         return -1;
     }
 
+    int pt = 0;
     for (vector<string>::iterator iter = sstable_indexer.at(it->first).begin(); iter != sstable_indexer.at(it->first).end(); ++iter) {
         if ((*iter).compare(minHeap.top().second) == 0) {
             minHeap.pop();
@@ -318,6 +332,8 @@ int BigTabler::clearSSTable(map<string, vector<pair<time_t, FileMeta>>>::iterato
             string username = (*iter).substr(0, (*iter).find("/"));
             string file_name = (*iter).substr((*iter).find("/")+1, (*iter).length()-(*iter).find("/")-1);
             outfile.write((char*) &buffer[big_table.at(username).at(file_name).buffer_start], big_table.at(username).at(file_name).file_length);
+            big_table.at(username).at(file_name).buffer_start = pt;
+            pt += big_table.at(username).at(file_name).file_length;
         }
     }
 

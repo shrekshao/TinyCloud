@@ -60,19 +60,19 @@ Storage::Stub::Stub(const std::shared_ptr< ::grpc::ChannelInterface>& channel)
   return new ::grpc::ClientAsyncResponseReader< ::backend::Empty>(channel_.get(), cq, rpcmethod_PutFile_, context, request);
 }
 
-::grpc::Status Storage::Stub::GetFile(::grpc::ClientContext* context, const ::backend::FileListRequest& request, ::backend::FileChunk* response) {
+::grpc::Status Storage::Stub::GetFile(::grpc::ClientContext* context, const ::backend::FileChunkRequest& request, ::backend::FileChunk* response) {
   return ::grpc::BlockingUnaryCall(channel_.get(), rpcmethod_GetFile_, context, request, response);
 }
 
-::grpc::ClientAsyncResponseReader< ::backend::FileChunk>* Storage::Stub::AsyncGetFileRaw(::grpc::ClientContext* context, const ::backend::FileListRequest& request, ::grpc::CompletionQueue* cq) {
+::grpc::ClientAsyncResponseReader< ::backend::FileChunk>* Storage::Stub::AsyncGetFileRaw(::grpc::ClientContext* context, const ::backend::FileChunkRequest& request, ::grpc::CompletionQueue* cq) {
   return new ::grpc::ClientAsyncResponseReader< ::backend::FileChunk>(channel_.get(), cq, rpcmethod_GetFile_, context, request);
 }
 
-::grpc::Status Storage::Stub::DeleteFile(::grpc::ClientContext* context, const ::backend::FileListRequest& request, ::backend::Empty* response) {
+::grpc::Status Storage::Stub::DeleteFile(::grpc::ClientContext* context, const ::backend::FileChunkRequest& request, ::backend::Empty* response) {
   return ::grpc::BlockingUnaryCall(channel_.get(), rpcmethod_DeleteFile_, context, request, response);
 }
 
-::grpc::ClientAsyncResponseReader< ::backend::Empty>* Storage::Stub::AsyncDeleteFileRaw(::grpc::ClientContext* context, const ::backend::FileListRequest& request, ::grpc::CompletionQueue* cq) {
+::grpc::ClientAsyncResponseReader< ::backend::Empty>* Storage::Stub::AsyncDeleteFileRaw(::grpc::ClientContext* context, const ::backend::FileChunkRequest& request, ::grpc::CompletionQueue* cq) {
   return new ::grpc::ClientAsyncResponseReader< ::backend::Empty>(channel_.get(), cq, rpcmethod_DeleteFile_, context, request);
 }
 
@@ -96,12 +96,12 @@ Storage::Service::Service() {
   AddMethod(new ::grpc::RpcServiceMethod(
       Storage_method_names[3],
       ::grpc::RpcMethod::NORMAL_RPC,
-      new ::grpc::RpcMethodHandler< Storage::Service, ::backend::FileListRequest, ::backend::FileChunk>(
+      new ::grpc::RpcMethodHandler< Storage::Service, ::backend::FileChunkRequest, ::backend::FileChunk>(
           std::mem_fn(&Storage::Service::GetFile), this)));
   AddMethod(new ::grpc::RpcServiceMethod(
       Storage_method_names[4],
       ::grpc::RpcMethod::NORMAL_RPC,
-      new ::grpc::RpcMethodHandler< Storage::Service, ::backend::FileListRequest, ::backend::Empty>(
+      new ::grpc::RpcMethodHandler< Storage::Service, ::backend::FileChunkRequest, ::backend::Empty>(
           std::mem_fn(&Storage::Service::DeleteFile), this)));
 }
 
@@ -129,14 +129,14 @@ Storage::Service::~Service() {
   return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
 }
 
-::grpc::Status Storage::Service::GetFile(::grpc::ServerContext* context, const ::backend::FileListRequest* request, ::backend::FileChunk* response) {
+::grpc::Status Storage::Service::GetFile(::grpc::ServerContext* context, const ::backend::FileChunkRequest* request, ::backend::FileChunk* response) {
   (void) context;
   (void) request;
   (void) response;
   return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
 }
 
-::grpc::Status Storage::Service::DeleteFile(::grpc::ServerContext* context, const ::backend::FileListRequest* request, ::backend::Empty* response) {
+::grpc::Status Storage::Service::DeleteFile(::grpc::ServerContext* context, const ::backend::FileChunkRequest* request, ::backend::Empty* response) {
   (void) context;
   (void) request;
   (void) response;

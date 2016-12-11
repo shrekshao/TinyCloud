@@ -45,15 +45,14 @@ service Storage {
   // Upload a file
   rpc PutFile (FileChunk) returns (Empty) {}
   // Get a file
-  rpc GetFile (FileListRequest) returns (FileChunk) {}
+  rpc GetFile (FileChunkRequest) returns (FileChunk) {}
   // Delete a file
-  rpc DeleteFile (FileListRequest) returns (Empty) {}
+  rpc DeleteFile (FileChunkRequest) returns (Empty) {}
 }
 
 // The request message containing the user/folder's name.
 message FileListRequest {
-  string foldername = 1;
-  bool is_file = 2;
+  string foldername = 1; // /username/.../...
 }
 
 // The response message containing the files
@@ -66,11 +65,17 @@ message FileInfo {
     bool is_file = 2;
 }
 
+message FileChunkRequest {
+    string username = 1; // username
+    string filename = 2; // .../.../...
+}
+
 message FileChunk {
-    string filename = 1;
-    int64 length = 2;
-    string filetype = 3;
-    bytes data = 4;
+    string username = 1; // username
+    string filename = 2; // .../.../...
+    uint64 length = 3;
+    string filetype = 4;
+    bytes data = 5;
 }
 
 message Empty {

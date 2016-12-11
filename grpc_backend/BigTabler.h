@@ -94,6 +94,7 @@ public:
     BigTabler (string s);
     int put (string username, string file_name, unsigned char content[], string type, unsigned int file_size);
     int put (string username, string file_name, unsigned char orig_file_content[], unsigned char content[], string type, unsigned int orig_file_size, unsigned int file_size);
+    FileMeta* getMeta (string username, string file_name);
     int get (string username, string file_name, unsigned char* res, unsigned int res_size);
     int delet (string username, string file_name);
     int gc();

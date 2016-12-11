@@ -77,21 +77,21 @@ class Storage GRPC_FINAL {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::backend::Empty>>(AsyncPutFileRaw(context, request, cq));
     }
     // Get a file
-    virtual ::grpc::Status GetFile(::grpc::ClientContext* context, const ::backend::FileListRequest& request, ::backend::FileChunk* response) = 0;
-    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::backend::FileChunk>> AsyncGetFile(::grpc::ClientContext* context, const ::backend::FileListRequest& request, ::grpc::CompletionQueue* cq) {
+    virtual ::grpc::Status GetFile(::grpc::ClientContext* context, const ::backend::FileChunkRequest& request, ::backend::FileChunk* response) = 0;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::backend::FileChunk>> AsyncGetFile(::grpc::ClientContext* context, const ::backend::FileChunkRequest& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::backend::FileChunk>>(AsyncGetFileRaw(context, request, cq));
     }
     // Delete a file
-    virtual ::grpc::Status DeleteFile(::grpc::ClientContext* context, const ::backend::FileListRequest& request, ::backend::Empty* response) = 0;
-    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::backend::Empty>> AsyncDeleteFile(::grpc::ClientContext* context, const ::backend::FileListRequest& request, ::grpc::CompletionQueue* cq) {
+    virtual ::grpc::Status DeleteFile(::grpc::ClientContext* context, const ::backend::FileChunkRequest& request, ::backend::Empty* response) = 0;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::backend::Empty>> AsyncDeleteFile(::grpc::ClientContext* context, const ::backend::FileChunkRequest& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::backend::Empty>>(AsyncDeleteFileRaw(context, request, cq));
     }
   private:
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::backend::FileListReply>* AsyncGetFileListRaw(::grpc::ClientContext* context, const ::backend::FileListRequest& request, ::grpc::CompletionQueue* cq) = 0;
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::backend::Empty>* AsyncInsertFileListRaw(::grpc::ClientContext* context, const ::backend::FileListRequest& request, ::grpc::CompletionQueue* cq) = 0;
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::backend::Empty>* AsyncPutFileRaw(::grpc::ClientContext* context, const ::backend::FileChunk& request, ::grpc::CompletionQueue* cq) = 0;
-    virtual ::grpc::ClientAsyncResponseReaderInterface< ::backend::FileChunk>* AsyncGetFileRaw(::grpc::ClientContext* context, const ::backend::FileListRequest& request, ::grpc::CompletionQueue* cq) = 0;
-    virtual ::grpc::ClientAsyncResponseReaderInterface< ::backend::Empty>* AsyncDeleteFileRaw(::grpc::ClientContext* context, const ::backend::FileListRequest& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::backend::FileChunk>* AsyncGetFileRaw(::grpc::ClientContext* context, const ::backend::FileChunkRequest& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::backend::Empty>* AsyncDeleteFileRaw(::grpc::ClientContext* context, const ::backend::FileChunkRequest& request, ::grpc::CompletionQueue* cq) = 0;
   };
   class Stub GRPC_FINAL : public StubInterface {
    public:
@@ -108,12 +108,12 @@ class Storage GRPC_FINAL {
     std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::backend::Empty>> AsyncPutFile(::grpc::ClientContext* context, const ::backend::FileChunk& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::backend::Empty>>(AsyncPutFileRaw(context, request, cq));
     }
-    ::grpc::Status GetFile(::grpc::ClientContext* context, const ::backend::FileListRequest& request, ::backend::FileChunk* response) GRPC_OVERRIDE;
-    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::backend::FileChunk>> AsyncGetFile(::grpc::ClientContext* context, const ::backend::FileListRequest& request, ::grpc::CompletionQueue* cq) {
+    ::grpc::Status GetFile(::grpc::ClientContext* context, const ::backend::FileChunkRequest& request, ::backend::FileChunk* response) GRPC_OVERRIDE;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::backend::FileChunk>> AsyncGetFile(::grpc::ClientContext* context, const ::backend::FileChunkRequest& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::backend::FileChunk>>(AsyncGetFileRaw(context, request, cq));
     }
-    ::grpc::Status DeleteFile(::grpc::ClientContext* context, const ::backend::FileListRequest& request, ::backend::Empty* response) GRPC_OVERRIDE;
-    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::backend::Empty>> AsyncDeleteFile(::grpc::ClientContext* context, const ::backend::FileListRequest& request, ::grpc::CompletionQueue* cq) {
+    ::grpc::Status DeleteFile(::grpc::ClientContext* context, const ::backend::FileChunkRequest& request, ::backend::Empty* response) GRPC_OVERRIDE;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::backend::Empty>> AsyncDeleteFile(::grpc::ClientContext* context, const ::backend::FileChunkRequest& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::backend::Empty>>(AsyncDeleteFileRaw(context, request, cq));
     }
 
@@ -122,8 +122,8 @@ class Storage GRPC_FINAL {
     ::grpc::ClientAsyncResponseReader< ::backend::FileListReply>* AsyncGetFileListRaw(::grpc::ClientContext* context, const ::backend::FileListRequest& request, ::grpc::CompletionQueue* cq) GRPC_OVERRIDE;
     ::grpc::ClientAsyncResponseReader< ::backend::Empty>* AsyncInsertFileListRaw(::grpc::ClientContext* context, const ::backend::FileListRequest& request, ::grpc::CompletionQueue* cq) GRPC_OVERRIDE;
     ::grpc::ClientAsyncResponseReader< ::backend::Empty>* AsyncPutFileRaw(::grpc::ClientContext* context, const ::backend::FileChunk& request, ::grpc::CompletionQueue* cq) GRPC_OVERRIDE;
-    ::grpc::ClientAsyncResponseReader< ::backend::FileChunk>* AsyncGetFileRaw(::grpc::ClientContext* context, const ::backend::FileListRequest& request, ::grpc::CompletionQueue* cq) GRPC_OVERRIDE;
-    ::grpc::ClientAsyncResponseReader< ::backend::Empty>* AsyncDeleteFileRaw(::grpc::ClientContext* context, const ::backend::FileListRequest& request, ::grpc::CompletionQueue* cq) GRPC_OVERRIDE;
+    ::grpc::ClientAsyncResponseReader< ::backend::FileChunk>* AsyncGetFileRaw(::grpc::ClientContext* context, const ::backend::FileChunkRequest& request, ::grpc::CompletionQueue* cq) GRPC_OVERRIDE;
+    ::grpc::ClientAsyncResponseReader< ::backend::Empty>* AsyncDeleteFileRaw(::grpc::ClientContext* context, const ::backend::FileChunkRequest& request, ::grpc::CompletionQueue* cq) GRPC_OVERRIDE;
     const ::grpc::RpcMethod rpcmethod_GetFileList_;
     const ::grpc::RpcMethod rpcmethod_InsertFileList_;
     const ::grpc::RpcMethod rpcmethod_PutFile_;
@@ -143,9 +143,9 @@ class Storage GRPC_FINAL {
     // Upload a file
     virtual ::grpc::Status PutFile(::grpc::ServerContext* context, const ::backend::FileChunk* request, ::backend::Empty* response);
     // Get a file
-    virtual ::grpc::Status GetFile(::grpc::ServerContext* context, const ::backend::FileListRequest* request, ::backend::FileChunk* response);
+    virtual ::grpc::Status GetFile(::grpc::ServerContext* context, const ::backend::FileChunkRequest* request, ::backend::FileChunk* response);
     // Delete a file
-    virtual ::grpc::Status DeleteFile(::grpc::ServerContext* context, const ::backend::FileListRequest* request, ::backend::Empty* response);
+    virtual ::grpc::Status DeleteFile(::grpc::ServerContext* context, const ::backend::FileChunkRequest* request, ::backend::Empty* response);
   };
   template <class BaseClass>
   class WithAsyncMethod_GetFileList : public BaseClass {
@@ -219,11 +219,11 @@ class Storage GRPC_FINAL {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status GetFile(::grpc::ServerContext* context, const ::backend::FileListRequest* request, ::backend::FileChunk* response) GRPC_FINAL GRPC_OVERRIDE {
+    ::grpc::Status GetFile(::grpc::ServerContext* context, const ::backend::FileChunkRequest* request, ::backend::FileChunk* response) GRPC_FINAL GRPC_OVERRIDE {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
-    void RequestGetFile(::grpc::ServerContext* context, ::backend::FileListRequest* request, ::grpc::ServerAsyncResponseWriter< ::backend::FileChunk>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+    void RequestGetFile(::grpc::ServerContext* context, ::backend::FileChunkRequest* request, ::grpc::ServerAsyncResponseWriter< ::backend::FileChunk>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
       ::grpc::Service::RequestAsyncUnary(3, context, request, response, new_call_cq, notification_cq, tag);
     }
   };
@@ -239,11 +239,11 @@ class Storage GRPC_FINAL {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status DeleteFile(::grpc::ServerContext* context, const ::backend::FileListRequest* request, ::backend::Empty* response) GRPC_FINAL GRPC_OVERRIDE {
+    ::grpc::Status DeleteFile(::grpc::ServerContext* context, const ::backend::FileChunkRequest* request, ::backend::Empty* response) GRPC_FINAL GRPC_OVERRIDE {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
-    void RequestDeleteFile(::grpc::ServerContext* context, ::backend::FileListRequest* request, ::grpc::ServerAsyncResponseWriter< ::backend::Empty>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+    void RequestDeleteFile(::grpc::ServerContext* context, ::backend::FileChunkRequest* request, ::grpc::ServerAsyncResponseWriter< ::backend::Empty>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
       ::grpc::Service::RequestAsyncUnary(4, context, request, response, new_call_cq, notification_cq, tag);
     }
   };
@@ -311,7 +311,7 @@ class Storage GRPC_FINAL {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status GetFile(::grpc::ServerContext* context, const ::backend::FileListRequest* request, ::backend::FileChunk* response) GRPC_FINAL GRPC_OVERRIDE {
+    ::grpc::Status GetFile(::grpc::ServerContext* context, const ::backend::FileChunkRequest* request, ::backend::FileChunk* response) GRPC_FINAL GRPC_OVERRIDE {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
@@ -328,7 +328,7 @@ class Storage GRPC_FINAL {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status DeleteFile(::grpc::ServerContext* context, const ::backend::FileListRequest* request, ::backend::Empty* response) GRPC_FINAL GRPC_OVERRIDE {
+    ::grpc::Status DeleteFile(::grpc::ServerContext* context, const ::backend::FileChunkRequest* request, ::backend::Empty* response) GRPC_FINAL GRPC_OVERRIDE {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
