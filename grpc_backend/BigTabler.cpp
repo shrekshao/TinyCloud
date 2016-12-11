@@ -2,6 +2,7 @@
 // Created by tianli on 12/7/16.
 //
 
+#include <queue>
 #include "BigTabler.h"
 
 // constructor
@@ -62,12 +63,16 @@ int BigTabler::put (string username, string file_name, unsigned char file_conten
         deleted_files.emplace(piecewise_construct, forward_as_tuple(to_string(file_id)), forward_as_tuple());
 
         // put the file metainfo in big table
-        big_table.at(username).emplace(piecewise_construct, forward_as_tuple(file_name), forward_as_tuple(cur_pt, file_size, file_name, file_type, to_string(file_id), true, false));
+        big_table.at(username).emplace(piecewise_construct, forward_as_tuple(file_name), forward_as_tuple(cur_pt, file_size, username, file_name, file_type, to_string(file_id), true, false));
 
         // Change the memtable file_meta
         for(vector<string>::iterator it = memtable_file.begin(); it != memtable_file.end(); ++it) {
             big_table.at(username).at(*it).is_flushed = true;
         }
+
+        memtable_file.emplace(memtable_file.end(), username+"/"+file_name);
+        sstable_indexer.emplace(to_string(file_id), memtable_file);
+
         memtable_file.clear();
 
         // Clear buffer
@@ -84,9 +89,9 @@ int BigTabler::put (string username, string file_name, unsigned char file_conten
         cur_pt += file_size;
 
         // put the file metainfo in big table
-        big_table.at(username).emplace(piecewise_construct, forward_as_tuple(file_name), forward_as_tuple(cur_pt, file_size, file_name, file_type, to_string(file_id), false, false));
+        big_table.at(username).emplace(piecewise_construct, forward_as_tuple(file_name), forward_as_tuple(cur_pt, file_size, username, file_name, file_type, to_string(file_id), false, false));
 
-        memtable_file.emplace(memtable_file.end(), file_name);
+        memtable_file.emplace(memtable_file.end(), username+"/"+file_name);
     }
 
     return 1;
@@ -278,5 +283,49 @@ bool BigTabler::needClear(vector<pair<time_t, FileMeta>> &vec) {
  *         -1   fail
  */
 int BigTabler::clearSSTable(map<string, vector<pair<time_t, FileMeta>>>::iterator it, vector<pair<time_t, FileMeta>>::iterator ite) {
+    priority_queue<pair<unsigned int, string>, vector<pair<unsigned int, string>>, Compare> minHeap;
+    for (; ite != it->second.end(); ++ite) {
+        minHeap.push(make_pair(ite->second.buffer_start, ite->second.username + "/" + ite->second.file_name));
+    }
+
+    string file_path = server_id + "/" + it->first;
+    ifstream infile(file_path, ifstream::binary);
+    if (!infile.is_open()) {
+        return -1;
+    }
+    // get length of file:
+    infile.seekg (0, infile.end);
+    int length = infile.tellg();
+    infile.seekg (0, infile.beg);
+
+    // allocate memory:
+    unsigned char *buffer = new unsigned char[length];
+
+    // read data as a block:
+    infile.read((char*) buffer, length);
+
+    infile.close();
+
+    ofstream outfile(file_path + "_tmp", ofstream::binary);
+    if (!outfile.is_open()) {
+        return -1;
+    }
+
+    for (vector<string>::iterator iter = sstable_indexer.at(it->first).begin(); iter != sstable_indexer.at(it->first).end(); ++iter) {
+        if ((*iter).compare(minHeap.top().second) == 0) {
+            minHeap.pop();
+        } else {
+            string username = (*iter).substr(0, (*iter).find("/"));
+            string file_name = (*iter).substr((*iter).find("/")+1, (*iter).length()-(*iter).find("/")-1);
+            outfile.write((char*) &buffer[big_table.at(username).at(file_name).buffer_start], big_table.at(username).at(file_name).file_length);
+        }
+    }
+
+    outfile.close();
+    delete[] buffer;
+
+    remove(file_path.c_str());
+    rename((file_path+"_tmp").c_str(), file_path.c_str());
+
     return 1;
 }

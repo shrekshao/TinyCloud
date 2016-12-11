@@ -39,19 +39,29 @@ class FileMeta {
 public:
     unsigned int buffer_start;
     unsigned int file_length;
+    string username;
     string file_name;
     string file_type;
     string sstable_name;
     bool is_flushed;
     bool is_deleted;
-    FileMeta (unsigned int buffer_start, unsigned int file_length, string file_name, string file_type, string sstable_name, bool is_flushed = false, bool is_deleted = false) {
+    FileMeta (unsigned int buffer_start, unsigned int file_length, string username, string file_name, string file_type, string sstable_name, bool is_flushed = false, bool is_deleted = false) {
         this->buffer_start = buffer_start;
         this->file_length = file_length;
+        this->username = username;
         this->file_name = file_name;
         this->file_type = file_type;
         this->sstable_name = sstable_name;
         this->is_flushed = is_flushed;
         this->is_deleted = is_deleted;
+    }
+};
+
+// minHeap compare class in gc
+class Compare {
+public:
+    bool operator() (pair<unsigned int, string> one, pair<unsigned int, string> two) {
+        return one.first > two.first;
     }
 };
 
@@ -66,6 +76,7 @@ class BigTabler {
 
     vector<string> memtable_file; // Record file in memory
     map<string, vector<pair<time_t, FileMeta>>> deleted_files; // Record deleted files, gc will handle the rest of work and update this vector
+    map<string, vector<string>> sstable_indexer; // Record files in each sstable, used for gc update
 
     mutex put_m, delete_m; // mutex for put() and delet()
     map<string, boost::shared_mutex> sstable_mutex; // mutexs for sstable files on disk
