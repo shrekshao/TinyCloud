@@ -22,8 +22,9 @@
 #include <chrono>
 #include <string.h>
 #include <boost/filesystem.hpp>
-#include <boost/interprocess/sync/file_lock.hpp>
-#include <boost/interprocess/sync/sharable_lock.hpp>
+#include <boost/thread/locks.hpp>
+#include <boost/thread/lock_types.hpp>
+#include <boost/thread/shared_mutex.hpp>
 
 using namespace std;
 
@@ -62,12 +63,17 @@ class BigTabler {
     map<string, map<string, FileMeta>> big_table; // define multilevel map. map within a map.
 
     vector<string> memtable_file; // Record file in memory
-    vector<FileMeta> deleted_files; // Record deleted files, gc will handle the rest of work and update this vector
+    map<string, vector<pair<time_t, FileMeta>>> deleted_files; // Record deleted files, gc will handle the rest of work and update this vector
+
+    mutex put_m, delete_m; // mutex for put() and delet()
+    map<string, boost::shared_mutex> sstable_mutex; // mutexs for sstable files on disk
 public:
     BigTabler (string s);
     int put (string username, string file_name, unsigned char content[], string type, unsigned int file_size);
+    int put (string username, string file_name, unsigned char orig_file_content[], unsigned char content[], string type, unsigned int orig_file_size, unsigned int file_size);
     int get (string username, string file_name, unsigned char* res, unsigned int res_size);
     int delet (string username, string file_name);
+    int gc();
 };
 
 

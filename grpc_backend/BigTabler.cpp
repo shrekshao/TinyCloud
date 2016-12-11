@@ -35,7 +35,11 @@ int BigTabler::put (string username, string file_name, unsigned char file_conten
     if (big_table.find(username) == big_table.end()) {
         big_table.emplace(piecewise_construct, forward_as_tuple(username), forward_as_tuple());
     } else if (big_table.at(username).find(file_name) != big_table.at(username).end()) {
-        return -1;
+        if (!big_table.at(username).at(file_name).is_deleted) {
+            return -1;
+        } else {
+            big_table.at(username).erase(file_name);
+        }
     }
 
     if (cur_pt + file_size >= MAX_BUFFER_SIZE) {
@@ -48,6 +52,11 @@ int BigTabler::put (string username, string file_name, unsigned char file_conten
         outfile.write((char*) &memtable[0], cur_pt);
         outfile.write((char*) &file_content[0], file_size);
         outfile.close();
+
+        // Add new mutex for this sstable
+        sstable_mutex.emplace(piecewise_construct, forward_as_tuple(to_string(file_id)), forward_as_tuple());
+        // Add new vector for this sstable
+        deleted_files.emplace(piecewise_construct, forward_as_tuple(to_string(file_id)), forward_as_tuple());
 
         // put the file metainfo in big table
         big_table.at(username).emplace(piecewise_construct, forward_as_tuple(file_name), forward_as_tuple(cur_pt, file_size, file_name, file_type, to_string(file_id), true, false));
@@ -81,6 +90,52 @@ int BigTabler::put (string username, string file_name, unsigned char file_conten
 }
 
 /*
+ * Insert a file to the system, should have a lock, only one call at a time
+ * return: 1    success
+ *         -1   fail
+ */
+int BigTabler::put (string username, string file_name, unsigned char orig_file_content[], unsigned char file_content[], string file_type, unsigned int orig_file_size, unsigned int file_size) {
+    /*
+    cout << "User Name: " << username << "\n";
+    cout << "File Name: " << file_name << "\n";
+    cout << "File Size: " << file_size << "\n";
+    cout << "File Type: "<< file_type << "\n";
+    cout << "Current SS Buffer Length = " << (sizeof(ss_buffer)/sizeof(*ss_buffer)) << endl;
+    cout << "\n";
+    */
+    // Check if there is already a file with this name
+    if (big_table.find(username) == big_table.end()) {
+        big_table.emplace(piecewise_construct, forward_as_tuple(username), forward_as_tuple());
+    }
+
+    if (big_table.at(username).find(file_name) == big_table.at(username).end()) {
+        return put(username, file_name, file_content, file_type, file_size);
+    } else {
+        if (orig_file_size != big_table.at(username).at(file_name).file_length) {
+            return -1;
+        } else {
+            unsigned char temp[big_table.at(username).at(file_name).file_length];
+            get(username, file_name, temp, big_table.at(username).at(file_name).file_length);
+            for (int i = 0; i < big_table.at(username).at(file_name).file_length; i++) {
+                if (orig_file_content[i] != temp[i]) {
+                    return -1;
+                }
+            }
+
+            delete_m.lock();
+            delet(username, file_name);
+            delete_m.unlock();
+
+            put_m.lock();
+            int res = put(username, file_name, file_content, file_type, file_size);
+            put_m.unlock();
+
+            return res;
+        }
+    }
+}
+
+/*
  * Search for a file, return in res
  * return: file size written >= 0    success
  *         -1   fail
@@ -99,8 +154,7 @@ int BigTabler::get (string username, string file_name, unsigned char* res, unsig
         string sstable_name = big_table.at(username).at(file_name).sstable_name;
 
         // Sharable lock the sstable
-        boost::interprocess::file_lock flock(sstable_name.c_str());
-        boost::interprocess::sharable_lock<boost::interprocess::file_lock> sh_lock(flock);
+        boost::shared_lock<boost::shared_mutex> lock(sstable_mutex.at(sstable_name));
 
         int fd = open(sstable_name.c_str(), O_RDONLY);
         if (fd == -1) {
@@ -115,15 +169,17 @@ int BigTabler::get (string username, string file_name, unsigned char* res, unsig
             return -1;
         }
 
-        off_t pa_offset = file_meta.buffer_start & ~(sysconf(_SC_PAGE_SIZE) - 1); /* offset for mmap() must be page aligned */
-        if (file_meta.buffer_start >= sb.st_size) {
+        int start = big_table.at(username).at(file_name).buffer_start;
+
+        off_t pa_offset = start & ~(sysconf(_SC_PAGE_SIZE) - 1); /* offset for mmap() must be page aligned */
+        if (start >= sb.st_size) {
             fprintf(stderr, "offset is past end of file\n");
             return -1;
         }
 
-        int length = file_meta.file_length;
-        if (file_meta.buffer_start + length > sb.st_size) {
-            length = sb.st_size - file_meta.buffer_start; /* Can't display bytes past end of file */
+        int length = big_table.at(username).at(file_name).file_length;
+        if (start + length > sb.st_size) {
+            length = sb.st_size - start; /* Can't display bytes past end of file */
         }
 
         unsigned char *addr = (unsigned char *) mmap(NULL, length + file_meta.buffer_start - pa_offset, PROT_READ, MAP_PRIVATE, fd, pa_offset);
@@ -161,13 +217,24 @@ int BigTabler::delet(string username, string file_name) {
         return -1;
     }
 
-    FileMeta file_meta = big_table.at(username).at(file_name);
-
-    if (file_meta.is_deleted) {
+    if (big_table.at(username).at(file_name).is_deleted) {
         return 1;
     } else {
-        file_meta.is_deleted = true;
-        deleted_files.emplace(deleted_files.end(), big_table.at(username).at(file_name));
+        big_table.at(username).at(file_name).is_deleted = true;
+        string sstable = big_table.at(username).at(file_name).sstable_name;
+        time_t timer;
+        time(&timer);
+        deleted_files.at(sstable).insert(deleted_files.at(sstable).end(), make_pair(timer, big_table.at(username).at(file_name)));
+        big_table.at(username).erase(file_name);
         return 1;
     }
+}
+
+/*
+ * Garbage collection, run every *** hours
+ * return: 1    success
+ *         -1   error
+ */
+int BigTabler::gc() {
+
 }
