@@ -108,7 +108,7 @@
 
 
 <script>
-    var cur_folder = '/';
+    var cur_folder = '/';   // only used for uploading file and insert folders 
 
     function createFolderAjax() {
         var foldername = $('#folder-name-input').val();
@@ -121,7 +121,7 @@
         $.ajax({
             url: '/insert-folder',
             type: 'post',
-            data: cur_folder + '/' + foldername,
+            data: cur_folder + '&' + foldername,
             contentType: 'text',
             beforeSend: function(xhr){
                 console.log('beforeSend');
@@ -135,19 +135,14 @@
             // dataType: 'application/json',
             // dataType: 'text',
 
-            success: function(result){
-                // console.log('success');
-                console.log(result);
-
-                for (var key in result) {
-                    appendFileRow(key, result[key]);
-                }
-            }
+            success: buildFileList
         });
     }
 
     function getFileListAjax(folder) {
         $('#file-list').html('');
+
+        cur_folder = folder;
 
         $.ajax({
             url: '/get-file-list',
@@ -166,18 +161,25 @@
             // dataType: 'application/json',
             // dataType: 'text',
 
-            success: function(result){
-                // console.log('success');
-                console.log(result);
-
-                for (var key in result) {
-                    appendFileRow(key, result[key]);
-                }
-            }
+            success: buildFileList
         });
     }
 
 
+
+    function buildFileList(result) {
+        // console.log('success');
+        console.log(result);
+
+        for (var key in result) {
+            // if (result[key].name == '..') {
+            //     // hack to get current folder
+            //     cur_folder = key;
+            // }
+
+            appendFileRow(key, result[key]);
+        }
+    }
 
     function appendFileRow(key, info) {
         var row;

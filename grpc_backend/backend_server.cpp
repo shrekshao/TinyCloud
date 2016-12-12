@@ -302,7 +302,7 @@ void RunGC() {
 }
 
 int main(int argc, char** argv) {
-    /* Indexer test
+    // Indexer test
     cout << indexer_service.insert("/tianli", false) << endl;
     cout << indexer_service.insert("/tianli/folder1", false) << endl;
     cout << indexer_service.insert("/tianli/folder2", false) << endl;
@@ -314,7 +314,7 @@ int main(int argc, char** argv) {
     for (map<string, Node>::iterator it = res.begin(); it != res.end(); ++it) {
         cout << it->first << " " << it->second.is_file << endl;
     }
-    */
+    
     RunServer();
     RunGC();
 

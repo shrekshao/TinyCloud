@@ -648,18 +648,35 @@ void uploadFileHandler(int fd, const string & contentStr, string & threadUsernam
     // TODO
 }
 
-void insertFolderHandler(int fd, const string & folder, string & threadUsername)
+void insertFolderHandler(int fd, const string & contentStr, string & threadUsername)
 {
-    HttpDebugLog( fd, "Insert folder : %s, %s", threadUsername.c_str(), folder.c_str());
-    fsClient.InsertFolder(threadUsername, folder);
+
+    istringstream iss_content(contentStr);
+    string curFolder, foldername;
+    getline(iss_content, curFolder, '&');
+    getline(iss_content, foldername, '&');
+
+
+    string fullPathFolder = "/" + threadUsername; // with user name
+
+    if (curFolder == "/")
+    {
+        fullPathFolder = "/" + threadUsername + "/" + foldername;
+        // curFolder += threadUsername;
+    }
+    else
+    {
+        fullPathFolder = curFolder + "/" + foldername;
+    }
+
+    HttpDebugLog( fd, "insert full path: %s", fullPathFolder.c_str());
+
+    fsClient.InsertFolder(fullPathFolder);
 
     // need to parse from folder (content) sent
-    string curFolder = "/";
 
-    size_t slash = folder.find_last_of('/');
-    curFolder += folder.substr(0, slash);
 
-    HttpDebugLog( fd, "cur (parent) full path : %s, %s", threadUsername.c_str(), folder.c_str());
+    HttpDebugLog( fd, "cur (parent) full path, get file list : %s", curFolder.c_str());
 
     getFilelistHandler(fd, curFolder, threadUsername);
 }

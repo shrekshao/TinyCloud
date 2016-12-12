@@ -60,15 +60,15 @@ class FileSystemClient {
     }
   }
 
-  void InsertFolder(const std::string & username, const std::string & folder)
+  void InsertFolder(const std::string & folder)
   {
     ClientContext context;
 
     FileListRequest request;
 
-    cerr << "folder full path: " << username << folder << endl;
+    // cerr << "folder full path: " << username << folder << endl;
 
-    request.set_foldername(username + folder);
+    request.set_foldername(folder);
     // request.set_is_file(isFile);
 
     Status status = stub_->InsertFileList(&context, request, NULL);
