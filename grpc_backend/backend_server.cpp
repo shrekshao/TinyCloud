@@ -40,7 +40,7 @@ class StorageServiceImpl final : public Storage::Service {
         if (success == 1) {
             for (map<string, Node>::iterator it = res.begin(); it != res.end(); ++it) {
                 backend::FileInfo fi;
-                fi.set_name(it->second.name);
+                fi.set_name(it->second.key);
                 fi.set_is_file(it->second.is_file);
                 (*reply->mutable_filelist())[it->first] = fi;
             }
@@ -82,8 +82,10 @@ class StorageServiceImpl final : public Storage::Service {
         reply->set_length(file_meta->file_length);
         reply->set_filetype(file_meta->file_type);
 
-        int success = bigtable_service.get(request->username(), request->filename(), (unsigned char *) reply->data().c_str(), file_meta->file_length);
-        if (success > 0) {
+        unsigned char temp[file_meta->file_length];
+        int success = bigtable_service.get(request->username(), request->filename(), (unsigned char *) temp, file_meta->file_length);
+        if (success == file_meta->file_length) {
+            reply->set_data((char *)temp);
             return Status::OK;
         } else {
             return Status::CANCELLED;
@@ -91,11 +93,46 @@ class StorageServiceImpl final : public Storage::Service {
     }
 
     Status DeleteFile(ServerContext* context, const FileChunkRequest* request, Empty* reply) override {
-        int success = bigtable_service.delet(request->username(), request->filename());
-        if (success == 1) {
-            return Status::OK;
-        } else {
+        pair<int, bool> file_info = indexer_service.checkIsFile(request->username()+"/"+request->filename());
+
+        if (file_info.first == -1) {
             return Status::CANCELLED;
+        }
+
+        if (file_info.second) {
+            int success1 = indexer_service.delet(request->username()+"/"+request->filename());
+            if (success1 == -1) {
+                return Status::CANCELLED;
+            }
+            int success2 = bigtable_service.delet(request->username(), request->filename());
+            if (success1 == 1 && success2 == 1) {
+                return Status::OK;
+            } else {
+                return Status::CANCELLED;
+            }
+        } else {
+            vector<string> delete_candidates;
+            int success = indexer_service.findAllChildren(request->username()+"/"+request->filename(), delete_candidates);
+            if (success == -1) {
+                return Status::CANCELLED;
+            }
+
+            int success1 = indexer_service.delet(request->username()+"/"+request->filename());
+            if (success1 == -1) {
+                return Status::CANCELLED;
+            }
+
+            int success2 = 1;
+            for (string str : delete_candidates) {
+                int delim = str.find("/");
+                success2 = (success2 == 1 && bigtable_service.delet(str.substr(0, delim), str.substr(delim+1, str.length()-delim-1)) == 1) ? 1 : -1;
+            }
+
+            if (success1 == 1 && success2 == 1) {
+                return Status::OK;
+            } else {
+                return Status::CANCELLED;
+            }
         }
     }
 };

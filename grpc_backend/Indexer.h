@@ -20,11 +20,13 @@ using namespace std;
  */
 class Node {
 public:
-    string name;
+    string key;
+    string filename;
     bool is_file;
     map<string, Node> children;
-    Node(string name, bool is_file = false) {
-        this->name = name;
+    Node(string key, string filename, bool is_file = false) {
+        this->key = key;
+        this->filename = filename;
         this->is_file = is_file; // Default to be directory
     }
 };
@@ -37,6 +39,9 @@ public:
     int display(string cur_dir, map<string, Node> &res);
     int insert(string new_dir, bool is_file = false);
     int delet(string del_dir);
+    pair<int, bool> checkIsFile(string cur_dir);
+    int findAllChildren(string dir, vector<string> &res);
+    int findAllChildrenHelper(Node* cur_node, vector<string> &res);
 };
 
 
