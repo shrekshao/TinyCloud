@@ -42,7 +42,8 @@ class StorageServiceImpl final : public Storage::Service {
         if (success == 1) {
             for (map<string, Node>::iterator it = res.begin(); it != res.end(); ++it) {
                 backend::FileInfo fi;
-                fi.set_name(it->second.filename);
+                fi.set_full_path(it->second.full_name);
+                fi.set_name(it->second.node_name);
                 fi.set_is_file(it->second.is_file);
                 (*reply->mutable_filelist())[it->first] = fi;
             }
@@ -66,6 +67,15 @@ class StorageServiceImpl final : public Storage::Service {
         int success1 = bigtable_service.put(request->username(), request->filename(), (unsigned char *) request->data().c_str(), request->filetype(), request->length());
         int success2 = indexer_service.insert(request->username()+"/"+request->filename(), true);
         if (success1 == 1 && success2 == 1) {
+            return Status::OK;
+        } else {
+            return Status::CANCELLED;
+        }
+    }
+
+    Status UpdateFile(ServerContext* context, const FileChunk* request, Empty* reply) override {
+        int success = bigtable_service.put(request->username(), request->filename(), (unsigned char *) request->orig_data().c_str(), (unsigned char *) request->data().c_str(), request->filetype(), request->orig_length(), request->length());
+        if (success == 1) {
             return Status::OK;
         } else {
             return Status::CANCELLED;
@@ -178,19 +188,19 @@ void RunGC() {
 }
 
 int main(int argc, char** argv) {
-    // Indexer test
+    ///* Indexer test
     cout << indexer_service.insert("/tianli", false) << endl;
     cout << indexer_service.insert("/tianli/folder1", false) << endl;
     cout << indexer_service.insert("/tianli/folder2", false) << endl;
     cout << indexer_service.insert("/tianli/file3", true) << endl;
     cout << indexer_service.insert("/tianli/folder1/folder1.1", false) << endl;
     map<string, Node> res;
-    int success = indexer_service.display("/tianli", res);
+    int success = indexer_service.display("/tianli/folder1", res);
     cout << success << endl;
     for (map<string, Node>::iterator it = res.begin(); it != res.end(); ++it) {
-        cout << it->second.filename << " " << it->second.is_file << endl;
+        cout << it->first << " " << it->second.is_file << endl;
     }
-    
+    //*/
     RunServer();
     RunGC();
 

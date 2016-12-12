@@ -38,16 +38,29 @@ package backend;
 
 // The storage service definition.
 service Storage {
+  // Frontend Backend Communication
   // Get file list
   rpc GetFileList (FileListRequest) returns (FileListReply) {}
   // Insert a directory
   rpc InsertFileList (FileListRequest) returns (Empty) {}
   // Upload a file
   rpc PutFile (FileChunk) returns (Empty) {}
+  // Update a file
+  rpc UpdateFile (FileChunk) returns (Empty) {}
   // Get a file
   rpc GetFile (FileChunkRequest) returns (FileChunk) {}
   // Delete a file
   rpc DeleteFile (FileChunkRequest) returns (Empty) {}
+
+  // Backend Backend Communication
+  // Insert a directory
+  rpc InsertFileList_Back (FileListRequest) returns (Empty) {}
+  // Upload a file
+  rpc PutFile_Back (FileChunk) returns (Empty) {}
+  // Update a file
+  rpc UpdateFile_Back (FileChunk) returns (Empty) {}
+  // Delete a file
+  rpc DeleteFile_Back (FileChunkRequest) returns (Empty) {}
 }
 
 // The request message containing the user/folder's name.
@@ -61,8 +74,9 @@ message FileListReply {
 }
 
 message FileInfo {
-    string name = 1;
-    bool is_file = 2;
+    string full_path = 1;
+    string name = 2;
+    bool is_file = 3;
 }
 
 message FileChunkRequest {
@@ -76,6 +90,8 @@ message FileChunk {
     uint64 length = 3;
     string filetype = 4;
     bytes data = 5;
+    uint64 orig_length = 6;
+    bytes orig_data = 7;
 }
 
 message Empty {
