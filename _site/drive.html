@@ -35,9 +35,32 @@
                 <div class="panel panel-default">
                     <div class="panel-heading"><strong>Upload files</strong> <small> </small></div>
                     <div class="panel-body">
+
+                        <!-- File List -->
+                        <div class="js-upload-finished">
+                            <h4>Files</h4>
+                            <div class="list-group" id="file-list"> 
+
+                            </div>
+                        </div>
+
+                        <!--create folder-->
+                        <div class="input-group">
+                            <h4>Create Folders</h4>
+                            <input type="text"  placeholder="FolderName">
+                            <button id="btn-create-folder" class="btn btn-primary">Create Folder</button>
+                        </div>
+
+                        <br/>
+
+
+                        <!-- TODO: delete UI -->
+
+
                         <form id="js-upload-form" method="post" action="/drive" enctype="multipart/form-data">
                             <!--<input id="input-1" type="file" class="file">-->
                             <div class="input-group">
+                                <h4>Upload Files</h4>
                                 <input id="input-1" type="file">
                                 <input type="submit" value="Submit">
                             </div>
@@ -55,32 +78,9 @@
                         </div>
                         <br />-->
 
-                        <!-- Upload Finished -->
-                        <div class="js-upload-finished">
-                            <h4>Files</h4>
-                            <div class="list-group" id="file-list"> 
-                                <!--<a href="download_test/cis505project.pdf" class="list-group-item list-group-item-danger" download>
-                                    <span class="badge alert-danger pull-right">20-11-2014</span>
-                                    cis505project.pdf
-                                </a>
-                                
-                                <a href="download_test/lecture18.pptx" class="list-group-item list-group-item-success" download>
-                                    <span class="badge alert-success pull-right">23-11-2014</span>
-                                    lecture18.pptx
-                                </a>
-                                
-                                <a href="download_test/di_pose.png" class="list-group-item list-group-item-success" download>
-                                    <span class="badge alert-success pull-right">23-11-2014</span>
-                                    di_pose.png
-                                </a>
-                                
-                                <a href="#" class="list-group-item list-group-item-success">
-                                    <span class="badge alert-success pull-right">23-11-2014</span>
-                                    what-the-fuck.pdf
-                                </a>-->
+                        
 
-                            </div>
-                        </div>
+
                     </div>
                 </div>
             </div>

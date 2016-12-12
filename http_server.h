@@ -520,18 +520,18 @@ void getFilelistHandler(int fd, const string & folder, string & threadUsername)
     // temp test
     string file_list_json;
 
-    std::map<std::string, FileInfo> fileList;
-    if (fsClient.GetFileList(threadUsername + folder, fileList))
-    {
-        for (const auto & f : fileList)
-        {
+    // std::map<std::string, FileInfo> fileList;
+    // if (fsClient.GetFileList(threadUsername + folder, fileList))
+    // {
+    //     for (const auto & f : fileList)
+    //     {
             
-        }
-    }
-    else
-    {
+    //     }
+    // }
+    // else
+    // {
         
-    }
+    // }
 
 
 
