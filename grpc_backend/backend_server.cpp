@@ -26,7 +26,7 @@ using backend::FileChunk;
 using backend::FileChunkRequest;
 using backend::Storage;
 
-const char*  server_ip = "0.0.0.0:8000";
+const char*  server_ip = "0.0.0.0:50051";
 
 // Indexer service in-memory storage
 Indexer indexer_service;
@@ -188,7 +188,7 @@ int main(int argc, char** argv) {
     int success = indexer_service.display("/tianli", res);
     cout << success << endl;
     for (map<string, Node>::iterator it = res.begin(); it != res.end(); ++it) {
-        cout << it->second.name << " " << it->second.is_file << endl;
+        cout << it->second.filename << " " << it->second.is_file << endl;
     }
     
     RunServer();
