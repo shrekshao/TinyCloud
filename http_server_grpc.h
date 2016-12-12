@@ -71,7 +71,8 @@ class FileSystemClient {
     request.set_foldername(folder);
     // request.set_is_file(isFile);
 
-    Status status = stub_->InsertFileList(&context, request, NULL);
+    backend::Empty reply;
+    Status status = stub_->InsertFileList(&context, request, &reply);
 
     if (status.ok()) {
       cerr << "insert folder ok\n";

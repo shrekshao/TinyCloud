@@ -140,7 +140,7 @@
     }
 
     function getFileListAjax(folder) {
-        $('#file-list').html('');
+        
 
         cur_folder = folder;
 
@@ -170,6 +170,7 @@
     function buildFileList(result) {
         // console.log('success');
         console.log(result);
+        $('#file-list').html('');
 
         for (var key in result) {
             // if (result[key].name == '..') {
