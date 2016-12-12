@@ -9,7 +9,7 @@
  * dir format : /usr/username/../..
  */
 
-Indexer::Indexer() : root("usr"){
+Indexer::Indexer() : root("usr", "usr"){
 
 }
 
@@ -34,10 +34,86 @@ int Indexer::display(string cur_dir, map<string, Node> &res) {
         cur_node = temp;
     }
 
+    if (cur_node->is_file) {
+        return -1;
+    }
+
     for (map<string, Node>::iterator it = cur_node->children.begin(); it != cur_node->children.end(); ++it) {
         res.emplace(it->first, it->second);
     }
     return 1;
+}
+
+/*
+ *  Check if there is such a file and if it is a file or dir
+ */
+pair<int, bool> Indexer::checkIsFile(string cur_dir) {
+    boost::filesystem::path p1(cur_dir);
+
+    // traverse all the sub dir
+    Node* cur_node = &root;
+    for (auto const& element : p1) {
+        if (element.string().compare("/") == 0) {
+            continue;
+        }
+        Node* temp = node_finder(element.string(), cur_node);
+        if (temp == NULL) {
+            // ERROR
+            return make_pair(-1, false);
+        }
+        // iterated to next level
+        cur_node = temp;
+    }
+
+    if (cur_node->is_file) {
+        return make_pair(1, true);
+    } else {
+        return make_pair(1, false);
+    }
+}
+
+/*
+ * Find all the files under a directory
+ * return: 1    success
+ *         -1   fail
+ */
+int Indexer::findAllChildren(string dir, vector<string> &res) {
+    boost::filesystem::path p1(dir);
+
+    // traverse all the sub dir
+    Node* cur_node = &root;
+    for (auto const& element : p1) {
+        if (element.string().compare("/") == 0) {
+            continue;
+        }
+        Node* temp = node_finder(element.string(), cur_node);
+        if (temp == NULL) {
+            // ERROR
+            return -1;
+        }
+        // iterated to next level
+        cur_node = temp;
+    }
+
+    return findAllChildrenHelper(cur_node, res);
+
+}
+
+/*
+ * Helper function for findAllChildren
+ * return: 1    success
+ *         -1   faile
+ */
+int Indexer::findAllChildrenHelper(Node* cur_node, vector<string> &res) {
+    int response = 1;
+    for (map<string, Node>::iterator it = cur_node->children.begin(); it != cur_node->children.end(); ++it) {
+        if (it->second.is_file) {
+            res.push_back(it->second.filename);
+        } else {
+            response = (findAllChildrenHelper(&(it->second), res) == 1 && response == 1) ? 1 : -1;
+        }
+    }
+    return response;
 }
 
 /*
@@ -47,12 +123,12 @@ int Indexer::insert(string new_dir, bool is_file) {
     boost::filesystem::path p1(new_dir);
 
     // traverse all the sub dir
-    Node* cur_node = &root;
-    for (auto const& element : p1.parent_path()) {
+    Node *cur_node = &root;
+    for (auto const &element : p1.parent_path()) {
         if (element.string().compare("/") == 0) {
             continue;
         }
-        Node* temp = node_finder(element.string(), cur_node);
+        Node *temp = node_finder(element.string(), cur_node);
         if (temp == NULL) {
             // ERROR
             return -1;
@@ -66,7 +142,11 @@ int Indexer::insert(string new_dir, bool is_file) {
         return -1;
     }
 
-    cur_node->children.emplace(std::piecewise_construct, std::forward_as_tuple(p1.filename().string()), std::forward_as_tuple(p1.filename().string(), is_file));
+    if (new_dir.find("/") == 0) {
+        cur_node->children.emplace(piecewise_construct, forward_as_tuple(p1.filename().string()), forward_as_tuple(p1.filename().string(), new_dir.substr(1, new_dir.length()-1), is_file));
+    } else {
+        cur_node->children.emplace(piecewise_construct, forward_as_tuple(p1.filename().string()), forward_as_tuple(p1.filename().string(), new_dir, is_file));
+    }
 
     return 1;
 }
