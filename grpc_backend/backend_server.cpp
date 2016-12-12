@@ -40,7 +40,7 @@ class StorageServiceImpl final : public Storage::Service {
         if (success == 1) {
             for (map<string, Node>::iterator it = res.begin(); it != res.end(); ++it) {
                 backend::FileInfo fi;
-                fi.set_name(it->second.key);
+                fi.set_name(it->second.filename);
                 fi.set_is_file(it->second.is_file);
                 (*reply->mutable_filelist())[it->first] = fi;
             }

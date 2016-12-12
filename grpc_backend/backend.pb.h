@@ -118,19 +118,12 @@ class FileListRequest : public ::google::protobuf::Message /* @@protoc_insertion
   ::std::string* release_foldername();
   void set_allocated_foldername(::std::string* foldername);
 
-  // optional bool is_file = 2;
-  void clear_is_file();
-  static const int kIsFileFieldNumber = 2;
-  bool is_file() const;
-  void set_is_file(bool value);
-
   // @@protoc_insertion_point(class_scope:backend.FileListRequest)
  private:
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   bool _is_default_instance_;
   ::google::protobuf::internal::ArenaStringPtr foldername_;
-  bool is_file_;
   mutable int _cached_size_;
   friend void  protobuf_AddDesc_backend_2eproto();
   friend void protobuf_AssignDesc_backend_2eproto();
@@ -683,20 +676,6 @@ inline void FileListRequest::set_allocated_foldername(::std::string* foldername)
   }
   foldername_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), foldername);
   // @@protoc_insertion_point(field_set_allocated:backend.FileListRequest.foldername)
-}
-
-// optional bool is_file = 2;
-inline void FileListRequest::clear_is_file() {
-  is_file_ = false;
-}
-inline bool FileListRequest::is_file() const {
-  // @@protoc_insertion_point(field_get:backend.FileListRequest.is_file)
-  return is_file_;
-}
-inline void FileListRequest::set_is_file(bool value) {
-  
-  is_file_ = value;
-  // @@protoc_insertion_point(field_set:backend.FileListRequest.is_file)
 }
 
 // -------------------------------------------------------------------

@@ -52,9 +52,8 @@ void protobuf_AssignDesc_backend_2eproto() {
       "backend.proto");
   GOOGLE_CHECK(file != NULL);
   FileListRequest_descriptor_ = file->message_type(0);
-  static const int FileListRequest_offsets_[2] = {
+  static const int FileListRequest_offsets_[1] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(FileListRequest, foldername_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(FileListRequest, is_file_),
   };
   FileListRequest_reflection_ =
     ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
@@ -209,25 +208,25 @@ void protobuf_AddDesc_backend_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
   ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
-    "\n\rbackend.proto\022\007backend\"6\n\017FileListRequ"
-    "est\022\022\n\nfoldername\030\001 \001(\t\022\017\n\007is_file\030\002 \001(\010"
-    "\"\213\001\n\rFileListReply\0226\n\010filelist\030\001 \003(\0132$.b"
-    "ackend.FileListReply.FilelistEntry\032B\n\rFi"
-    "lelistEntry\022\013\n\003key\030\001 \001(\t\022 \n\005value\030\002 \001(\0132"
-    "\021.backend.FileInfo:\0028\001\")\n\010FileInfo\022\014\n\004na"
-    "me\030\001 \001(\t\022\017\n\007is_file\030\002 \001(\010\"6\n\020FileChunkRe"
-    "quest\022\020\n\010username\030\001 \001(\t\022\020\n\010filename\030\002 \001("
-    "\t\"_\n\tFileChunk\022\020\n\010username\030\001 \001(\t\022\020\n\010file"
-    "name\030\002 \001(\t\022\016\n\006length\030\003 \001(\004\022\020\n\010filetype\030\004"
-    " \001(\t\022\014\n\004data\030\005 \001(\014\"\007\n\005Empty2\262\002\n\007Storage\022"
-    "A\n\013GetFileList\022\030.backend.FileListRequest"
-    "\032\026.backend.FileListReply\"\000\022<\n\016InsertFile"
-    "List\022\030.backend.FileListRequest\032\016.backend"
-    ".Empty\"\000\022/\n\007PutFile\022\022.backend.FileChunk\032"
-    "\016.backend.Empty\"\000\022:\n\007GetFile\022\031.backend.F"
-    "ileChunkRequest\032\022.backend.FileChunk\"\000\0229\n"
-    "\nDeleteFile\022\031.backend.FileChunkRequest\032\016"
-    ".backend.Empty\"\000B\006\242\002\003HLWb\006proto3", 752);
+    "\n\rbackend.proto\022\007backend\"%\n\017FileListRequ"
+    "est\022\022\n\nfoldername\030\001 \001(\t\"\213\001\n\rFileListRepl"
+    "y\0226\n\010filelist\030\001 \003(\0132$.backend.FileListRe"
+    "ply.FilelistEntry\032B\n\rFilelistEntry\022\013\n\003ke"
+    "y\030\001 \001(\t\022 \n\005value\030\002 \001(\0132\021.backend.FileInf"
+    "o:\0028\001\")\n\010FileInfo\022\014\n\004name\030\001 \001(\t\022\017\n\007is_fi"
+    "le\030\002 \001(\010\"6\n\020FileChunkRequest\022\020\n\010username"
+    "\030\001 \001(\t\022\020\n\010filename\030\002 \001(\t\"_\n\tFileChunk\022\020\n"
+    "\010username\030\001 \001(\t\022\020\n\010filename\030\002 \001(\t\022\016\n\006len"
+    "gth\030\003 \001(\004\022\020\n\010filetype\030\004 \001(\t\022\014\n\004data\030\005 \001("
+    "\014\"\007\n\005Empty2\262\002\n\007Storage\022A\n\013GetFileList\022\030."
+    "backend.FileListRequest\032\026.backend.FileLi"
+    "stReply\"\000\022<\n\016InsertFileList\022\030.backend.Fi"
+    "leListRequest\032\016.backend.Empty\"\000\022/\n\007PutFi"
+    "le\022\022.backend.FileChunk\032\016.backend.Empty\"\000"
+    "\022:\n\007GetFile\022\031.backend.FileChunkRequest\032\022"
+    ".backend.FileChunk\"\000\0229\n\nDeleteFile\022\031.bac"
+    "kend.FileChunkRequest\032\016.backend.Empty\"\000B"
+    "\006\242\002\003HLWb\006proto3", 735);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "backend.proto", &protobuf_RegisterTypes);
   FileListRequest::default_instance_ = new FileListRequest();
@@ -256,7 +255,6 @@ struct StaticDescriptorInitializer_backend_2eproto {
 
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
 const int FileListRequest::kFoldernameFieldNumber;
-const int FileListRequest::kIsFileFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 FileListRequest::FileListRequest()
@@ -282,7 +280,6 @@ void FileListRequest::SharedCtor() {
   ::google::protobuf::internal::GetEmptyString();
   _cached_size_ = 0;
   foldername_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  is_file_ = false;
 }
 
 FileListRequest::~FileListRequest() {
@@ -324,7 +321,6 @@ FileListRequest* FileListRequest::New(::google::protobuf::Arena* arena) const {
 void FileListRequest::Clear() {
 // @@protoc_insertion_point(message_clear_start:backend.FileListRequest)
   foldername_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  is_file_ = false;
 }
 
 bool FileListRequest::MergePartialFromCodedStream(
@@ -346,21 +342,6 @@ bool FileListRequest::MergePartialFromCodedStream(
             this->foldername().data(), this->foldername().length(),
             ::google::protobuf::internal::WireFormatLite::PARSE,
             "backend.FileListRequest.foldername"));
-        } else {
-          goto handle_unusual;
-        }
-        if (input->ExpectTag(16)) goto parse_is_file;
-        break;
-      }
-
-      // optional bool is_file = 2;
-      case 2: {
-        if (tag == 16) {
-         parse_is_file:
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   bool, ::google::protobuf::internal::WireFormatLite::TYPE_BOOL>(
-                 input, &is_file_)));
-
         } else {
           goto handle_unusual;
         }
@@ -402,11 +383,6 @@ void FileListRequest::SerializeWithCachedSizes(
       1, this->foldername(), output);
   }
 
-  // optional bool is_file = 2;
-  if (this->is_file() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteBool(2, this->is_file(), output);
-  }
-
   // @@protoc_insertion_point(serialize_end:backend.FileListRequest)
 }
 
@@ -424,11 +400,6 @@ void FileListRequest::SerializeWithCachedSizes(
         1, this->foldername(), target);
   }
 
-  // optional bool is_file = 2;
-  if (this->is_file() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteBoolToArray(2, this->is_file(), target);
-  }
-
   // @@protoc_insertion_point(serialize_to_array_end:backend.FileListRequest)
   return target;
 }
@@ -442,11 +413,6 @@ int FileListRequest::ByteSize() const {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::StringSize(
         this->foldername());
-  }
-
-  // optional bool is_file = 2;
-  if (this->is_file() != 0) {
-    total_size += 1 + 1;
   }
 
   GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
@@ -481,9 +447,6 @@ void FileListRequest::MergeFrom(const FileListRequest& from) {
 
     foldername_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.foldername_);
   }
-  if (from.is_file() != 0) {
-    set_is_file(from.is_file());
-  }
 }
 
 void FileListRequest::CopyFrom(const ::google::protobuf::Message& from) {
@@ -511,7 +474,6 @@ void FileListRequest::Swap(FileListRequest* other) {
 }
 void FileListRequest::InternalSwap(FileListRequest* other) {
   foldername_.Swap(&other->foldername_);
-  std::swap(is_file_, other->is_file_);
   _internal_metadata_.Swap(&other->_internal_metadata_);
   std::swap(_cached_size_, other->_cached_size_);
 }
@@ -569,20 +531,6 @@ void FileListRequest::clear_foldername() {
   }
   foldername_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), foldername);
   // @@protoc_insertion_point(field_set_allocated:backend.FileListRequest.foldername)
-}
-
-// optional bool is_file = 2;
-void FileListRequest::clear_is_file() {
-  is_file_ = false;
-}
- bool FileListRequest::is_file() const {
-  // @@protoc_insertion_point(field_get:backend.FileListRequest.is_file)
-  return is_file_;
-}
- void FileListRequest::set_is_file(bool value) {
-  
-  is_file_ = value;
-  // @@protoc_insertion_point(field_set:backend.FileListRequest.is_file)
 }
 
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
