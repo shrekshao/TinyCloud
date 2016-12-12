@@ -526,16 +526,16 @@ void getFilelistHandler(int fd, const string & folder, string & threadUsername)
 
     HttpDebugLog( fd, "get file list: %s %s", threadUsername.c_str(), folder.c_str());
 
-    string path = "/" + threadUsername;
+    string path;
     // if (folder.back() == '/')
     if (folder == "/")
     {
-        // path += folder.substr(0, folder.size()-1);
+        path = "/" + threadUsername;
     }
     else
     {
-        path += "/";
-        path += folder;
+        // path is now absolute full path with username
+        path = folder;
     }
 
     HttpDebugLog( fd, "request path: %s", path.c_str());
@@ -562,11 +562,16 @@ void getFilelistHandler(int fd, const string & folder, string & threadUsername)
                 oss << ",";
             }
 
+            // FileInfo.full_path  /tianli/path/to
+            // FileInfo.name (relative) == first (key) except for key=..
+
+
             HttpDebugLog( fd, "<%s , (%s, %d) >"
-                , f.first.c_str(), f.second.name().c_str(), f.second.is_file());
+                , f.second.full_path().c_str(), f.first.c_str(), f.second.is_file());
 
             oss << "\"";
-            oss << f.first;
+            // oss << f.first;
+            oss << f.second.full_path();
             oss << "\"";
             oss << ":";
 
@@ -575,7 +580,8 @@ void getFilelistHandler(int fd, const string & folder, string & threadUsername)
             oss << "\"name\":";
 
             oss << "\"";
-            oss << f.second.name();
+            // oss << f.second.name();
+            oss << f.first;
             oss << "\"";
 
             oss << ",";
