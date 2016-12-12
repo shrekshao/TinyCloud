@@ -186,16 +186,31 @@
         var row;
         if (info['folder']) {
             // folder
-            row = `<button class="list-group-item list-group-item-success" onclick="getFileListAjax('${key}')">
-                        <span class="badge alert-success pull-right"> <i class="fa fa-trash"></i> </span>
-                          <i class="fa fa-folder"></i>  ${info.name} 
-                    </button>`;
+            // row = `<button class="list-group-item list-group-item-success" onclick="getFileListAjax('${key}')">
+            //             <span class="badge alert-success pull-right"> <i class="fa fa-trash"></i> </span>
+            //               <i class="fa fa-folder"></i>  ${info.name} 
+            //         </button>`;
+            
+            row = `<div class="list-group-item list-group-item-success">
+                        <span class="badge alert-success pull-right"> 
+                            <i class="fa fa-trash"></i> 
+                        </span>
+                          <i class="fa fa-folder"></i>  <a onclick="getFileListAjax('${key}')">${info.name}</a> 
+                    </div>`;
         } else {
             // file
-            row = `<a href="${key}" class="list-group-item list-group-item-success" download>
-                        <span class="badge alert-success pull-right"> <i class="fa fa-cloud-download"></i> <i class="fa fa-trash"></i> </span>
-                          <i class="fa fa-file-o"></i>  ${info.name}
-                    </a>`;
+            // row = `<a href="${key}" class="list-group-item list-group-item-success" download>
+            //             <span class="badge alert-success pull-right"> <i class="fa fa-cloud-download"></i> <i class="fa fa-trash"></i> </span>
+            //               <i class="fa fa-file-o"></i>  ${info.name}
+            //         </a>`;
+
+            row = `<div class="list-group-item list-group-item-success">
+                        <span class="badge alert-success pull-right">
+                            <i class="fa fa-cloud-download"></i> 
+                            <i class="fa fa-trash"></i>
+                        </span>
+                          <i class="fa fa-file-o"></i>  <a href="${key}" download>${info.name}</a>
+                    </div>`;
         }
         
         $('#file-list').append(row);
