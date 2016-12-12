@@ -519,15 +519,17 @@ void getFilelistHandler(int fd, const string & folder, string & threadUsername)
 
     // cerr << "\n\n" << folder << "\n\n";
 
-    HttpDebugLog( fd, "get file list: %s%s", threadUsername.c_str(), folder.c_str());
+    HttpDebugLog( fd, "get file list: %s %s", threadUsername.c_str(), folder.c_str());
 
     string path = "/" + threadUsername;
-    if (folder.back() == '/')
+    // if (folder.back() == '/')
+    if (folder == "/")
     {
-        path += folder.substr(0, folder.size()-1);
+        // path += folder.substr(0, folder.size()-1);
     }
     else
     {
+        path += "/";
         path += folder;
     }
 
@@ -535,9 +537,10 @@ void getFilelistHandler(int fd, const string & folder, string & threadUsername)
     // cerr << "\n\npath: " << path << "\n"; 
 
     // temp test
-    string file_list_json = "";
+    
+    ostringstream oss;
 
-    file_list_json += "{";
+    oss << "{";
 
     std::map<std::string, FileInfo> fileList;
     if (fsClient.GetFileList(path, fileList))
@@ -545,24 +548,39 @@ void getFilelistHandler(int fd, const string & folder, string & threadUsername)
         bool isFirst = true;
         for (const auto & f : fileList)
         {
-            string item = "";
-            if (!isFirst)
+            if (isFirst)
             {
                 isFirst = false;
-                item = ",";
+            }
+            else
+            {
+                oss << ",";
             }
 
             HttpDebugLog( fd, "<%s , (%s, %d) >"
                 , f.first.c_str(), f.second.name().c_str(), f.second.is_file());
 
-            // item += f.first;
-            // item += ":";
+            oss << "\"";
+            oss << f.first;
+            oss << "\"";
+            oss << ":";
 
-            // item += "";
+            oss << "{";
 
+            oss << "\"name\":";
 
+            oss << "\"";
+            oss << f.second.name();
+            oss << "\"";
 
-            // file_list_json += item;
+            oss << ",";
+            
+            oss << "\"folder\":";
+
+            oss << ( !f.second.is_file() ) ? "1" : "0";
+            
+            oss << "}";
+
         }
     }
     else
@@ -570,8 +588,10 @@ void getFilelistHandler(int fd, const string & folder, string & threadUsername)
         HttpDebugLog( fd, "get file list fail");
     }
 
-    file_list_json += "}";
+    oss << "}";
 
+
+    string file_list_json = oss.str();
 
 
 
