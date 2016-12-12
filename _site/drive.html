@@ -47,8 +47,8 @@
                         <!--create folder-->
                         <div class="input-group">
                             <h4>Create Folders</h4>
-                            <input type="text"  placeholder="FolderName">
-                            <button id="btn-create-folder" class="btn btn-primary">Create Folder</button>
+                            <input type="text"  placeholder="FolderName" id="folder-name-input">
+                            <button id="btn-create-folder" class="btn btn-primary" onclick="createFolderAjax()">Create Folder</button>
                         </div>
 
                         <br/>
@@ -108,7 +108,41 @@
 
 
 <script>
+    function createFolderAjax() {
+        var foldername = $('#folder-name-input').val();
+        // var foldername = document.getElementById("folder-name-input").value;
+        console.log("create folder" + foldername);
 
+        // temp
+        var base_folder = "";
+
+        $.ajax({
+            url: '/insert-folder',
+            type: 'post',
+            data: base_folder + '/' + foldername,
+            contentType: 'text',
+            beforeSend: function(xhr){
+                console.log('beforeSend');
+                if (xhr.overrideMimeType)
+                {
+                    console.log('override app json');
+                    xhr.overrideMimeType("application/json");
+                }
+            },
+            dataType: 'json',
+            // dataType: 'application/json',
+            // dataType: 'text',
+
+            success: function(result){
+                // console.log('success');
+                console.log(result);
+
+                for (var key in result) {
+                    appendFileRow(key, result[key]);
+                }
+            }
+        });
+    }
 
     function getFileListAjax(folder) {
         $('#file-list').html('');

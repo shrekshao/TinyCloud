@@ -510,6 +510,11 @@ void uploadFileHandler(int fd, const string & contentStr, string & threadUsernam
     // TODO
 }
 
+void insertFolderHandler(int fd, const string & folder, string & threadUsername)
+{
+    // TODO
+    HttpDebugLog( fd, "Insert folder full path: %s", folder.c_str());
+}
 
 
 void getFilelistHandler(int fd, const string & folder, string & threadUsername)
@@ -651,6 +656,8 @@ static const unordered_map<string, FunctionHandlerPost> postRequestHandlers({
     , {"/register", &registerHandler}
     , {"/drive", &uploadFileHandler}
     , {"/get-file-list", &getFilelistHandler}
+
+    , {"/insert-folder", &insertFolderHandler}
 });
 
 
