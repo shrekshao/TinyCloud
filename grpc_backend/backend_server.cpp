@@ -4,8 +4,8 @@
 
 #include <iostream>
 #include <memory>
-#include <string>
 #include <map>
+#include <unistd.h>
 
 #include <grpc++/grpc++.h>
 
@@ -26,11 +26,13 @@ using backend::FileChunk;
 using backend::FileChunkRequest;
 using backend::Storage;
 
+const char*  server_ip = "0.0.0.0:8000";
+
 // Indexer service in-memory storage
 Indexer indexer_service;
 
 // File service in-memory storage
-BigTabler bigtable_service("a");
+BigTabler bigtable_service(server_ip);
 
 // Logic and data behind the server's behavior.
 class StorageServiceImpl final : public Storage::Service {
@@ -138,7 +140,7 @@ class StorageServiceImpl final : public Storage::Service {
 };
 
 void RunServer() {
-    std::string server_address("0.0.0.0:50051");
+    std::string server_address(server_ip);
     StorageServiceImpl service;
 
     ServerBuilder builder;
@@ -156,6 +158,25 @@ void RunServer() {
     server->Wait();
 }
 
+void* gcHelper(void*) {
+    int res = 1;
+    while (res == 1) {
+        sleep(DELETE_BUFFER_TIME);
+        res = bigtable_service.gc();
+    }
+    pthread_exit(NULL);
+}
+
+void RunGC() {
+    int rc = 0;
+    pthread_t gcthread;
+
+    while (rc == 0) {
+        pthread_create(&gcthread, NULL, &gcHelper, NULL);
+        rc = pthread_join(gcthread, NULL);
+    }
+}
+
 int main(int argc, char** argv) {
     /* Indexer test
     cout << indexer_service.insert("/tianli", false) << endl;
@@ -171,6 +192,8 @@ int main(int argc, char** argv) {
     }
     */
     RunServer();
+    RunGC();
+
 
     return 0;
 }
