@@ -21,6 +21,7 @@ int Indexer::display(string cur_dir, map<string, Node> &res) {
 
     // traverse all the sub dir
     Node* cur_node = &root;
+    Node* prev_node;
     for (auto const& element : p1) {
         if (element.string().compare("/") == 0) {
             continue;
@@ -31,6 +32,7 @@ int Indexer::display(string cur_dir, map<string, Node> &res) {
             return -1;
         }
         // iterated to next level
+        prev_node = cur_node;
         cur_node = temp;
     }
 
@@ -41,7 +43,9 @@ int Indexer::display(string cur_dir, map<string, Node> &res) {
     for (map<string, Node>::iterator it = cur_node->children.begin(); it != cur_node->children.end(); ++it) {
         res.emplace(it->first, it->second);
     }
-    res.emplace("..", *cur_node);
+    if (prev_node->full_name.compare("usr") != 0) {
+        res.emplace("..", *prev_node);
+    }
 
     return 1;
 }

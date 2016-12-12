@@ -22,10 +22,12 @@ static const char* Storage_method_names[] = {
   "/backend.Storage/UpdateFile",
   "/backend.Storage/GetFile",
   "/backend.Storage/DeleteFile",
-  "/backend.Storage/InsertFileList_Back",
-  "/backend.Storage/PutFile_Back",
-  "/backend.Storage/UpdateFile_Back",
-  "/backend.Storage/DeleteFile_Back",
+  "/backend.Storage/GetFileList_Backup",
+  "/backend.Storage/InsertFileList_Backup",
+  "/backend.Storage/PutFile_Backup",
+  "/backend.Storage/UpdateFile_Backup",
+  "/backend.Storage/GetFile_Backup",
+  "/backend.Storage/DeleteFile_Backup",
 };
 
 std::unique_ptr< Storage::Stub> Storage::NewStub(const std::shared_ptr< ::grpc::ChannelInterface>& channel, const ::grpc::StubOptions& options) {
@@ -40,10 +42,12 @@ Storage::Stub::Stub(const std::shared_ptr< ::grpc::ChannelInterface>& channel)
   , rpcmethod_UpdateFile_(Storage_method_names[3], ::grpc::RpcMethod::NORMAL_RPC, channel)
   , rpcmethod_GetFile_(Storage_method_names[4], ::grpc::RpcMethod::NORMAL_RPC, channel)
   , rpcmethod_DeleteFile_(Storage_method_names[5], ::grpc::RpcMethod::NORMAL_RPC, channel)
-  , rpcmethod_InsertFileList_Back_(Storage_method_names[6], ::grpc::RpcMethod::NORMAL_RPC, channel)
-  , rpcmethod_PutFile_Back_(Storage_method_names[7], ::grpc::RpcMethod::NORMAL_RPC, channel)
-  , rpcmethod_UpdateFile_Back_(Storage_method_names[8], ::grpc::RpcMethod::NORMAL_RPC, channel)
-  , rpcmethod_DeleteFile_Back_(Storage_method_names[9], ::grpc::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_GetFileList_Backup_(Storage_method_names[6], ::grpc::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_InsertFileList_Backup_(Storage_method_names[7], ::grpc::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_PutFile_Backup_(Storage_method_names[8], ::grpc::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_UpdateFile_Backup_(Storage_method_names[9], ::grpc::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_GetFile_Backup_(Storage_method_names[10], ::grpc::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_DeleteFile_Backup_(Storage_method_names[11], ::grpc::RpcMethod::NORMAL_RPC, channel)
   {}
 
 ::grpc::Status Storage::Stub::GetFileList(::grpc::ClientContext* context, const ::backend::FileListRequest& request, ::backend::FileListReply* response) {
@@ -94,36 +98,52 @@ Storage::Stub::Stub(const std::shared_ptr< ::grpc::ChannelInterface>& channel)
   return new ::grpc::ClientAsyncResponseReader< ::backend::Empty>(channel_.get(), cq, rpcmethod_DeleteFile_, context, request);
 }
 
-::grpc::Status Storage::Stub::InsertFileList_Back(::grpc::ClientContext* context, const ::backend::FileListRequest& request, ::backend::Empty* response) {
-  return ::grpc::BlockingUnaryCall(channel_.get(), rpcmethod_InsertFileList_Back_, context, request, response);
+::grpc::Status Storage::Stub::GetFileList_Backup(::grpc::ClientContext* context, const ::backend::FileListRequest& request, ::backend::FileListReply* response) {
+  return ::grpc::BlockingUnaryCall(channel_.get(), rpcmethod_GetFileList_Backup_, context, request, response);
 }
 
-::grpc::ClientAsyncResponseReader< ::backend::Empty>* Storage::Stub::AsyncInsertFileList_BackRaw(::grpc::ClientContext* context, const ::backend::FileListRequest& request, ::grpc::CompletionQueue* cq) {
-  return new ::grpc::ClientAsyncResponseReader< ::backend::Empty>(channel_.get(), cq, rpcmethod_InsertFileList_Back_, context, request);
+::grpc::ClientAsyncResponseReader< ::backend::FileListReply>* Storage::Stub::AsyncGetFileList_BackupRaw(::grpc::ClientContext* context, const ::backend::FileListRequest& request, ::grpc::CompletionQueue* cq) {
+  return new ::grpc::ClientAsyncResponseReader< ::backend::FileListReply>(channel_.get(), cq, rpcmethod_GetFileList_Backup_, context, request);
 }
 
-::grpc::Status Storage::Stub::PutFile_Back(::grpc::ClientContext* context, const ::backend::FileChunk& request, ::backend::Empty* response) {
-  return ::grpc::BlockingUnaryCall(channel_.get(), rpcmethod_PutFile_Back_, context, request, response);
+::grpc::Status Storage::Stub::InsertFileList_Backup(::grpc::ClientContext* context, const ::backend::FileListRequest& request, ::backend::Empty* response) {
+  return ::grpc::BlockingUnaryCall(channel_.get(), rpcmethod_InsertFileList_Backup_, context, request, response);
 }
 
-::grpc::ClientAsyncResponseReader< ::backend::Empty>* Storage::Stub::AsyncPutFile_BackRaw(::grpc::ClientContext* context, const ::backend::FileChunk& request, ::grpc::CompletionQueue* cq) {
-  return new ::grpc::ClientAsyncResponseReader< ::backend::Empty>(channel_.get(), cq, rpcmethod_PutFile_Back_, context, request);
+::grpc::ClientAsyncResponseReader< ::backend::Empty>* Storage::Stub::AsyncInsertFileList_BackupRaw(::grpc::ClientContext* context, const ::backend::FileListRequest& request, ::grpc::CompletionQueue* cq) {
+  return new ::grpc::ClientAsyncResponseReader< ::backend::Empty>(channel_.get(), cq, rpcmethod_InsertFileList_Backup_, context, request);
 }
 
-::grpc::Status Storage::Stub::UpdateFile_Back(::grpc::ClientContext* context, const ::backend::FileChunk& request, ::backend::Empty* response) {
-  return ::grpc::BlockingUnaryCall(channel_.get(), rpcmethod_UpdateFile_Back_, context, request, response);
+::grpc::Status Storage::Stub::PutFile_Backup(::grpc::ClientContext* context, const ::backend::FileChunk& request, ::backend::Empty* response) {
+  return ::grpc::BlockingUnaryCall(channel_.get(), rpcmethod_PutFile_Backup_, context, request, response);
 }
 
-::grpc::ClientAsyncResponseReader< ::backend::Empty>* Storage::Stub::AsyncUpdateFile_BackRaw(::grpc::ClientContext* context, const ::backend::FileChunk& request, ::grpc::CompletionQueue* cq) {
-  return new ::grpc::ClientAsyncResponseReader< ::backend::Empty>(channel_.get(), cq, rpcmethod_UpdateFile_Back_, context, request);
+::grpc::ClientAsyncResponseReader< ::backend::Empty>* Storage::Stub::AsyncPutFile_BackupRaw(::grpc::ClientContext* context, const ::backend::FileChunk& request, ::grpc::CompletionQueue* cq) {
+  return new ::grpc::ClientAsyncResponseReader< ::backend::Empty>(channel_.get(), cq, rpcmethod_PutFile_Backup_, context, request);
 }
 
-::grpc::Status Storage::Stub::DeleteFile_Back(::grpc::ClientContext* context, const ::backend::FileChunkRequest& request, ::backend::Empty* response) {
-  return ::grpc::BlockingUnaryCall(channel_.get(), rpcmethod_DeleteFile_Back_, context, request, response);
+::grpc::Status Storage::Stub::UpdateFile_Backup(::grpc::ClientContext* context, const ::backend::FileChunk& request, ::backend::Empty* response) {
+  return ::grpc::BlockingUnaryCall(channel_.get(), rpcmethod_UpdateFile_Backup_, context, request, response);
 }
 
-::grpc::ClientAsyncResponseReader< ::backend::Empty>* Storage::Stub::AsyncDeleteFile_BackRaw(::grpc::ClientContext* context, const ::backend::FileChunkRequest& request, ::grpc::CompletionQueue* cq) {
-  return new ::grpc::ClientAsyncResponseReader< ::backend::Empty>(channel_.get(), cq, rpcmethod_DeleteFile_Back_, context, request);
+::grpc::ClientAsyncResponseReader< ::backend::Empty>* Storage::Stub::AsyncUpdateFile_BackupRaw(::grpc::ClientContext* context, const ::backend::FileChunk& request, ::grpc::CompletionQueue* cq) {
+  return new ::grpc::ClientAsyncResponseReader< ::backend::Empty>(channel_.get(), cq, rpcmethod_UpdateFile_Backup_, context, request);
+}
+
+::grpc::Status Storage::Stub::GetFile_Backup(::grpc::ClientContext* context, const ::backend::FileChunkRequest& request, ::backend::FileChunk* response) {
+  return ::grpc::BlockingUnaryCall(channel_.get(), rpcmethod_GetFile_Backup_, context, request, response);
+}
+
+::grpc::ClientAsyncResponseReader< ::backend::FileChunk>* Storage::Stub::AsyncGetFile_BackupRaw(::grpc::ClientContext* context, const ::backend::FileChunkRequest& request, ::grpc::CompletionQueue* cq) {
+  return new ::grpc::ClientAsyncResponseReader< ::backend::FileChunk>(channel_.get(), cq, rpcmethod_GetFile_Backup_, context, request);
+}
+
+::grpc::Status Storage::Stub::DeleteFile_Backup(::grpc::ClientContext* context, const ::backend::FileChunkRequest& request, ::backend::Empty* response) {
+  return ::grpc::BlockingUnaryCall(channel_.get(), rpcmethod_DeleteFile_Backup_, context, request, response);
+}
+
+::grpc::ClientAsyncResponseReader< ::backend::Empty>* Storage::Stub::AsyncDeleteFile_BackupRaw(::grpc::ClientContext* context, const ::backend::FileChunkRequest& request, ::grpc::CompletionQueue* cq) {
+  return new ::grpc::ClientAsyncResponseReader< ::backend::Empty>(channel_.get(), cq, rpcmethod_DeleteFile_Backup_, context, request);
 }
 
 Storage::Service::Service() {
@@ -161,23 +181,33 @@ Storage::Service::Service() {
   AddMethod(new ::grpc::RpcServiceMethod(
       Storage_method_names[6],
       ::grpc::RpcMethod::NORMAL_RPC,
-      new ::grpc::RpcMethodHandler< Storage::Service, ::backend::FileListRequest, ::backend::Empty>(
-          std::mem_fn(&Storage::Service::InsertFileList_Back), this)));
+      new ::grpc::RpcMethodHandler< Storage::Service, ::backend::FileListRequest, ::backend::FileListReply>(
+          std::mem_fn(&Storage::Service::GetFileList_Backup), this)));
   AddMethod(new ::grpc::RpcServiceMethod(
       Storage_method_names[7],
       ::grpc::RpcMethod::NORMAL_RPC,
-      new ::grpc::RpcMethodHandler< Storage::Service, ::backend::FileChunk, ::backend::Empty>(
-          std::mem_fn(&Storage::Service::PutFile_Back), this)));
+      new ::grpc::RpcMethodHandler< Storage::Service, ::backend::FileListRequest, ::backend::Empty>(
+          std::mem_fn(&Storage::Service::InsertFileList_Backup), this)));
   AddMethod(new ::grpc::RpcServiceMethod(
       Storage_method_names[8],
       ::grpc::RpcMethod::NORMAL_RPC,
       new ::grpc::RpcMethodHandler< Storage::Service, ::backend::FileChunk, ::backend::Empty>(
-          std::mem_fn(&Storage::Service::UpdateFile_Back), this)));
+          std::mem_fn(&Storage::Service::PutFile_Backup), this)));
   AddMethod(new ::grpc::RpcServiceMethod(
       Storage_method_names[9],
       ::grpc::RpcMethod::NORMAL_RPC,
+      new ::grpc::RpcMethodHandler< Storage::Service, ::backend::FileChunk, ::backend::Empty>(
+          std::mem_fn(&Storage::Service::UpdateFile_Backup), this)));
+  AddMethod(new ::grpc::RpcServiceMethod(
+      Storage_method_names[10],
+      ::grpc::RpcMethod::NORMAL_RPC,
+      new ::grpc::RpcMethodHandler< Storage::Service, ::backend::FileChunkRequest, ::backend::FileChunk>(
+          std::mem_fn(&Storage::Service::GetFile_Backup), this)));
+  AddMethod(new ::grpc::RpcServiceMethod(
+      Storage_method_names[11],
+      ::grpc::RpcMethod::NORMAL_RPC,
       new ::grpc::RpcMethodHandler< Storage::Service, ::backend::FileChunkRequest, ::backend::Empty>(
-          std::mem_fn(&Storage::Service::DeleteFile_Back), this)));
+          std::mem_fn(&Storage::Service::DeleteFile_Backup), this)));
 }
 
 Storage::Service::~Service() {
@@ -225,28 +255,42 @@ Storage::Service::~Service() {
   return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
 }
 
-::grpc::Status Storage::Service::InsertFileList_Back(::grpc::ServerContext* context, const ::backend::FileListRequest* request, ::backend::Empty* response) {
+::grpc::Status Storage::Service::GetFileList_Backup(::grpc::ServerContext* context, const ::backend::FileListRequest* request, ::backend::FileListReply* response) {
   (void) context;
   (void) request;
   (void) response;
   return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
 }
 
-::grpc::Status Storage::Service::PutFile_Back(::grpc::ServerContext* context, const ::backend::FileChunk* request, ::backend::Empty* response) {
+::grpc::Status Storage::Service::InsertFileList_Backup(::grpc::ServerContext* context, const ::backend::FileListRequest* request, ::backend::Empty* response) {
   (void) context;
   (void) request;
   (void) response;
   return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
 }
 
-::grpc::Status Storage::Service::UpdateFile_Back(::grpc::ServerContext* context, const ::backend::FileChunk* request, ::backend::Empty* response) {
+::grpc::Status Storage::Service::PutFile_Backup(::grpc::ServerContext* context, const ::backend::FileChunk* request, ::backend::Empty* response) {
   (void) context;
   (void) request;
   (void) response;
   return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
 }
 
-::grpc::Status Storage::Service::DeleteFile_Back(::grpc::ServerContext* context, const ::backend::FileChunkRequest* request, ::backend::Empty* response) {
+::grpc::Status Storage::Service::UpdateFile_Backup(::grpc::ServerContext* context, const ::backend::FileChunk* request, ::backend::Empty* response) {
+  (void) context;
+  (void) request;
+  (void) response;
+  return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+}
+
+::grpc::Status Storage::Service::GetFile_Backup(::grpc::ServerContext* context, const ::backend::FileChunkRequest* request, ::backend::FileChunk* response) {
+  (void) context;
+  (void) request;
+  (void) response;
+  return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+}
+
+::grpc::Status Storage::Service::DeleteFile_Backup(::grpc::ServerContext* context, const ::backend::FileChunkRequest* request, ::backend::Empty* response) {
   (void) context;
   (void) request;
   (void) response;

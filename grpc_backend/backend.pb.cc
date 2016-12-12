@@ -222,7 +222,7 @@ void protobuf_AddDesc_backend_2eproto() {
     "\001(\t\"\207\001\n\tFileChunk\022\020\n\010username\030\001 \001(\t\022\020\n\010f"
     "ilename\030\002 \001(\t\022\016\n\006length\030\003 \001(\004\022\020\n\010filetyp"
     "e\030\004 \001(\t\022\014\n\004data\030\005 \001(\014\022\023\n\013orig_length\030\006 \001"
-    "(\004\022\021\n\torig_data\030\007 \001(\014\"\007\n\005Empty2\330\004\n\007Stora"
+    "(\004\022\021\n\torig_data\030\007 \001(\014\"\007\n\005Empty2\355\005\n\007Stora"
     "ge\022A\n\013GetFileList\022\030.backend.FileListRequ"
     "est\032\026.backend.FileListReply\"\000\022<\n\016InsertF"
     "ileList\022\030.backend.FileListRequest\032\016.back"
@@ -231,14 +231,17 @@ void protobuf_AddDesc_backend_2eproto() {
     "kend.FileChunk\032\016.backend.Empty\"\000\022:\n\007GetF"
     "ile\022\031.backend.FileChunkRequest\032\022.backend"
     ".FileChunk\"\000\0229\n\nDeleteFile\022\031.backend.Fil"
-    "eChunkRequest\032\016.backend.Empty\"\000\022A\n\023Inser"
-    "tFileList_Back\022\030.backend.FileListRequest"
-    "\032\016.backend.Empty\"\000\0224\n\014PutFile_Back\022\022.bac"
-    "kend.FileChunk\032\016.backend.Empty\"\000\0227\n\017Upda"
-    "teFile_Back\022\022.backend.FileChunk\032\016.backen"
-    "d.Empty\"\000\022>\n\017DeleteFile_Back\022\031.backend.F"
-    "ileChunkRequest\032\016.backend.Empty\"\000B\006\242\002\003HL"
-    "Wb\006proto3", 1089);
+    "eChunkRequest\032\016.backend.Empty\"\000\022H\n\022GetFi"
+    "leList_Backup\022\030.backend.FileListRequest\032"
+    "\026.backend.FileListReply\"\000\022C\n\025InsertFileL"
+    "ist_Backup\022\030.backend.FileListRequest\032\016.b"
+    "ackend.Empty\"\000\0226\n\016PutFile_Backup\022\022.backe"
+    "nd.FileChunk\032\016.backend.Empty\"\000\0229\n\021Update"
+    "File_Backup\022\022.backend.FileChunk\032\016.backen"
+    "d.Empty\"\000\022A\n\016GetFile_Backup\022\031.backend.Fi"
+    "leChunkRequest\032\022.backend.FileChunk\"\000\022@\n\021"
+    "DeleteFile_Backup\022\031.backend.FileChunkReq"
+    "uest\032\016.backend.Empty\"\000B\006\242\002\003HLWb\006proto3", 1238);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "backend.proto", &protobuf_RegisterTypes);
   FileListRequest::default_instance_ = new FileListRequest();
