@@ -505,17 +505,6 @@ void registerHandler(int fd, const string & contentStr, string & threadUsername)
 
 
 
-void uploadFileHandler(int fd, const string & contentStr, string & threadUsername)
-{
-    // TODO
-}
-
-void insertFolderHandler(int fd, const string & folder, string & threadUsername)
-{
-    // TODO
-    HttpDebugLog( fd, "Insert folder full path: %s", folder.c_str());
-}
-
 
 void getFilelistHandler(int fd, const string & folder, string & threadUsername)
 {
@@ -646,6 +635,31 @@ void getFilelistHandler(int fd, const string & folder, string & threadUsername)
     // sendData(fd, "json", file_list_json);
     // sendData(fd, "text", file_list_json);
 }
+
+
+
+void uploadFileHandler(int fd, const string & contentStr, string & threadUsername)
+{
+    // TODO
+}
+
+void insertFolderHandler(int fd, const string & folder, string & threadUsername)
+{
+    HttpDebugLog( fd, "Insert folder : %s, %s", threadUsername.c_str(), folder.c_str());
+    fsClient.InsertFolder(threadUsername, folder);
+
+    // need to parse from folder (content) sent
+    string curFolder = "/";
+
+    size_t slash = folder.find_last_of('/');
+    curFolder += folder.substr(0, slash);
+
+    HttpDebugLog( fd, "cur (parent) full path : %s, %s", threadUsername.c_str(), folder.c_str());
+
+    getFilelistHandler(fd, curFolder, threadUsername);
+}
+
+
 
 
 
