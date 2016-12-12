@@ -108,18 +108,19 @@
 
 
 <script>
+    var cur_folder = '/';
+
     function createFolderAjax() {
         var foldername = $('#folder-name-input').val();
         // var foldername = document.getElementById("folder-name-input").value;
         console.log("create folder" + foldername);
 
-        // temp
-        var base_folder = "";
+        // TODO
 
         $.ajax({
             url: '/insert-folder',
             type: 'post',
-            data: base_folder + '/' + foldername,
+            data: cur_folder + '/' + foldername,
             contentType: 'text',
             beforeSend: function(xhr){
                 console.log('beforeSend');

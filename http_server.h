@@ -505,16 +505,7 @@ void registerHandler(int fd, const string & contentStr, string & threadUsername)
 
 
 
-void uploadFileHandler(int fd, const string & contentStr, string & threadUsername)
-{
-    // TODO
-}
 
-void insertFolderHandler(int fd, const string & folder, string & threadUsername)
-{
-    // TODO
-    HttpDebugLog( fd, "Insert folder full path: %s", folder.c_str());
-}
 
 
 void getFilelistHandler(int fd, const string & folder, string & threadUsername)
@@ -653,7 +644,17 @@ void getFilelistHandler(int fd, const string & folder, string & threadUsername)
     // sendData(fd, "text", file_list_json);
 }
 
+void uploadFileHandler(int fd, const string & contentStr, string & threadUsername)
+{
+    // TODO
+}
 
+void insertFolderHandler(int fd, const string & contentStr, string & threadUsername)
+{
+    HttpDebugLog( fd, "Insert folder request: %s", contentStr.c_str());
+
+    
+}
 
 
 // {uri, FunctionHandlerPost}
