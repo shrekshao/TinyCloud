@@ -83,7 +83,8 @@ void protobuf_AssignDesc_backend_2eproto() {
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(FileListReply, _is_default_instance_));
   FileListReply_FilelistEntry_descriptor_ = FileListReply_descriptor_->nested_type(0);
   FileInfo_descriptor_ = file->message_type(2);
-  static const int FileInfo_offsets_[2] = {
+  static const int FileInfo_offsets_[3] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(FileInfo, full_path_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(FileInfo, name_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(FileInfo, is_file_),
   };
@@ -215,28 +216,29 @@ void protobuf_AddDesc_backend_2eproto() {
     "y\0226\n\010filelist\030\001 \003(\0132$.backend.FileListRe"
     "ply.FilelistEntry\032B\n\rFilelistEntry\022\013\n\003ke"
     "y\030\001 \001(\t\022 \n\005value\030\002 \001(\0132\021.backend.FileInf"
-    "o:\0028\001\")\n\010FileInfo\022\014\n\004name\030\001 \001(\t\022\017\n\007is_fi"
-    "le\030\002 \001(\010\"6\n\020FileChunkRequest\022\020\n\010username"
-    "\030\001 \001(\t\022\020\n\010filename\030\002 \001(\t\"\207\001\n\tFileChunk\022\020"
-    "\n\010username\030\001 \001(\t\022\020\n\010filename\030\002 \001(\t\022\016\n\006le"
-    "ngth\030\003 \001(\004\022\020\n\010filetype\030\004 \001(\t\022\014\n\004data\030\005 \001"
-    "(\014\022\023\n\013orig_length\030\006 \001(\004\022\021\n\torig_data\030\007 \001"
-    "(\014\"\007\n\005Empty2\330\004\n\007Storage\022A\n\013GetFileList\022\030"
-    ".backend.FileListRequest\032\026.backend.FileL"
-    "istReply\"\000\022<\n\016InsertFileList\022\030.backend.F"
-    "ileListRequest\032\016.backend.Empty\"\000\022/\n\007PutF"
-    "ile\022\022.backend.FileChunk\032\016.backend.Empty\""
-    "\000\0222\n\nUpdateFile\022\022.backend.FileChunk\032\016.ba"
-    "ckend.Empty\"\000\022:\n\007GetFile\022\031.backend.FileC"
-    "hunkRequest\032\022.backend.FileChunk\"\000\0229\n\nDel"
-    "eteFile\022\031.backend.FileChunkRequest\032\016.bac"
-    "kend.Empty\"\000\022A\n\023InsertFileList_Back\022\030.ba"
-    "ckend.FileListRequest\032\016.backend.Empty\"\000\022"
-    "4\n\014PutFile_Back\022\022.backend.FileChunk\032\016.ba"
-    "ckend.Empty\"\000\0227\n\017UpdateFile_Back\022\022.backe"
-    "nd.FileChunk\032\016.backend.Empty\"\000\022>\n\017Delete"
-    "File_Back\022\031.backend.FileChunkRequest\032\016.b"
-    "ackend.Empty\"\000B\006\242\002\003HLWb\006proto3", 1070);
+    "o:\0028\001\"<\n\010FileInfo\022\021\n\tfull_path\030\001 \001(\t\022\014\n\004"
+    "name\030\002 \001(\t\022\017\n\007is_file\030\003 \001(\010\"6\n\020FileChunk"
+    "Request\022\020\n\010username\030\001 \001(\t\022\020\n\010filename\030\002 "
+    "\001(\t\"\207\001\n\tFileChunk\022\020\n\010username\030\001 \001(\t\022\020\n\010f"
+    "ilename\030\002 \001(\t\022\016\n\006length\030\003 \001(\004\022\020\n\010filetyp"
+    "e\030\004 \001(\t\022\014\n\004data\030\005 \001(\014\022\023\n\013orig_length\030\006 \001"
+    "(\004\022\021\n\torig_data\030\007 \001(\014\"\007\n\005Empty2\330\004\n\007Stora"
+    "ge\022A\n\013GetFileList\022\030.backend.FileListRequ"
+    "est\032\026.backend.FileListReply\"\000\022<\n\016InsertF"
+    "ileList\022\030.backend.FileListRequest\032\016.back"
+    "end.Empty\"\000\022/\n\007PutFile\022\022.backend.FileChu"
+    "nk\032\016.backend.Empty\"\000\0222\n\nUpdateFile\022\022.bac"
+    "kend.FileChunk\032\016.backend.Empty\"\000\022:\n\007GetF"
+    "ile\022\031.backend.FileChunkRequest\032\022.backend"
+    ".FileChunk\"\000\0229\n\nDeleteFile\022\031.backend.Fil"
+    "eChunkRequest\032\016.backend.Empty\"\000\022A\n\023Inser"
+    "tFileList_Back\022\030.backend.FileListRequest"
+    "\032\016.backend.Empty\"\000\0224\n\014PutFile_Back\022\022.bac"
+    "kend.FileChunk\032\016.backend.Empty\"\000\0227\n\017Upda"
+    "teFile_Back\022\022.backend.FileChunk\032\016.backen"
+    "d.Empty\"\000\022>\n\017DeleteFile_Back\022\031.backend.F"
+    "ileChunkRequest\032\016.backend.Empty\"\000B\006\242\002\003HL"
+    "Wb\006proto3", 1089);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "backend.proto", &protobuf_RegisterTypes);
   FileListRequest::default_instance_ = new FileListRequest();
@@ -902,6 +904,7 @@ FileListReply::mutable_filelist() {
 // ===================================================================
 
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
+const int FileInfo::kFullPathFieldNumber;
 const int FileInfo::kNameFieldNumber;
 const int FileInfo::kIsFileFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
@@ -928,6 +931,7 @@ void FileInfo::SharedCtor() {
     _is_default_instance_ = false;
   ::google::protobuf::internal::GetEmptyString();
   _cached_size_ = 0;
+  full_path_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   name_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   is_file_ = false;
 }
@@ -938,6 +942,7 @@ FileInfo::~FileInfo() {
 }
 
 void FileInfo::SharedDtor() {
+  full_path_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   name_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   if (this != default_instance_) {
   }
@@ -970,6 +975,7 @@ FileInfo* FileInfo::New(::google::protobuf::Arena* arena) const {
 
 void FileInfo::Clear() {
 // @@protoc_insertion_point(message_clear_start:backend.FileInfo)
+  full_path_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   name_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   is_file_ = false;
 }
@@ -984,9 +990,26 @@ bool FileInfo::MergePartialFromCodedStream(
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // optional string name = 1;
+      // optional string full_path = 1;
       case 1: {
         if (tag == 10) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
+                input, this->mutable_full_path()));
+          DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+            this->full_path().data(), this->full_path().length(),
+            ::google::protobuf::internal::WireFormatLite::PARSE,
+            "backend.FileInfo.full_path"));
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(18)) goto parse_name;
+        break;
+      }
+
+      // optional string name = 2;
+      case 2: {
+        if (tag == 18) {
+         parse_name:
           DO_(::google::protobuf::internal::WireFormatLite::ReadString(
                 input, this->mutable_name()));
           DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
@@ -996,13 +1019,13 @@ bool FileInfo::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(16)) goto parse_is_file;
+        if (input->ExpectTag(24)) goto parse_is_file;
         break;
       }
 
-      // optional bool is_file = 2;
-      case 2: {
-        if (tag == 16) {
+      // optional bool is_file = 3;
+      case 3: {
+        if (tag == 24) {
          parse_is_file:
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    bool, ::google::protobuf::internal::WireFormatLite::TYPE_BOOL>(
@@ -1039,19 +1062,29 @@ failure:
 void FileInfo::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
   // @@protoc_insertion_point(serialize_start:backend.FileInfo)
-  // optional string name = 1;
+  // optional string full_path = 1;
+  if (this->full_path().size() > 0) {
+    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+      this->full_path().data(), this->full_path().length(),
+      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
+      "backend.FileInfo.full_path");
+    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
+      1, this->full_path(), output);
+  }
+
+  // optional string name = 2;
   if (this->name().size() > 0) {
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->name().data(), this->name().length(),
       ::google::protobuf::internal::WireFormatLite::SERIALIZE,
       "backend.FileInfo.name");
     ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
-      1, this->name(), output);
+      2, this->name(), output);
   }
 
-  // optional bool is_file = 2;
+  // optional bool is_file = 3;
   if (this->is_file() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteBool(2, this->is_file(), output);
+    ::google::protobuf::internal::WireFormatLite::WriteBool(3, this->is_file(), output);
   }
 
   // @@protoc_insertion_point(serialize_end:backend.FileInfo)
@@ -1060,7 +1093,18 @@ void FileInfo::SerializeWithCachedSizes(
 ::google::protobuf::uint8* FileInfo::InternalSerializeWithCachedSizesToArray(
     bool deterministic, ::google::protobuf::uint8* target) const {
   // @@protoc_insertion_point(serialize_to_array_start:backend.FileInfo)
-  // optional string name = 1;
+  // optional string full_path = 1;
+  if (this->full_path().size() > 0) {
+    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+      this->full_path().data(), this->full_path().length(),
+      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
+      "backend.FileInfo.full_path");
+    target =
+      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
+        1, this->full_path(), target);
+  }
+
+  // optional string name = 2;
   if (this->name().size() > 0) {
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->name().data(), this->name().length(),
@@ -1068,12 +1112,12 @@ void FileInfo::SerializeWithCachedSizes(
       "backend.FileInfo.name");
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        1, this->name(), target);
+        2, this->name(), target);
   }
 
-  // optional bool is_file = 2;
+  // optional bool is_file = 3;
   if (this->is_file() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteBoolToArray(2, this->is_file(), target);
+    target = ::google::protobuf::internal::WireFormatLite::WriteBoolToArray(3, this->is_file(), target);
   }
 
   // @@protoc_insertion_point(serialize_to_array_end:backend.FileInfo)
@@ -1084,14 +1128,21 @@ int FileInfo::ByteSize() const {
 // @@protoc_insertion_point(message_byte_size_start:backend.FileInfo)
   int total_size = 0;
 
-  // optional string name = 1;
+  // optional string full_path = 1;
+  if (this->full_path().size() > 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::StringSize(
+        this->full_path());
+  }
+
+  // optional string name = 2;
   if (this->name().size() > 0) {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::StringSize(
         this->name());
   }
 
-  // optional bool is_file = 2;
+  // optional bool is_file = 3;
   if (this->is_file() != 0) {
     total_size += 1 + 1;
   }
@@ -1123,6 +1174,10 @@ void FileInfo::MergeFrom(const FileInfo& from) {
 // @@protoc_insertion_point(class_specific_merge_from_start:backend.FileInfo)
   if (GOOGLE_PREDICT_FALSE(&from == this)) {
     ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
+  }
+  if (from.full_path().size() > 0) {
+
+    full_path_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.full_path_);
   }
   if (from.name().size() > 0) {
 
@@ -1157,6 +1212,7 @@ void FileInfo::Swap(FileInfo* other) {
   InternalSwap(other);
 }
 void FileInfo::InternalSwap(FileInfo* other) {
+  full_path_.Swap(&other->full_path_);
   name_.Swap(&other->name_);
   std::swap(is_file_, other->is_file_);
   _internal_metadata_.Swap(&other->_internal_metadata_);
@@ -1174,7 +1230,51 @@ void FileInfo::InternalSwap(FileInfo* other) {
 #if PROTOBUF_INLINE_NOT_IN_HEADERS
 // FileInfo
 
-// optional string name = 1;
+// optional string full_path = 1;
+void FileInfo::clear_full_path() {
+  full_path_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ const ::std::string& FileInfo::full_path() const {
+  // @@protoc_insertion_point(field_get:backend.FileInfo.full_path)
+  return full_path_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void FileInfo::set_full_path(const ::std::string& value) {
+  
+  full_path_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:backend.FileInfo.full_path)
+}
+ void FileInfo::set_full_path(const char* value) {
+  
+  full_path_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:backend.FileInfo.full_path)
+}
+ void FileInfo::set_full_path(const char* value, size_t size) {
+  
+  full_path_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:backend.FileInfo.full_path)
+}
+ ::std::string* FileInfo::mutable_full_path() {
+  
+  // @@protoc_insertion_point(field_mutable:backend.FileInfo.full_path)
+  return full_path_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ ::std::string* FileInfo::release_full_path() {
+  // @@protoc_insertion_point(field_release:backend.FileInfo.full_path)
+  
+  return full_path_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void FileInfo::set_allocated_full_path(::std::string* full_path) {
+  if (full_path != NULL) {
+    
+  } else {
+    
+  }
+  full_path_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), full_path);
+  // @@protoc_insertion_point(field_set_allocated:backend.FileInfo.full_path)
+}
+
+// optional string name = 2;
 void FileInfo::clear_name() {
   name_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -1218,7 +1318,7 @@ void FileInfo::clear_name() {
   // @@protoc_insertion_point(field_set_allocated:backend.FileInfo.name)
 }
 
-// optional bool is_file = 2;
+// optional bool is_file = 3;
 void FileInfo::clear_is_file() {
   is_file_ = false;
 }

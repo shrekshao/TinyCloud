@@ -290,9 +290,20 @@ class FileInfo : public ::google::protobuf::Message /* @@protoc_insertion_point(
 
   // accessors -------------------------------------------------------
 
-  // optional string name = 1;
+  // optional string full_path = 1;
+  void clear_full_path();
+  static const int kFullPathFieldNumber = 1;
+  const ::std::string& full_path() const;
+  void set_full_path(const ::std::string& value);
+  void set_full_path(const char* value);
+  void set_full_path(const char* value, size_t size);
+  ::std::string* mutable_full_path();
+  ::std::string* release_full_path();
+  void set_allocated_full_path(::std::string* full_path);
+
+  // optional string name = 2;
   void clear_name();
-  static const int kNameFieldNumber = 1;
+  static const int kNameFieldNumber = 2;
   const ::std::string& name() const;
   void set_name(const ::std::string& value);
   void set_name(const char* value);
@@ -301,9 +312,9 @@ class FileInfo : public ::google::protobuf::Message /* @@protoc_insertion_point(
   ::std::string* release_name();
   void set_allocated_name(::std::string* name);
 
-  // optional bool is_file = 2;
+  // optional bool is_file = 3;
   void clear_is_file();
-  static const int kIsFileFieldNumber = 2;
+  static const int kIsFileFieldNumber = 3;
   bool is_file() const;
   void set_is_file(bool value);
 
@@ -312,6 +323,7 @@ class FileInfo : public ::google::protobuf::Message /* @@protoc_insertion_point(
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   bool _is_default_instance_;
+  ::google::protobuf::internal::ArenaStringPtr full_path_;
   ::google::protobuf::internal::ArenaStringPtr name_;
   bool is_file_;
   mutable int _cached_size_;
@@ -723,7 +735,51 @@ FileListReply::mutable_filelist() {
 
 // FileInfo
 
-// optional string name = 1;
+// optional string full_path = 1;
+inline void FileInfo::clear_full_path() {
+  full_path_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline const ::std::string& FileInfo::full_path() const {
+  // @@protoc_insertion_point(field_get:backend.FileInfo.full_path)
+  return full_path_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void FileInfo::set_full_path(const ::std::string& value) {
+  
+  full_path_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:backend.FileInfo.full_path)
+}
+inline void FileInfo::set_full_path(const char* value) {
+  
+  full_path_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:backend.FileInfo.full_path)
+}
+inline void FileInfo::set_full_path(const char* value, size_t size) {
+  
+  full_path_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:backend.FileInfo.full_path)
+}
+inline ::std::string* FileInfo::mutable_full_path() {
+  
+  // @@protoc_insertion_point(field_mutable:backend.FileInfo.full_path)
+  return full_path_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline ::std::string* FileInfo::release_full_path() {
+  // @@protoc_insertion_point(field_release:backend.FileInfo.full_path)
+  
+  return full_path_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void FileInfo::set_allocated_full_path(::std::string* full_path) {
+  if (full_path != NULL) {
+    
+  } else {
+    
+  }
+  full_path_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), full_path);
+  // @@protoc_insertion_point(field_set_allocated:backend.FileInfo.full_path)
+}
+
+// optional string name = 2;
 inline void FileInfo::clear_name() {
   name_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -767,7 +823,7 @@ inline void FileInfo::set_allocated_name(::std::string* name) {
   // @@protoc_insertion_point(field_set_allocated:backend.FileInfo.name)
 }
 
-// optional bool is_file = 2;
+// optional bool is_file = 3;
 inline void FileInfo::clear_is_file() {
   is_file_ = false;
 }

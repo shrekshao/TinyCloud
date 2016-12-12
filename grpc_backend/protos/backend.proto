@@ -74,8 +74,9 @@ message FileListReply {
 }
 
 message FileInfo {
-    string name = 1;
-    bool is_file = 2;
+    string full_path = 1;
+    string name = 2;
+    bool is_file = 3;
 }
 
 message FileChunkRequest {
