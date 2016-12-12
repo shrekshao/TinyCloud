@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang='en'>
+
+<head>
+    <title>TinyCloud - Register</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/main.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.15.0/jquery.validate.min.js"></script>
+    <script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.15.0/additional-methods.min.js"></script>
+    <style>
+        .form-signin input[type="text"]
+        {
+            margin-bottom: 10px;
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+        .form-signin input[type="password"]
+        {
+            margin-bottom: 10px;
+            border-top-left-radius: 0;
+            border-top-right-radius: 0;
+        }
+    </style>
+</head>
+
+
+<body>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6 col-md-4 col-md-offset-4">
+                <h1 class="text-center login-title">Register new account at TinyCloud</h1>
+                <!--<div class="account-wall">-->
+                    <!--<img class="profile-img" src="http://shrekshao.github.io/assets/avatar/Di-new-avatar.png" alt="">-->
+                    <!--<img class="profile-img" src="assets/img/Di-new-avatar.png" alt="">-->
+                    <form class="form-signin" id="register-form" method="post" >
+                        Username <input type="text" name="username" id="username" class="form-control" placeholder="Username" required autofocus>
+                        <br/>Password <input type="password" name="password" id="password" class="form-control" placeholder="Password" required>
+                        <br/>Password(Confirm)<input type="password" name="password_confirm" id="password_confirm" class="form-control" placeholder="Password-Repeat" required>
+                        <br/>
+                        <button id="register_in_btn" class="btn btn-lg btn-primary btn-block" type="submit">
+                            Register
+                        </button>
+
+                        
+                        
+                        <!--<a href="#" class="pull-right need-help">Need help? </a>-->
+                        <span class="clearfix"></span>
+                    </form>
+                    <!--<button id="test_btn" class="btn btn-lg btn-primary btn-block" type="submit">
+                        Test ajax
+                    </button>-->
+                <!--</div>-->
+                
+            </div>
+        </div>
+    </div>
+
+</body>
+
+
+<script>
+
+    // function checkPasswordConfirm() {
+    //     // var password = $('#password').value;
+    //     // var password_confirm = $('#password-confirm').value
+    //     // if (password != password_confirm) {
+
+    //     //     return false;
+    //     // }
+
+    //     // return $('#register-form').validate({
+    //     //     framework: 'bootstrap',
+    //     //     icon: {
+    //     //         valid: 'glyphicon glyphicon-ok',
+    //     //         invalid: 'glyphicon glyphicon-remove',
+    //     //         validating: 'glyphicon glyphicon-refresh'
+    //     //     },
+    //     //     fields: {
+    //     //         username: {
+    //     //             validators: {
+    //     //                 notEmpty: {
+    //     //                     message: 'The username is required'
+    //     //                 },
+    //     //                 stringLength: {
+    //     //                     min: 6,
+    //     //                     max: 30,
+    //     //                     message: 'The username must be more than 6 and less than 30 characters long'
+    //     //                 },
+    //     //                 regexp: {
+    //     //                     regexp: /^[a-zA-Z0-9_\.]+$/,
+    //     //                     message: 'The username can only consist of alphabetical, number, dot and underscore'
+    //     //                 }
+    //     //             }
+    //     //         },
+    //     //         password: {
+    //     //             validators: {
+    //     //                 notEmpty: {
+    //     //                     message: 'The password is required'
+    //     //                 }
+    //     //             }
+    //     //         },
+    //     //         password_confirm: {
+    //     //              validators: {
+    //     //                 identical: {
+    //     //                     field: 'password',
+    //     //                     message: 'The password and its confirm are not the same'
+    //     //                 }
+    //     //             }
+    //     //         }
+    //     //     }
+    //     // });
+        
+    //     var a = $( "#register-form" ).validate({
+    //         rules: {
+    //             password: "required",
+    //             password_confirm: {
+    //             equalTo: "#password"
+    //             }
+    //         }
+    //     });
+    //     // console.log(a);
+
+    //     return a;
+    // }
+
+    $(document).ready(function() {
+        // checkPasswordConfirm();
+        // jQuery.validator.setDefaults({
+        //     debug: true,
+        //     success: "valid"
+        // });
+        $( "#register-form" ).validate({
+            rules: {
+                password: "required",
+                password_confirm: {
+                    equalTo: "#password"
+                }
+            }
+        });
+
+        // $( "#register-form" ).submit(function(e){
+        //     console.log('submit');
+        // });
+        
+    });
+
+    // $('#sign_in_btn').click(function(){
+    //     console.log();
+    // });
+
+    // $('#test_btn').click(function(){
+    //     console.log('click test btn');
+    //     $.ajax({
+    //     	// url: "demo_test.txt", 
+    //         // url: "profile.html",
+    //         url: '/get-file-list',
+    //         type: 'post',
+    //         data: '/',
+    //         contentType: 'text',
+    //         beforeSend: function(xhr){
+    //             console.log('beforeSend');
+    //             if (xhr.overrideMimeType)
+    //             {
+    //                 console.log('override app json');
+    //                 xhr.overrideMimeType("application/json");
+    //             }
+    //         },
+    //         dataType: 'json',
+    //         // dataType: 'application/json',
+    //         // dataType: 'text',
+
+    //         success: function(result){
+    //         	// $("#div1").html(result);
+    //             console.log('success');
+    //             console.log(result);
+    //         }
+    //     });
+    // });
+</script>
+
+
+</html>

@@ -17,10 +17,23 @@
 #include <unordered_set>
 #include <unordered_map>
 
+#include "http_server_grpc.h"
+
 
 using namespace std;
 
-typedef void (*FunctionHandler)(int, const string &);
+
+static FileSystemClient fsClient(grpc::CreateChannel(
+      "localhost:50051", grpc::InsecureChannelCredentials()));
+
+
+
+
+
+
+
+typedef void (*FunctionHandlerGet)(int fd);
+typedef void (*FunctionHandlerPost)(int fd, const string & contentStr, string & threadUsername);
 
 
 
@@ -28,14 +41,14 @@ typedef void (*FunctionHandler)(int, const string &);
 
 //#include "utils.h"
 
-bool outputAuthor = false;
-bool outputDebug = false;
-int port = 10000;
+static bool outputAuthor = false;
+static bool outputDebug = false;
+static int port = 10000;
 
-const int BUFFER_SIZE = 50;
+static const int BUFFER_SIZE = 50;
 // unordered_set<int> fdSet;
-const int NUM_FD = 1000; 
-bool fdArray[NUM_FD] = {};  // all elements 0
+static const int NUM_FD = 1000; 
+static bool fdArray[NUM_FD] = {};  // all elements 0
 
 
 enum ReceivingStatus{
@@ -47,24 +60,24 @@ enum ReceivingStatus{
 };
 
 // ----------------- const status msg ----------------
-const string CRLF = "\r\n";
-const string LF = "\n";
-const string HTTP_OK = "HTTP/1.1 200 OK\r\n";
-const string HTTP_400 = "HTTP/1.1 400 BAD REQUEST\r\n";
-const string HTTP_400_invalid_username = "HTTP/1.1 400 INVALID USERNAME OR PASSWORD\r\n";
-const string HTTP_404 = "HTTP/1.1 404 NOT FOUND\r\n";
-const string HTTP_HEADER_SERVER = "Server: tinycloud\r\n";
+static const string CRLF = "\r\n";
+static const string LF = "\n";
+static const string HTTP_OK = "HTTP/1.1 200 OK\r\n";
+static const string HTTP_400 = "HTTP/1.1 400 BAD REQUEST\r\n";
+static const string HTTP_400_invalid_username = "HTTP/1.1 400 INVALID USERNAME OR PASSWORD\r\n";
+static const string HTTP_404 = "HTTP/1.1 404 NOT FOUND\r\n";
+static const string HTTP_HEADER_SERVER = "Server: tinycloud\r\n";
 
-const string HTML_400_PAGE = "400 Bad Request\r\nWrong request URL\r\n";
-const string HTML_404_PAGE = "404 Not Found\r\nThe requested URL was not found on this server.\r\n";
-
-
-const string siteRoot = "_site/";
+static const string HTML_400_PAGE = "400 Bad Request\r\nWrong request URL\r\n";
+static const string HTML_404_PAGE = "404 Not Found\r\nThe requested URL was not found on this server.\r\n";
 
 
+static const string siteRoot = "_site/";
 
-const unordered_set<string> textFileExtensions ({"txt", "html", "css", "js"});
-const unordered_map<string, string> extToFileCat({
+
+
+static const unordered_set<string> textFileExtensions ({"txt", "html", "css", "js"});
+static const unordered_map<string, string> extToFileCat({
     {"jpg", "image"}
     ,{"jpeg", "image"}
     ,{"png", "image"}
@@ -138,7 +151,7 @@ struct GeneralHeader
 GeneralHeader header;
 
 // uri, function handler
-// unordered_map<string, FunctionHandler> uri_to_handlers;
+// unordered_map<string, FunctionHandlerPost> uri_to_handlers;
 
 
 
@@ -219,6 +232,7 @@ void send404Page(int fd)
     GeneralHeader header404;
     header404.content_type = "text/html";
     header404.content_length = HTML_404_PAGE.size();
+    header404.send(fd);
     // separate line
     do_write(fd, &CRLF.at(0), CRLF.size());
 
@@ -232,10 +246,27 @@ void send400Page(int fd)
     GeneralHeader header400;
     header400.content_type = "text/html";
     header400.content_length = HTML_400_PAGE.size();
+    header400.send(fd);
     // separate line
     do_write(fd, &CRLF.at(0), CRLF.size());
 
     do_write(fd, &HTML_400_PAGE.at(0), HTML_400_PAGE.size());
+}
+
+void sendData(int fd, const string & dataType, const string & data)
+{
+    // HttpDebugLog( fd, "get file list: %s", folder.c_str());
+
+    do_write(fd, &HTTP_OK.at(0), (int)HTTP_OK.size());
+
+    GeneralHeader header200Data;
+    header200Data.content_type = dataType;
+    header200Data.content_length = data.size();
+    header200Data.send(fd);
+    // separate line
+    do_write(fd, &CRLF.at(0), CRLF.size());
+
+    do_write(fd, &data.at(0), data.size());
 }
 
 
@@ -361,6 +392,38 @@ void sendFileToClient(int fd, const string & uri)
 }
 
 
+
+// // --------- get request handlers --------------
+// void getFileListHandler(int fd)
+// {
+
+// }
+// // {uri, FunctionHandlerGet}
+// static const unordered_map<string, FunctionHandlerGet> getRequestHandlers({
+//     {"/drive-get-list", &getFileListHandler}
+// });
+
+
+// void handleGetRequest(int fd, const string & uri)
+// {
+//     auto it = getRequestHandlers.find(uri);
+
+//     if (it == getRequestHandlers.end())
+//     {
+//         // pure get file
+//         sendFileToClient(fd, uri);
+//     }
+//     else
+//     {
+//         // functional url
+//         (*(it->second))(fd);
+//     }
+// }
+
+
+
+
+
 /**
 * @ return: if username and password is valid
 */
@@ -368,7 +431,9 @@ bool verifyUsernameAndPassword(const string & username, const string & password)
 {
     // temp test
     // TODO: communicate with big table
-    return (username == "ss") && (password == "123");
+    return 
+        (username == "ss") && (password == "123")
+        || (username == "tianli") && (password == "123");
 }
 
 
@@ -380,7 +445,7 @@ bool verifyUsernameAndPassword(const string & username, const string & password)
 
 // ------------ post request handlers -------------
 
-void loginHandler(int fd, const string & contentStr)
+void loginHandler(int fd, const string & contentStr, string & threadUsername)
 {
     istringstream iss_content(contentStr);
     string username, password, tmp;
@@ -395,6 +460,8 @@ void loginHandler(int fd, const string & contentStr)
     {
         header.clear();
         header.set_cookie = "username=" + username;
+
+        threadUsername = username;
 
 
         // direct to new page
@@ -420,7 +487,7 @@ void loginHandler(int fd, const string & contentStr)
     }
 }
 
-void uploadFileHandler(int fd, const string & contentStr)
+void registerHandler(int fd, const string & contentStr, string & threadUsername)
 {
     istringstream iss_content(contentStr);
     string username, password, tmp;
@@ -428,47 +495,183 @@ void uploadFileHandler(int fd, const string & contentStr)
     getline(iss_content, username, '&');
     getline(iss_content, tmp, '='); // password
     getline(iss_content, password, '&');
+    // confirm password
 
-    HttpDebugLog( fd, "%s, %s", username.c_str(), password.c_str());
+    HttpDebugLog( fd, "Register New User: %s, %s", username.c_str(), password.c_str());
 
-    if (verifyUsernameAndPassword(username, password))
+    header.clear();
+    sendFileToClient(fd, "/");
+}
+
+
+
+void uploadFileHandler(int fd, const string & contentStr, string & threadUsername)
+{
+    // TODO
+}
+
+void insertFolderHandler(int fd, const string & folder, string & threadUsername)
+{
+    // TODO
+    HttpDebugLog( fd, "Insert folder full path: %s", folder.c_str());
+}
+
+
+void getFilelistHandler(int fd, const string & folder, string & threadUsername)
+{
+    // Current for test
+    // TODO: grpc ask for file list
+
+    // cerr << "\n\n" << folder << "\n\n";
+
+    HttpDebugLog( fd, "get file list: %s %s", threadUsername.c_str(), folder.c_str());
+
+    string path = "/" + threadUsername;
+    // if (folder.back() == '/')
+    if (folder == "/")
     {
-        header.clear();
-        header.set_cookie = "username=" + username;
-
-
-        // direct to new page
-        sendFileToClient(fd, "/profile.html");
+        // path += folder.substr(0, folder.size()-1);
     }
     else
     {
-        // TODO: invalid username or password
-        HttpDebugLog( fd, "Invalid %s %s", username.c_str(), password.c_str());
-
-        // do_write(fd, &HTTP_400_invalid_username.at(0), (int)HTTP_400_invalid_username.size());
-        // GeneralHeader header400;
-        // header400.content_type = "text/html";
-        // header400.content_length = HTML_400_PAGE.size();
-        // separate line
-        // do_write(fd, &CRLF.at(0), CRLF.size());
-
-        header.clear();
-        sendFileToClient(fd, "/index-login");
-
-
-        // do_write(fd, &HTML_400_PAGE.at(0), HTML_400_PAGE.size());
+        path += "/";
+        path += folder;
     }
+
+    HttpDebugLog( fd, "request path: %s", path.c_str());
+    // cerr << "\n\npath: " << path << "\n"; 
+
+    // temp test
+    
+    ostringstream oss;
+
+    oss << "{";
+
+    std::map<std::string, FileInfo> fileList;
+    if (fsClient.GetFileList(path, fileList))
+    {
+        bool isFirst = true;
+        for (const auto & f : fileList)
+        {
+            if (isFirst)
+            {
+                isFirst = false;
+            }
+            else
+            {
+                oss << ",";
+            }
+
+            HttpDebugLog( fd, "<%s , (%s, %d) >"
+                , f.first.c_str(), f.second.name().c_str(), f.second.is_file());
+
+            oss << "\"";
+            oss << f.first;
+            oss << "\"";
+            oss << ":";
+
+            oss << "{";
+
+            oss << "\"name\":";
+
+            oss << "\"";
+            oss << f.second.name();
+            oss << "\"";
+
+            oss << ",";
+            
+            oss << "\"folder\":";
+
+            oss << ( !f.second.is_file() ) ? "1" : "0";
+            
+            oss << "}";
+
+        }
+    }
+    else
+    {
+        HttpDebugLog( fd, "get file list fail");
+    }
+
+    oss << "}";
+
+
+    string file_list_json = oss.str();
+
+
+
+    // file_list_json += "{";
+
+    // if (folder == "/")
+    // {
+    //     // file-key , display info
+    //     file_list_json += "\"av\"";
+    //     file_list_json += ":";
+    //     file_list_json += "{\"name\":\"av\", \"date\":\"12-01-2015\", \"folder\":1}";
+
+    //     file_list_json += ",";
+    //     file_list_json += "\"download_test/cis505project.pdf\"";
+    //     file_list_json += ":";
+    //     file_list_json += "{\"name\":\"cis505project.pdf\", \"date\":\"12-05-2016\"}";
+
+    //     file_list_json += ",";
+    //     file_list_json += "\"download_test/lecture18.pptx\"";
+    //     file_list_json += ":";
+    //     file_list_json += "{\"name\":\"lecture18.pptx\", \"date\":\"12-01-2016\"}";
+
+    //     file_list_json += ",";
+    //     file_list_json += "\"download_test/profile.html\"";
+    //     file_list_json += ":";
+    //     file_list_json += "{\"name\":\"profile.html\", \"date\":\"12-19-2016\"}";
+    // }
+    // else if (folder == "av")
+    // {
+    //     file_list_json += "\"/\"";
+    //     file_list_json += ":";
+    //     file_list_json += "{\"name\":\"..\", \"date\":\"10-01-2015\", \"folder\":1}";
+
+    //     file_list_json += ",";
+    //     file_list_json += "\"download_test/di_pose.png\"";
+    //     file_list_json += ":";
+    //     file_list_json += "{\"name\":\"di_pose.png\", \"date\":\"11-22-2015\"}";
+    // }
+
+    // file_list_json += "}";
+
+
+    HttpDebugLog( fd, "send file list json:\n %s", file_list_json.c_str());
+
+    // header.clear();
+    sendData(fd, "application/json", file_list_json);
+    // sendData(fd, "json", file_list_json);
+    // sendData(fd, "text", file_list_json);
 }
 
 
 
 
-
-
-
-
-// {uri, FunctionHandler}
-const unordered_map<string, FunctionHandler> postRequestHandlers({
+// {uri, FunctionHandlerPost}
+static const unordered_map<string, FunctionHandlerPost> postRequestHandlers({
     {"/", &loginHandler}
-    , {"/", &uploadFileHandler}
+    , {"/register", &registerHandler}
+    , {"/drive", &uploadFileHandler}
+    , {"/get-file-list", &getFilelistHandler}
+
+    , {"/insert-folder", &insertFolderHandler}
 });
+
+
+void handlePostRequest(int fd, const string & uri, const string & contentStr, string & threadUsername)
+{
+    auto it = postRequestHandlers.find(uri);
+    if (it == postRequestHandlers.end())
+    {
+        // 400 not valid uri post
+        HttpDebugLog( fd, "Invalid post url request: %s", uri.c_str());
+        send400Page(fd);
+    }
+    else
+    {
+        (*(it->second))(fd, contentStr, threadUsername);
+    }
+}

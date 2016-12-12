@@ -1,5 +1,5 @@
 #include "http_server.h"
-#include "http_server_grpc.h"
+
 
 void* httpClientThread(void* params)
 {
@@ -31,6 +31,13 @@ void* httpClientThread(void* params)
 
 //   // --------------------------------------
 
+  
+
+
+
+
+
+
 
   stringstream ss;
 
@@ -46,6 +53,8 @@ void* httpClientThread(void* params)
 
   unordered_map<string, string> headersReceived;
   string uri;
+
+  string threadUsername = "";
 
 
   while (true)
@@ -89,7 +98,7 @@ void* httpClientThread(void* params)
             char * contentBuf = new char [ contentLength+1 ];
             ss.read(contentBuf, contentLength);
             contentBuf[contentLength] = '\0';
-            // printDebugMessage(comm_fd, contentBuf);
+            // printDebugMessage(comm_fd, contentBuf);          
             string contentStr(contentBuf);
             // contentStr += "\n";
             // printDebugMessage(comm_fd, contentStr);
@@ -97,17 +106,19 @@ void* httpClientThread(void* params)
 
             delete [] contentBuf;
 
-            auto it = postRequestHandlers.find(uri);
-            if (it == postRequestHandlers.end())
-            {
-                // 400 not valid uri post
-                HttpDebugLog( comm_fd, "Invalid post url request: %s", uri.c_str());
-                send400Page(comm_fd);
-            }
-            else
-            {
-                (*(it->second))(comm_fd, contentStr);
-            }
+            // auto it = postRequestHandlers.find(uri);
+            // if (it == postRequestHandlers.end())
+            // {
+            //     // 400 not valid uri post
+            //     HttpDebugLog( comm_fd, "Invalid post url request: %s", uri.c_str());
+            //     send400Page(comm_fd);
+            // }
+            // else
+            // {
+            //     (*(it->second))(comm_fd, contentStr);
+            // }
+
+            handlePostRequest(comm_fd, uri, contentStr, threadUsername);
             
             continue;
         }
@@ -226,6 +237,32 @@ void* httpClientThread(void* params)
                 // no content
                 receivingStatus = waiting_request;
                 
+
+                auto it = headersReceived.find("Cookie");
+                if (it != headersReceived.end())
+                {
+                    // has cookie username
+                    // assume already login
+                    
+                    istringstream iss_content(it->second);
+                    string tmp;
+                    getline(iss_content, tmp, '='); // username
+
+                    // TODO: use safe get line can handle this
+                    getline(iss_content, threadUsername, '\r');
+                    
+                    if (uri == "/")
+                    {
+                        uri = "/profile";
+                    }
+                }
+                else
+                {
+                    // uri = "/";
+                }
+                
+
+
                 header.clear();
                 sendFileToClient(comm_fd, uri);
             }
@@ -237,6 +274,8 @@ void* httpClientThread(void* params)
             string headerAttr = curInput.substr(0, curInput.size() - 1);
             string value;
             getline(iss, value);
+
+
             headersReceived.emplace(headerAttr, value);
         }
         else
@@ -257,26 +296,6 @@ void* httpClientThread(void* params)
   pthread_exit(NULL);
 }
 
-
-
-// void renderLoginPage(int comm_fd)
-// {
-//   // http 200 ok
-//   do_write(comm_fd, &HTTP_OK.at(0), HTTP_OK.size());
-
-//   // headers
-
-//   // // date
-//   // char timestamp[30];
-//   // time_t rawtime;
-//   // time(&rawtime);
-//   // struct tm *timeinfo = localtime(&rawtime);
-//   // strftime(timestamp, 30, "%c", timeinfo);
-
-//   // do_write(comm_fd, &CRLF.at(0), CRLF.size());
-
-//   sendFileToClient(comm_fd, "index.html");
-// }
 
 
 
@@ -320,6 +339,14 @@ const int NUM_CLIENT_THREADS = 10;
 int main(int argc, char *argv[])
 {
 
+//   // test rpc fsclient
+//   fsClient.InsertFolder("ss", "", false);
+//   fsClient.InsertFolder("ss", "/folder1", false);
+//   fsClient.InsertFolder("ss", "/folder1/folder1.1", false);
+//   fsClient.InsertFolder("ss", "/folder2", false);
+//   fsClient.InsertFolder("ss", "/folder3", false);
+
+
   // parse cmd line arguments
   
   {
@@ -353,15 +380,6 @@ int main(int argc, char *argv[])
   {
     fprintf(stderr, "*** Author: Shuai Shao (sshuai)\n");
   }
-
-
-
-//   // init page uri handlers
-//   // TODO: Or parse all files transmissiable
-//   uri_to_handlers.emplace("/", &sendFileToClient);
-//   uri_to_handlers.emplace("/main.css", &sendFileToClient);
-
-
 
 
 
