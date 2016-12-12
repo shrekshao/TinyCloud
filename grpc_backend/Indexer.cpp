@@ -77,7 +77,7 @@ pair<int, bool> Indexer::checkIsFile(string cur_dir) {
  * return: 1    success
  *         -1   fail
  */
-int Indexer::findAllChildren(string dir, vector<string> &res) {
+int Indexer::findAllChildren(string dir, vector<string>& res) {
     boost::filesystem::path p1(dir);
 
     // traverse all the sub dir
@@ -104,7 +104,7 @@ int Indexer::findAllChildren(string dir, vector<string> &res) {
  * return: 1    success
  *         -1   faile
  */
-int Indexer::findAllChildrenHelper(Node* cur_node, vector<string> &res) {
+int Indexer::findAllChildrenHelper(Node* cur_node, vector<string>& res) {
     int response = 1;
     for (map<string, Node>::iterator it = cur_node->children.begin(); it != cur_node->children.end(); ++it) {
         if (it->second.is_file) {

@@ -72,6 +72,15 @@ class StorageServiceImpl final : public Storage::Service {
         }
     }
 
+    Status UpdateFile(ServerContext* context, const FileChunk* request, Empty* reply) override {
+        int success = bigtable_service.put(request->username(), request->filename(), (unsigned char *) request->orig_data().c_str(), (unsigned char *) request->data().c_str(), request->filetype(), request->orig_length(), request->length());
+        if (success == 1) {
+            return Status::OK;
+        } else {
+            return Status::CANCELLED;
+        }
+    }
+
     Status GetFile(ServerContext* context, const FileChunkRequest* request, FileChunk* reply) override {
         FileMeta* file_meta = bigtable_service.getMeta(request->username(), request->filename());
 
@@ -178,7 +187,7 @@ void RunGC() {
 }
 
 int main(int argc, char** argv) {
-    /* Indexer test
+    ///* Indexer test
     cout << indexer_service.insert("/tianli", false) << endl;
     cout << indexer_service.insert("/tianli/folder1", false) << endl;
     cout << indexer_service.insert("/tianli/folder2", false) << endl;
@@ -188,9 +197,9 @@ int main(int argc, char** argv) {
     int success = indexer_service.display("/tianli", res);
     cout << success << endl;
     for (map<string, Node>::iterator it = res.begin(); it != res.end(); ++it) {
-        cout << it->second.name << " " << it->second.is_file << endl;
+        cout << it->second.filename << " " << it->second.is_file << endl;
     }
-    */
+    //*/
     RunServer();
     RunGC();
 

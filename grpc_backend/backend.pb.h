@@ -533,6 +533,23 @@ class FileChunk : public ::google::protobuf::Message /* @@protoc_insertion_point
   ::std::string* release_data();
   void set_allocated_data(::std::string* data);
 
+  // optional uint64 orig_length = 6;
+  void clear_orig_length();
+  static const int kOrigLengthFieldNumber = 6;
+  ::google::protobuf::uint64 orig_length() const;
+  void set_orig_length(::google::protobuf::uint64 value);
+
+  // optional bytes orig_data = 7;
+  void clear_orig_data();
+  static const int kOrigDataFieldNumber = 7;
+  const ::std::string& orig_data() const;
+  void set_orig_data(const ::std::string& value);
+  void set_orig_data(const char* value);
+  void set_orig_data(const void* value, size_t size);
+  ::std::string* mutable_orig_data();
+  ::std::string* release_orig_data();
+  void set_allocated_orig_data(::std::string* orig_data);
+
   // @@protoc_insertion_point(class_scope:backend.FileChunk)
  private:
 
@@ -543,6 +560,8 @@ class FileChunk : public ::google::protobuf::Message /* @@protoc_insertion_point
   ::google::protobuf::uint64 length_;
   ::google::protobuf::internal::ArenaStringPtr filetype_;
   ::google::protobuf::internal::ArenaStringPtr data_;
+  ::google::protobuf::uint64 orig_length_;
+  ::google::protobuf::internal::ArenaStringPtr orig_data_;
   mutable int _cached_size_;
   friend void  protobuf_AddDesc_backend_2eproto();
   friend void protobuf_AssignDesc_backend_2eproto();
@@ -1046,6 +1065,64 @@ inline void FileChunk::set_allocated_data(::std::string* data) {
   }
   data_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), data);
   // @@protoc_insertion_point(field_set_allocated:backend.FileChunk.data)
+}
+
+// optional uint64 orig_length = 6;
+inline void FileChunk::clear_orig_length() {
+  orig_length_ = GOOGLE_ULONGLONG(0);
+}
+inline ::google::protobuf::uint64 FileChunk::orig_length() const {
+  // @@protoc_insertion_point(field_get:backend.FileChunk.orig_length)
+  return orig_length_;
+}
+inline void FileChunk::set_orig_length(::google::protobuf::uint64 value) {
+  
+  orig_length_ = value;
+  // @@protoc_insertion_point(field_set:backend.FileChunk.orig_length)
+}
+
+// optional bytes orig_data = 7;
+inline void FileChunk::clear_orig_data() {
+  orig_data_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline const ::std::string& FileChunk::orig_data() const {
+  // @@protoc_insertion_point(field_get:backend.FileChunk.orig_data)
+  return orig_data_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void FileChunk::set_orig_data(const ::std::string& value) {
+  
+  orig_data_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:backend.FileChunk.orig_data)
+}
+inline void FileChunk::set_orig_data(const char* value) {
+  
+  orig_data_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:backend.FileChunk.orig_data)
+}
+inline void FileChunk::set_orig_data(const void* value, size_t size) {
+  
+  orig_data_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:backend.FileChunk.orig_data)
+}
+inline ::std::string* FileChunk::mutable_orig_data() {
+  
+  // @@protoc_insertion_point(field_mutable:backend.FileChunk.orig_data)
+  return orig_data_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline ::std::string* FileChunk::release_orig_data() {
+  // @@protoc_insertion_point(field_release:backend.FileChunk.orig_data)
+  
+  return orig_data_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void FileChunk::set_allocated_orig_data(::std::string* orig_data) {
+  if (orig_data != NULL) {
+    
+  } else {
+    
+  }
+  orig_data_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), orig_data);
+  // @@protoc_insertion_point(field_set_allocated:backend.FileChunk.orig_data)
 }
 
 // -------------------------------------------------------------------

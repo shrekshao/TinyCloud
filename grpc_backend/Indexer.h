@@ -40,8 +40,8 @@ public:
     int insert(string new_dir, bool is_file = false);
     int delet(string del_dir);
     pair<int, bool> checkIsFile(string cur_dir);
-    int findAllChildren(string dir, vector<string> &res);
-    int findAllChildrenHelper(Node* cur_node, vector<string> &res);
+    int findAllChildren(string dir, vector<string>& res);
+    int findAllChildrenHelper(Node* cur_node, vector<string>& res);
 };
 
 

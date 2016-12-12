@@ -98,9 +98,9 @@ int BigTabler::put (string username, string file_name, unsigned char file_conten
 }
 
 /*
- * Insert a file to the system, should have a lock, only one call at a time
- * return: 1    success
- *         -1   fail
+ * Update a file in the system, should have a lock, only one call at a time
+ * return: 1    do update
+ *         -1   no update
  */
 int BigTabler::put (string username, string file_name, unsigned char orig_file_content[], unsigned char file_content[], string file_type, unsigned int orig_file_size, unsigned int file_size) {
     /*
@@ -113,11 +113,11 @@ int BigTabler::put (string username, string file_name, unsigned char orig_file_c
     */
     // Check if there is already a file with this name
     if (big_table.find(username) == big_table.end()) {
-        big_table.emplace(piecewise_construct, forward_as_tuple(username), forward_as_tuple());
+        return -1;
     }
 
     if (big_table.at(username).find(file_name) == big_table.at(username).end()) {
-        return put(username, file_name, file_content, file_type, file_size);
+        return -1;
     } else {
         if (orig_file_size != big_table.at(username).at(file_name).file_length) {
             return -1;

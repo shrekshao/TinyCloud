@@ -115,12 +115,14 @@ void protobuf_AssignDesc_backend_2eproto() {
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(FileChunkRequest, _internal_metadata_),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(FileChunkRequest, _is_default_instance_));
   FileChunk_descriptor_ = file->message_type(4);
-  static const int FileChunk_offsets_[5] = {
+  static const int FileChunk_offsets_[7] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(FileChunk, username_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(FileChunk, filename_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(FileChunk, length_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(FileChunk, filetype_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(FileChunk, data_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(FileChunk, orig_length_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(FileChunk, orig_data_),
   };
   FileChunk_reflection_ =
     ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
@@ -215,18 +217,26 @@ void protobuf_AddDesc_backend_2eproto() {
     "y\030\001 \001(\t\022 \n\005value\030\002 \001(\0132\021.backend.FileInf"
     "o:\0028\001\")\n\010FileInfo\022\014\n\004name\030\001 \001(\t\022\017\n\007is_fi"
     "le\030\002 \001(\010\"6\n\020FileChunkRequest\022\020\n\010username"
-    "\030\001 \001(\t\022\020\n\010filename\030\002 \001(\t\"_\n\tFileChunk\022\020\n"
-    "\010username\030\001 \001(\t\022\020\n\010filename\030\002 \001(\t\022\016\n\006len"
-    "gth\030\003 \001(\004\022\020\n\010filetype\030\004 \001(\t\022\014\n\004data\030\005 \001("
-    "\014\"\007\n\005Empty2\262\002\n\007Storage\022A\n\013GetFileList\022\030."
-    "backend.FileListRequest\032\026.backend.FileLi"
-    "stReply\"\000\022<\n\016InsertFileList\022\030.backend.Fi"
-    "leListRequest\032\016.backend.Empty\"\000\022/\n\007PutFi"
-    "le\022\022.backend.FileChunk\032\016.backend.Empty\"\000"
-    "\022:\n\007GetFile\022\031.backend.FileChunkRequest\032\022"
-    ".backend.FileChunk\"\000\0229\n\nDeleteFile\022\031.bac"
-    "kend.FileChunkRequest\032\016.backend.Empty\"\000B"
-    "\006\242\002\003HLWb\006proto3", 735);
+    "\030\001 \001(\t\022\020\n\010filename\030\002 \001(\t\"\207\001\n\tFileChunk\022\020"
+    "\n\010username\030\001 \001(\t\022\020\n\010filename\030\002 \001(\t\022\016\n\006le"
+    "ngth\030\003 \001(\004\022\020\n\010filetype\030\004 \001(\t\022\014\n\004data\030\005 \001"
+    "(\014\022\023\n\013orig_length\030\006 \001(\004\022\021\n\torig_data\030\007 \001"
+    "(\014\"\007\n\005Empty2\330\004\n\007Storage\022A\n\013GetFileList\022\030"
+    ".backend.FileListRequest\032\026.backend.FileL"
+    "istReply\"\000\022<\n\016InsertFileList\022\030.backend.F"
+    "ileListRequest\032\016.backend.Empty\"\000\022/\n\007PutF"
+    "ile\022\022.backend.FileChunk\032\016.backend.Empty\""
+    "\000\0222\n\nUpdateFile\022\022.backend.FileChunk\032\016.ba"
+    "ckend.Empty\"\000\022:\n\007GetFile\022\031.backend.FileC"
+    "hunkRequest\032\022.backend.FileChunk\"\000\0229\n\nDel"
+    "eteFile\022\031.backend.FileChunkRequest\032\016.bac"
+    "kend.Empty\"\000\022A\n\023InsertFileList_Back\022\030.ba"
+    "ckend.FileListRequest\032\016.backend.Empty\"\000\022"
+    "4\n\014PutFile_Back\022\022.backend.FileChunk\032\016.ba"
+    "ckend.Empty\"\000\0227\n\017UpdateFile_Back\022\022.backe"
+    "nd.FileChunk\032\016.backend.Empty\"\000\022>\n\017Delete"
+    "File_Back\022\031.backend.FileChunkRequest\032\016.b"
+    "ackend.Empty\"\000B\006\242\002\003HLWb\006proto3", 1070);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "backend.proto", &protobuf_RegisterTypes);
   FileListRequest::default_instance_ = new FileListRequest();
@@ -1614,6 +1624,8 @@ const int FileChunk::kFilenameFieldNumber;
 const int FileChunk::kLengthFieldNumber;
 const int FileChunk::kFiletypeFieldNumber;
 const int FileChunk::kDataFieldNumber;
+const int FileChunk::kOrigLengthFieldNumber;
+const int FileChunk::kOrigDataFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 FileChunk::FileChunk()
@@ -1643,6 +1655,8 @@ void FileChunk::SharedCtor() {
   length_ = GOOGLE_ULONGLONG(0);
   filetype_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   data_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  orig_length_ = GOOGLE_ULONGLONG(0);
+  orig_data_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 
 FileChunk::~FileChunk() {
@@ -1655,6 +1669,7 @@ void FileChunk::SharedDtor() {
   filename_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   filetype_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   data_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  orig_data_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   if (this != default_instance_) {
   }
 }
@@ -1691,6 +1706,8 @@ void FileChunk::Clear() {
   length_ = GOOGLE_ULONGLONG(0);
   filetype_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   data_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  orig_length_ = GOOGLE_ULONGLONG(0);
+  orig_data_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 
 bool FileChunk::MergePartialFromCodedStream(
@@ -1777,6 +1794,34 @@ bool FileChunk::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
+        if (input->ExpectTag(48)) goto parse_orig_length;
+        break;
+      }
+
+      // optional uint64 orig_length = 6;
+      case 6: {
+        if (tag == 48) {
+         parse_orig_length:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint64, ::google::protobuf::internal::WireFormatLite::TYPE_UINT64>(
+                 input, &orig_length_)));
+
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(58)) goto parse_orig_data;
+        break;
+      }
+
+      // optional bytes orig_data = 7;
+      case 7: {
+        if (tag == 58) {
+         parse_orig_data:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadBytes(
+                input, this->mutable_orig_data()));
+        } else {
+          goto handle_unusual;
+        }
         if (input->ExpectAtEnd()) goto success;
         break;
       }
@@ -1846,6 +1891,17 @@ void FileChunk::SerializeWithCachedSizes(
       5, this->data(), output);
   }
 
+  // optional uint64 orig_length = 6;
+  if (this->orig_length() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt64(6, this->orig_length(), output);
+  }
+
+  // optional bytes orig_data = 7;
+  if (this->orig_data().size() > 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteBytesMaybeAliased(
+      7, this->orig_data(), output);
+  }
+
   // @@protoc_insertion_point(serialize_end:backend.FileChunk)
 }
 
@@ -1897,6 +1953,18 @@ void FileChunk::SerializeWithCachedSizes(
         5, this->data(), target);
   }
 
+  // optional uint64 orig_length = 6;
+  if (this->orig_length() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt64ToArray(6, this->orig_length(), target);
+  }
+
+  // optional bytes orig_data = 7;
+  if (this->orig_data().size() > 0) {
+    target =
+      ::google::protobuf::internal::WireFormatLite::WriteBytesToArray(
+        7, this->orig_data(), target);
+  }
+
   // @@protoc_insertion_point(serialize_to_array_end:backend.FileChunk)
   return target;
 }
@@ -1938,6 +2006,20 @@ int FileChunk::ByteSize() const {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::BytesSize(
         this->data());
+  }
+
+  // optional uint64 orig_length = 6;
+  if (this->orig_length() != 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::UInt64Size(
+        this->orig_length());
+  }
+
+  // optional bytes orig_data = 7;
+  if (this->orig_data().size() > 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::BytesSize(
+        this->orig_data());
   }
 
   GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
@@ -1987,6 +2069,13 @@ void FileChunk::MergeFrom(const FileChunk& from) {
 
     data_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.data_);
   }
+  if (from.orig_length() != 0) {
+    set_orig_length(from.orig_length());
+  }
+  if (from.orig_data().size() > 0) {
+
+    orig_data_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.orig_data_);
+  }
 }
 
 void FileChunk::CopyFrom(const ::google::protobuf::Message& from) {
@@ -2018,6 +2107,8 @@ void FileChunk::InternalSwap(FileChunk* other) {
   std::swap(length_, other->length_);
   filetype_.Swap(&other->filetype_);
   data_.Swap(&other->data_);
+  std::swap(orig_length_, other->orig_length_);
+  orig_data_.Swap(&other->orig_data_);
   _internal_metadata_.Swap(&other->_internal_metadata_);
   std::swap(_cached_size_, other->_cached_size_);
 }
@@ -2221,6 +2312,64 @@ void FileChunk::clear_data() {
   }
   data_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), data);
   // @@protoc_insertion_point(field_set_allocated:backend.FileChunk.data)
+}
+
+// optional uint64 orig_length = 6;
+void FileChunk::clear_orig_length() {
+  orig_length_ = GOOGLE_ULONGLONG(0);
+}
+ ::google::protobuf::uint64 FileChunk::orig_length() const {
+  // @@protoc_insertion_point(field_get:backend.FileChunk.orig_length)
+  return orig_length_;
+}
+ void FileChunk::set_orig_length(::google::protobuf::uint64 value) {
+  
+  orig_length_ = value;
+  // @@protoc_insertion_point(field_set:backend.FileChunk.orig_length)
+}
+
+// optional bytes orig_data = 7;
+void FileChunk::clear_orig_data() {
+  orig_data_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ const ::std::string& FileChunk::orig_data() const {
+  // @@protoc_insertion_point(field_get:backend.FileChunk.orig_data)
+  return orig_data_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void FileChunk::set_orig_data(const ::std::string& value) {
+  
+  orig_data_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:backend.FileChunk.orig_data)
+}
+ void FileChunk::set_orig_data(const char* value) {
+  
+  orig_data_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:backend.FileChunk.orig_data)
+}
+ void FileChunk::set_orig_data(const void* value, size_t size) {
+  
+  orig_data_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:backend.FileChunk.orig_data)
+}
+ ::std::string* FileChunk::mutable_orig_data() {
+  
+  // @@protoc_insertion_point(field_mutable:backend.FileChunk.orig_data)
+  return orig_data_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ ::std::string* FileChunk::release_orig_data() {
+  // @@protoc_insertion_point(field_release:backend.FileChunk.orig_data)
+  
+  return orig_data_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void FileChunk::set_allocated_orig_data(::std::string* orig_data) {
+  if (orig_data != NULL) {
+    
+  } else {
+    
+  }
+  orig_data_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), orig_data);
+  // @@protoc_insertion_point(field_set_allocated:backend.FileChunk.orig_data)
 }
 
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
