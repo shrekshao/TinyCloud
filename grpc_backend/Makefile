@@ -34,7 +34,8 @@ CPPFLAGS += -I/usr/local/include -pthread
 CXXFLAGS += -std=c++11
 LDFLAGS += -L/usr/local/lib `pkg-config --libs grpc++ grpc`       \
            -Wl,--no-as-needed -lgrpc++_reflection -Wl,--as-needed \
-           -lprotobuf -lpthread -ldl
+           -lprotobuf -lpthread -ldl -lboost_system -lboost_filesystem \
+           -lboost_thread
 PROTOC = protoc
 GRPC_CPP_PLUGIN = grpc_cpp_plugin
 GRPC_CPP_PLUGIN_PATH ?= `which $(GRPC_CPP_PLUGIN)`
@@ -43,11 +44,13 @@ PROTOS_PATH = protos
 
 vpath %.proto $(PROTOS_PATH)
 
-all: backend_server Indexer
+all: backend_server Indexer BigTabler
 
-Indexer: backend.pb.o backend.grpc.pb.o backend_server.o Indexer.o
+BigTabler: backend.pb.o backend.grpc.pb.o backend_server.o Indexer.o BigTabler.o
 	$(CXX) $^ $(LDFLAGS) -o $@
-backend_server: backend.pb.o backend.grpc.pb.o backend_server.o Indexer.o
+Indexer: backend.pb.o backend.grpc.pb.o backend_server.o Indexer.o BigTabler.o
+	$(CXX) $^ $(LDFLAGS) -o $@
+backend_server: backend.pb.o backend.grpc.pb.o backend_server.o Indexer.o BigTabler.o
 	$(CXX) $^ $(LDFLAGS) -o $@
 
 

@@ -16,22 +16,25 @@ Indexer::Indexer() : root("usr"){
 /*
  *  Display the files and directories under the cur_dir
  */
-int Indexer::display(string cur_dir, map<string, Node> res) {
-    vector<string> path = directory_parser(cur_dir); // parse the path into vector<string>
+int Indexer::display(string cur_dir, map<string, Node> &res) {
+    boost::filesystem::path p1(cur_dir);
 
-    Node cur_node = root;
     // traverse all the sub dir
-    for (string s : path) {
-        Node *temp = node_finder(s, cur_node);
+    Node* cur_node = &root;
+    for (auto const& element : p1) {
+        if (element.string().compare("/") == 0) {
+            continue;
+        }
+        Node* temp = node_finder(element.string(), cur_node);
         if (temp == NULL) {
             // ERROR
             return -1;
         }
         // iterated to next level
-        cur_node = *temp;
+        cur_node = temp;
     }
 
-    for (map<string, Node>::iterator it = cur_node.children.begin(); it != cur_node.children.end(); ++it) {
+    for (map<string, Node>::iterator it = cur_node->children.begin(); it != cur_node->children.end(); ++it) {
         res.emplace(it->first, it->second);
     }
     return 1;
@@ -41,46 +44,46 @@ int Indexer::display(string cur_dir, map<string, Node> res) {
  *  Create/Upload a file or a directory
  */
 int Indexer::insert(string new_dir, bool is_file) {
-    vector<string> path = directory_parser(new_dir);
+    boost::filesystem::path p1(new_dir);
+
     // traverse all the sub dir
-    Node cur_node = root;
-    int i;
-    for (i = 0; i < path.size()-1;  i++) {
-        Node* temp = node_finder(path[i], cur_node);
+    Node* cur_node = &root;
+    for (auto const& element : p1.parent_path()) {
+        if (element.string().compare("/") == 0) {
+            continue;
+        }
+        Node* temp = node_finder(element.string(), cur_node);
         if (temp == NULL) {
             // ERROR
             return -1;
         }
         // iterated to next level
-        cur_node = *temp;
+        cur_node = temp;
     }
 
-    if (cur_node.is_file) {
+    if (cur_node->is_file) {
         // Cannot create under a file
         return -1;
     }
 
-    if (i == 0) {
-        cur_node.children.emplace("root", Node(path[i], is_file));
-    } else {
-        cur_node.children.emplace(path[i-1], Node(path[i], is_file));
-    }
+    cur_node->children.emplace(std::piecewise_construct, std::forward_as_tuple(p1.filename().string()), std::forward_as_tuple(p1.filename().string(), is_file));
 
     return 1;
 }
 
 /*
- *  Delete a file/directory
+ *  Delete a file/directory in the hierarchy structure
  */
-/*
 int Indexer::delet(string del_dir) {
-    vector<string> path = directory_parser(del_dir);
+    boost::filesystem::path p1(del_dir);
 
     // traverse all the sub dir
     Node* cur_node = &root;
-    int i;
-    for (i = 0; i < path.size()-1;  i++) {
-        Node* temp = node_finder(path[i], cur_node);
+    for (auto const& element : p1.parent_path()) {
+        if (element.string().compare("/") == 0) {
+            continue;
+        }
+        Node* temp = node_finder(element.string(), cur_node);
         if (temp == NULL) {
             // ERROR
             return -1;
@@ -95,37 +98,17 @@ int Indexer::delet(string del_dir) {
     }
 
     // delete a file/directory
-    cur_node->children.erase(path[i]);
+    cur_node->children.erase(p1.filename().string());
 
     return 1;
 }
-*/
+
 // helper functions*************************************************************************************************
 
-// parser
-vector<string> Indexer::directory_parser(string directory) {
-    // result vector
-    vector<string> result;
-    // parse the pass-in arguement
-    string s = directory;
-    string delim = "/";
-    // parsing
-    auto start = 0U;
-    auto end = s.find(delim);
-    while (end != string::npos) {
-        result.push_back(s.substr(start, end - start));
-        start = end + delim.length();
-        end = s.find(delim, start);
-    }
-    result.push_back(s.substr(start, end));
-    // return
-    return result;
-}
-
 // node finder
-Node* Indexer::node_finder(string target_name, Node &node) {
-    auto it = node.children.find(target_name);
-    if (it != node.children.end()) {
+Node* Indexer::node_finder(string target_name, Node* node) {
+    auto it = node->children.find(target_name);
+    if (it != node->children.end()) {
         return &(it->second);
     }
     return NULL;

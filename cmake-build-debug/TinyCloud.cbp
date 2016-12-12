@@ -27,6 +27,52 @@
 					<DistClean command="/usr/bin/make -j8 -f &quot;/home/tianli/upenn/cis505/TinyCloud/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
+			<Target title="BoostTest">
+				<Option output="/home/tianli/upenn/cis505/TinyCloud/cmake-build-debug/BoostTest" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/tianli/upenn/cis505/TinyCloud/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+					<Add directory="/usr/include/c++/5"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
+					<Add directory="/usr/include/c++/5/backward"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/tianli/upenn/cis505/TinyCloud/cmake-build-debug/Makefile&quot;  VERBOSE=1 BoostTest"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/tianli/upenn/cis505/TinyCloud/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/tianli/upenn/cis505/TinyCloud/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/tianli/upenn/cis505/TinyCloud/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="BoostTest/fast">
+				<Option output="/home/tianli/upenn/cis505/TinyCloud/cmake-build-debug/BoostTest" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/tianli/upenn/cis505/TinyCloud/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+					<Add directory="/usr/include/c++/5"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
+					<Add directory="/usr/include/c++/5/backward"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/tianli/upenn/cis505/TinyCloud/cmake-build-debug/Makefile&quot;  VERBOSE=1 BoostTest/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/tianli/upenn/cis505/TinyCloud/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/tianli/upenn/cis505/TinyCloud/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/tianli/upenn/cis505/TinyCloud/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
 			<Target title="rebuild_cache">
 				<Option working_dir="/home/tianli/upenn/cis505/TinyCloud/cmake-build-debug"/>
 				<Option type="4"/>
@@ -117,19 +163,28 @@
 		<Unit filename="/home/tianli/upenn/cis505/TinyCloud/_site/profile.html">
 			<Option target="TinyCloud"/>
 		</Unit>
+		<Unit filename="/home/tianli/upenn/cis505/TinyCloud/grpc_backend/BigTabler.cpp">
+			<Option target="TinyCloud"/>
+		</Unit>
+		<Unit filename="/home/tianli/upenn/cis505/TinyCloud/grpc_backend/BigTabler.h">
+			<Option target="TinyCloud"/>
+		</Unit>
+		<Unit filename="/home/tianli/upenn/cis505/TinyCloud/grpc_backend/Indexer.cpp">
+			<Option target="TinyCloud"/>
+		</Unit>
+		<Unit filename="/home/tianli/upenn/cis505/TinyCloud/grpc_backend/Indexer.h">
+			<Option target="TinyCloud"/>
+		</Unit>
 		<Unit filename="/home/tianli/upenn/cis505/TinyCloud/grpc_backend/backend_server.cpp">
 			<Option target="TinyCloud"/>
 		</Unit>
+		<Unit filename="/home/tianli/upenn/cis505/TinyCloud/grpc_backend/file_wu.cpp">
+			<Option target="TinyCloud"/>
+		</Unit>
+		<Unit filename="/home/tianli/upenn/cis505/TinyCloud/grpc_backend/filelist_wu.cpp">
+			<Option target="TinyCloud"/>
+		</Unit>
 		<Unit filename="/home/tianli/upenn/cis505/TinyCloud/grpc_backend/protos/backend.proto">
-			<Option target="TinyCloud"/>
-		</Unit>
-		<Unit filename="/home/tianli/upenn/cis505/TinyCloud/grpc_backend/storage_server.cpp">
-			<Option target="TinyCloud"/>
-		</Unit>
-		<Unit filename="/home/tianli/upenn/cis505/TinyCloud/grpc_backend/storage_service.cpp">
-			<Option target="TinyCloud"/>
-		</Unit>
-		<Unit filename="/home/tianli/upenn/cis505/TinyCloud/grpc_backend/storage_service.h">
 			<Option target="TinyCloud"/>
 		</Unit>
 		<Unit filename="/home/tianli/upenn/cis505/TinyCloud/http_server.cpp">

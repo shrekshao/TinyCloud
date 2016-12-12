@@ -1,8 +1,10 @@
 file(REMOVE_RECURSE
   "CMakeFiles/TinyCloud.dir/http_server.cpp.o"
   "CMakeFiles/TinyCloud.dir/grpc_backend/backend_server.cpp.o"
-  "CMakeFiles/TinyCloud.dir/grpc_backend/storage_server.cpp.o"
-  "CMakeFiles/TinyCloud.dir/grpc_backend/storage_service.cpp.o"
+  "CMakeFiles/TinyCloud.dir/grpc_backend/filelist_wu.cpp.o"
+  "CMakeFiles/TinyCloud.dir/grpc_backend/Indexer.cpp.o"
+  "CMakeFiles/TinyCloud.dir/grpc_backend/file_wu.cpp.o"
+  "CMakeFiles/TinyCloud.dir/grpc_backend/BigTabler.cpp.o"
   "TinyCloud.pdb"
   "TinyCloud"
 )
