@@ -30,9 +30,11 @@ const char*  server_ip = "0.0.0.0:50051";
 
 // Indexer service in-memory storage
 Indexer indexer_service;
+Indexer inderxer_service_backup;
 
 // File service in-memory storage
 BigTabler bigtable_service(server_ip);
+BigTabler bigtable_service_backup(server_ip);
 
 // Logic and data behind the server's behavior.
 class StorageServiceImpl final : public Storage::Service {
@@ -147,6 +149,118 @@ class StorageServiceImpl final : public Storage::Service {
             }
         }
     }
+
+    Status GetFileList_Backup(ServerContext* context, const FileListRequest* request, FileListReply* reply) override {
+        map<string, Node> res;
+        int success = indexer_service.display(request->foldername(), res);
+        if (success == 1) {
+            for (map<string, Node>::iterator it = res.begin(); it != res.end(); ++it) {
+                backend::FileInfo fi;
+                fi.set_full_path(it->second.full_name);
+                fi.set_name(it->second.node_name);
+                fi.set_is_file(it->second.is_file);
+                (*reply->mutable_filelist())[it->first] = fi;
+            }
+
+            return Status::OK;
+        } else {
+            return Status::CANCELLED;
+        }
+    }
+
+    Status InsertFileList_Backup(ServerContext* context, const FileListRequest* request, Empty* reply) override {
+        int success = indexer_service.insert(request->foldername(), false);
+        if (success == 1) {
+            return Status::OK;
+        } else {
+            return Status::CANCELLED;
+        }
+    }
+
+    Status PutFile_Backup(ServerContext* context, const FileChunk* request, Empty* reply) override {
+        int success1 = bigtable_service.put(request->username(), request->filename(), (unsigned char *) request->data().c_str(), request->filetype(), request->length());
+        int success2 = indexer_service.insert(request->username()+"/"+request->filename(), true);
+        if (success1 == 1 && success2 == 1) {
+            return Status::OK;
+        } else {
+            return Status::CANCELLED;
+        }
+    }
+
+    Status UpdateFile_Backup(ServerContext* context, const FileChunk* request, Empty* reply) override {
+        int success = bigtable_service.put(request->username(), request->filename(), (unsigned char *) request->orig_data().c_str(), (unsigned char *) request->data().c_str(), request->filetype(), request->orig_length(), request->length());
+        if (success == 1) {
+            return Status::OK;
+        } else {
+            return Status::CANCELLED;
+        }
+    }
+
+    Status GetFile_Backup(ServerContext* context, const FileChunkRequest* request, FileChunk* reply) override {
+        FileMeta* file_meta = bigtable_service.getMeta(request->username(), request->filename());
+
+        if (file_meta == NULL) {
+            return Status::CANCELLED;
+        }
+
+        reply->set_username(file_meta->username);
+        reply->set_filename(file_meta->file_name);
+        reply->set_length(file_meta->file_length);
+        reply->set_filetype(file_meta->file_type);
+
+        unsigned char temp[file_meta->file_length];
+        int success = bigtable_service.get(request->username(), request->filename(), (unsigned char *) temp, file_meta->file_length);
+        if (success == file_meta->file_length) {
+            reply->set_data((char *)temp);
+            return Status::OK;
+        } else {
+            return Status::CANCELLED;
+        }
+    }
+
+    Status DeleteFile_Backup(ServerContext* context, const FileChunkRequest* request, Empty* reply) override {
+        pair<int, bool> file_info = indexer_service.checkIsFile(request->username()+"/"+request->filename());
+
+        if (file_info.first == -1) {
+            return Status::CANCELLED;
+        }
+
+        if (file_info.second) {
+            int success1 = indexer_service.delet(request->username()+"/"+request->filename());
+            if (success1 == -1) {
+                return Status::CANCELLED;
+            }
+            int success2 = bigtable_service.delet(request->username(), request->filename());
+            if (success1 == 1 && success2 == 1) {
+                return Status::OK;
+            } else {
+                return Status::CANCELLED;
+            }
+        } else {
+            vector<string> delete_candidates;
+            int success = indexer_service.findAllChildren(request->username()+"/"+request->filename(), delete_candidates);
+            if (success == -1) {
+                return Status::CANCELLED;
+            }
+
+            int success1 = indexer_service.delet(request->username()+"/"+request->filename());
+            if (success1 == -1) {
+                return Status::CANCELLED;
+            }
+
+            int success2 = 1;
+            for (string str : delete_candidates) {
+                int delim = str.find("/");
+                success2 = (success2 == 1 && bigtable_service.delet(str.substr(0, delim), str.substr(delim+1, str.length()-delim-1)) == 1) ? 1 : -1;
+            }
+
+            if (success1 == 1 && success2 == 1) {
+                return Status::OK;
+            } else {
+                return Status::CANCELLED;
+            }
+        }
+    }
 };
 
 void RunServer() {
@@ -188,7 +302,7 @@ void RunGC() {
 }
 
 int main(int argc, char** argv) {
-    ///* Indexer test
+    /* Indexer test
     cout << indexer_service.insert("/tianli", false) << endl;
     cout << indexer_service.insert("/tianli/folder1", false) << endl;
     cout << indexer_service.insert("/tianli/folder2", false) << endl;
@@ -200,7 +314,7 @@ int main(int argc, char** argv) {
     for (map<string, Node>::iterator it = res.begin(); it != res.end(); ++it) {
         cout << it->first << " " << it->second.is_file << endl;
     }
-    //*/
+    */
     RunServer();
     RunGC();
 

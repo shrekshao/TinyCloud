@@ -38,7 +38,7 @@ package backend;
 
 // The storage service definition.
 service Storage {
-  // Frontend Backend Communication
+  // Frontend Backend Normal Communication
   // Get file list
   rpc GetFileList (FileListRequest) returns (FileListReply) {}
   // Insert a directory
@@ -52,15 +52,19 @@ service Storage {
   // Delete a file
   rpc DeleteFile (FileChunkRequest) returns (Empty) {}
 
-  // Backend Backend Communication
+  // Backup Communication
+  // Get file list
+  rpc GetFileList_Backup (FileListRequest) returns (FileListReply) {}
   // Insert a directory
-  rpc InsertFileList_Back (FileListRequest) returns (Empty) {}
+  rpc InsertFileList_Backup (FileListRequest) returns (Empty) {}
   // Upload a file
-  rpc PutFile_Back (FileChunk) returns (Empty) {}
+  rpc PutFile_Backup (FileChunk) returns (Empty) {}
   // Update a file
-  rpc UpdateFile_Back (FileChunk) returns (Empty) {}
+  rpc UpdateFile_Backup (FileChunk) returns (Empty) {}
+  // Get a file
+  rpc GetFile_Backup (FileChunkRequest) returns (FileChunk) {}
   // Delete a file
-  rpc DeleteFile_Back (FileChunkRequest) returns (Empty) {}
+  rpc DeleteFile_Backup (FileChunkRequest) returns (Empty) {}
 }
 
 // The request message containing the user/folder's name.
