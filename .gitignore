@@ -1,3 +1,6 @@
 http_server
 backend_server
 *.o
+grpc_backend/BigTabler
+grpc_backend/Indexer
+grpc_backend/backend_server
