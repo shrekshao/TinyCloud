@@ -66,7 +66,7 @@ class FileSystemClient {
 
     FileListRequest request;
     request.set_foldername(username + folder);
-    request.set_is_file(isFile);
+    // request.set_is_file(isFile);
 
     Status status = stub_->InsertFileList(&context, request, NULL);
 

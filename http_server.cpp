@@ -98,7 +98,7 @@ void* httpClientThread(void* params)
             char * contentBuf = new char [ contentLength+1 ];
             ss.read(contentBuf, contentLength);
             contentBuf[contentLength] = '\0';
-            // printDebugMessage(comm_fd, contentBuf);
+            // printDebugMessage(comm_fd, contentBuf);          
             string contentStr(contentBuf);
             // contentStr += "\n";
             // printDebugMessage(comm_fd, contentStr);
@@ -247,7 +247,9 @@ void* httpClientThread(void* params)
                     istringstream iss_content(it->second);
                     string tmp;
                     getline(iss_content, tmp, '='); // username
-                    getline(iss_content, threadUsername, '&');
+
+                    // TODO: use safe get line can handle this
+                    getline(iss_content, threadUsername, '\r');
                     
                     if (uri == "/")
                     {

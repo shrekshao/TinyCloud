@@ -431,7 +431,9 @@ bool verifyUsernameAndPassword(const string & username, const string & password)
 {
     // temp test
     // TODO: communicate with big table
-    return (username == "ss") && (password == "123");
+    return 
+        (username == "ss") && (password == "123")
+        || (username == "tianli") && (password == "123");
 }
 
 
@@ -515,68 +517,101 @@ void getFilelistHandler(int fd, const string & folder, string & threadUsername)
     // Current for test
     // TODO: grpc ask for file list
 
-    HttpDebugLog( fd, "get file list: %s", folder.c_str());
+    // cerr << "\n\n" << folder << "\n\n";
+
+    HttpDebugLog( fd, "get file list: %s%s", threadUsername.c_str(), folder.c_str());
+
+    string path = "/" + threadUsername;
+    if (folder.back() == '/')
+    {
+        path += folder.substr(0, folder.size()-1);
+    }
+    else
+    {
+        path += folder;
+    }
+
+    HttpDebugLog( fd, "request path: %s", path.c_str());
+    // cerr << "\n\npath: " << path << "\n"; 
 
     // temp test
-    string file_list_json;
-
-    // std::map<std::string, FileInfo> fileList;
-    // if (fsClient.GetFileList(threadUsername + folder, fileList))
-    // {
-    //     for (const auto & f : fileList)
-    //     {
-            
-    //     }
-    // }
-    // else
-    // {
-        
-    // }
-
-
-
+    string file_list_json = "";
 
     file_list_json += "{";
 
-    if (folder == "/")
+    std::map<std::string, FileInfo> fileList;
+    if (fsClient.GetFileList(path, fileList))
     {
-        // file-key , display info
-        file_list_json += "\"av\"";
-        file_list_json += ":";
-        file_list_json += "{\"name\":\"av\", \"date\":\"12-01-2015\", \"folder\":1}";
+        bool isFirst = true;
+        for (const auto & f : fileList)
+        {
+            string item = "";
+            if (!isFirst)
+            {
+                isFirst = false;
+                item = ",";
+            }
 
-        file_list_json += ",";
-        file_list_json += "\"download_test/cis505project.pdf\"";
-        file_list_json += ":";
-        file_list_json += "{\"name\":\"cis505project.pdf\", \"date\":\"12-05-2016\"}";
+            HttpDebugLog( fd, "<%s , (%s, %d) >"
+                , f.first.c_str(), f.second.name().c_str(), f.second.is_file());
 
-        file_list_json += ",";
-        file_list_json += "\"download_test/lecture18.pptx\"";
-        file_list_json += ":";
-        file_list_json += "{\"name\":\"lecture18.pptx\", \"date\":\"12-01-2016\"}";
+            // item += f.first;
+            // item += ":";
 
-        file_list_json += ",";
-        file_list_json += "\"download_test/profile.html\"";
-        file_list_json += ":";
-        file_list_json += "{\"name\":\"profile.html\", \"date\":\"12-19-2016\"}";
+            // item += "";
+
+
+
+            // file_list_json += item;
+        }
     }
-    else if (folder == "av")
+    else
     {
-        file_list_json += "\"/\"";
-        file_list_json += ":";
-        file_list_json += "{\"name\":\"..\", \"date\":\"10-01-2015\", \"folder\":1}";
-
-        file_list_json += ",";
-        file_list_json += "\"download_test/di_pose.png\"";
-        file_list_json += ":";
-        file_list_json += "{\"name\":\"di_pose.png\", \"date\":\"11-22-2015\"}";
+        HttpDebugLog( fd, "get file list fail");
     }
-
-
-    
-
 
     file_list_json += "}";
+
+
+
+
+    // file_list_json += "{";
+
+    // if (folder == "/")
+    // {
+    //     // file-key , display info
+    //     file_list_json += "\"av\"";
+    //     file_list_json += ":";
+    //     file_list_json += "{\"name\":\"av\", \"date\":\"12-01-2015\", \"folder\":1}";
+
+    //     file_list_json += ",";
+    //     file_list_json += "\"download_test/cis505project.pdf\"";
+    //     file_list_json += ":";
+    //     file_list_json += "{\"name\":\"cis505project.pdf\", \"date\":\"12-05-2016\"}";
+
+    //     file_list_json += ",";
+    //     file_list_json += "\"download_test/lecture18.pptx\"";
+    //     file_list_json += ":";
+    //     file_list_json += "{\"name\":\"lecture18.pptx\", \"date\":\"12-01-2016\"}";
+
+    //     file_list_json += ",";
+    //     file_list_json += "\"download_test/profile.html\"";
+    //     file_list_json += ":";
+    //     file_list_json += "{\"name\":\"profile.html\", \"date\":\"12-19-2016\"}";
+    // }
+    // else if (folder == "av")
+    // {
+    //     file_list_json += "\"/\"";
+    //     file_list_json += ":";
+    //     file_list_json += "{\"name\":\"..\", \"date\":\"10-01-2015\", \"folder\":1}";
+
+    //     file_list_json += ",";
+    //     file_list_json += "\"download_test/di_pose.png\"";
+    //     file_list_json += ":";
+    //     file_list_json += "{\"name\":\"di_pose.png\", \"date\":\"11-22-2015\"}";
+    // }
+
+    // file_list_json += "}";
 
 
     HttpDebugLog( fd, "send file list json:\n %s", file_list_json.c_str());
