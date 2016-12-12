@@ -110,7 +110,7 @@ int Indexer::findAllChildrenHelper(Node* cur_node, vector<string>& res) {
     int response = 1;
     for (map<string, Node>::iterator it = cur_node->children.begin(); it != cur_node->children.end(); ++it) {
         if (it->second.is_file) {
-            res.push_back(it->second.filename);
+            res.push_back(it->second.full_name);
         } else {
             response = (findAllChildrenHelper(&(it->second), res) == 1 && response == 1) ? 1 : -1;
         }
@@ -145,9 +145,9 @@ int Indexer::insert(string new_dir, bool is_file) {
     }
 
     if (new_dir.find("/") == 0) {
-        cur_node->children.emplace(piecewise_construct, forward_as_tuple(new_dir.substr(1, new_dir.length()-1)), forward_as_tuple(new_dir.substr(1, new_dir.length()-1), p1.filename().string(), is_file));
+        cur_node->children.emplace(piecewise_construct, forward_as_tuple( p1.filename().string()), forward_as_tuple(p1.filename().string(), new_dir.substr(1, new_dir.length()-1), is_file));
     } else {
-        cur_node->children.emplace(piecewise_construct, forward_as_tuple(new_dir), forward_as_tuple(new_dir, p1.filename().string(), is_file));
+        cur_node->children.emplace(piecewise_construct, forward_as_tuple(p1.filename().string()), forward_as_tuple(p1.filename().string(), new_dir, is_file));
     }
 
     return 1;

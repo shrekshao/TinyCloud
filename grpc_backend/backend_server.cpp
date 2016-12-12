@@ -42,8 +42,8 @@ class StorageServiceImpl final : public Storage::Service {
         if (success == 1) {
             for (map<string, Node>::iterator it = res.begin(); it != res.end(); ++it) {
                 backend::FileInfo fi;
-                fi.set_full_path(it->second.key);
-                fi.set_name(it->second.filename);
+                fi.set_full_path(it->second.full_name);
+                fi.set_name(it->second.node_name);
                 fi.set_is_file(it->second.is_file);
                 (*reply->mutable_filelist())[it->first] = fi;
             }
@@ -195,10 +195,10 @@ int main(int argc, char** argv) {
     cout << indexer_service.insert("/tianli/file3", true) << endl;
     cout << indexer_service.insert("/tianli/folder1/folder1.1", false) << endl;
     map<string, Node> res;
-    int success = indexer_service.display("/tianli", res);
+    int success = indexer_service.display("/tianli/folder1", res);
     cout << success << endl;
     for (map<string, Node>::iterator it = res.begin(); it != res.end(); ++it) {
-        cout << it->second.filename << " " << it->second.is_file << endl;
+        cout << it->first << " " << it->second.is_file << endl;
     }
     //*/
     RunServer();

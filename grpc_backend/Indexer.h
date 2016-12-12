@@ -20,13 +20,13 @@ using namespace std;
  */
 class Node {
 public:
-    string key;
-    string filename;
+    string node_name;
+    string full_name;
     bool is_file;
     map<string, Node> children;
-    Node(string key, string filename, bool is_file = false) {
-        this->key = key;
-        this->filename = filename;
+    Node(string node_name, string full_name, bool is_file = false) {
+        this->node_name = node_name;
+        this->full_name = full_name;
         this->is_file = is_file; // Default to be directory
     }
 };
