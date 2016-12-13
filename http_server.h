@@ -56,7 +56,8 @@ enum ReceivingStatus{
     reading_request_get,
     reading_request_post,
     reading_request_header,
-    reading_content
+    reading_content,
+    reading_content_multipart
 };
 
 // ----------------- const status msg ----------------
@@ -645,7 +646,8 @@ void getFilelistHandler(int fd, const string & folder, string & threadUsername)
 
 void uploadFileHandler(int fd, const string & contentStr, string & threadUsername)
 {
-    // TODO
+    // TODO: where to put folder info? 
+    HttpDebugLog( fd, "upload file handler");
 }
 
 void insertFolderHandler(int fd, const string & contentStr, string & threadUsername)

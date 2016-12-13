@@ -61,10 +61,12 @@
                             <!--<input id="input-1" type="file" class="file">-->
                             <div class="input-group">
                                 <h4>Upload Files</h4>
-                                <input id="input-1" type="file">
-                                <input type="submit" value="Submit">
+                                <input id="input-file" type="file">
+                                <!--<input type="hidden" id="upload-file-folder" name="cur-folder" value="/">-->
+                                <input type="submit" value="Upload">
                             </div>
                         </form> 
+                        <input type="hidden" id="upload-file-folder" name="cur-folder" value="/">
                         
                         <br />
                         
@@ -143,6 +145,7 @@
         
 
         cur_folder = folder;
+        $('#upload-file-folder').val(cur_folder);
 
         $.ajax({
             url: '/get-file-list',
@@ -257,14 +260,16 @@
         var startUpload = function(files) {
             console.log(files);
             // TODO
-        }
+        };
 
-        uploadForm.addEventListener('submit', function(e) {
-            var uploadFiles = document.getElementById('js-upload-files').files;
-            e.preventDefault();
+        // uploadForm.addEventListener('submit', function(e) {
+        //     var uploadFiles = document.getElementById('js-upload-files').files;
 
-            startUpload(uploadFiles);
-        })
+        
+        //     e.preventDefault();
+
+        //     startUpload(uploadFiles);
+        // });
 
         dropZone.ondrop = function(e) {
             // console.log("something dropped");
@@ -276,12 +281,12 @@
             // $('#file-viewer').text(e.dataTransfer.files[0].name);
 
             startUpload(e.dataTransfer.files)
-        }
+        };
 
         dropZone.ondragover = function() {
             this.className = 'upload-drop-zone drop';
             return false;
-        }
+        };
 
         dropZone.ondragleave = function() {
             this.className = 'upload-drop-zone';

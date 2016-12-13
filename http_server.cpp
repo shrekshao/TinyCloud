@@ -53,6 +53,9 @@ void* httpClientThread(void* params)
 
   unordered_map<string, string> headersReceived;
   string uri;
+  string boundary;
+  string boundary_end;  // boundary--
+  ostringstream multipart_oss;
 
   string threadUsername = "";
 
@@ -124,7 +127,10 @@ void* httpClientThread(void* params)
         }
         
     }
+    // else if (reading_content_multipart == receivingStatus)
+    // {
 
+    // }
 
 
 
@@ -160,7 +166,8 @@ void* httpClientThread(void* params)
 
     
 
-    printDebugMessage(comm_fd, "C: " + line + "\n");
+    // printDebugMessage(comm_fd, "C: " + line + "\n");
+    HttpDebugLog( comm_fd, "C: %s", line.c_str());
 
 
     
@@ -230,7 +237,48 @@ void* httpClientThread(void* params)
             if (receivingStatus == reading_request_post)
             {
                 // has content
-                receivingStatus = reading_content;
+
+                auto it = headersReceived.find("Content-Type");
+                if (it != headersReceived.end())
+                {
+                    if (it->second.find("multipart") != string::npos) 
+                    {
+                        HttpDebugLog( comm_fd, "MULTIPART CONTENT BRANCH!!!");
+
+                        receivingStatus = reading_content_multipart;
+
+                        multipart_oss.clear();
+                        
+                        auto startp = it->second.find("boundary=") + 9;
+                        auto endp = it->second.find('\r');
+                        size_t len = endp == string::npos ? string::npos : endp - startp;
+                        // if(endp != string::npos)
+                        // {
+                        //     cerr << "has \\r !!!!!!!\n";
+                        // }
+
+                        // boundary = it->second.substr(startp, endp);
+                        // boundary_end = boundary + "--";
+
+                        boundary = "--" + it->second.substr(startp, len);
+                        // cerr << boundary.back() << endl << endl;
+                        boundary_end = boundary + "--\r";
+                        boundary += "\r";
+
+                        HttpDebugLog( comm_fd, "boundary: %s\nboundary_end: %s\n", boundary.c_str(), boundary_end.c_str());
+                        HttpDebugLog( comm_fd, "boundary: %d\nboundary_end: %d\n", (int)boundary.size(), (int)boundary_end.size());
+                    }
+                    else
+                    {
+                        receivingStatus = reading_content;
+                    }
+                }
+                else
+                {
+                    receivingStatus = reading_content;
+                }
+
+                
             }
             else if (receivingStatus == reading_request_get)
             {
@@ -285,7 +333,33 @@ void* httpClientThread(void* params)
 
         
     }
-    
+    else if (reading_content_multipart == receivingStatus)
+    {
+        HttpDebugLog( comm_fd, "reading_content_multipart");
+        if (line == boundary_end)
+        {
+            HttpDebugLog( comm_fd, "reading_content_multipart --- boundary end");
+            receivingStatus = waiting_request;
+            // multipart_oss << '\n';
+
+            string multipart_content = multipart_oss.str();
+            HttpDebugLog( comm_fd, "multipler content string: %s", multipart_content.c_str());
+
+            handlePostRequest(comm_fd, uri, multipart_content, threadUsername);
+        }
+        else if (line == boundary)
+        {
+            HttpDebugLog( comm_fd, "reading_content_multipart --- boundary");
+            multipart_oss << '\n';
+        }
+        else
+        {
+            HttpDebugLog( comm_fd, "reading_content_multipart --- content");
+            cerr << "line size: " << line.size() << endl;
+            multipart_oss << line;
+        }
+        
+    }
 
 
   }
