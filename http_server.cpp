@@ -338,7 +338,7 @@ void* httpClientThread(void* params)
                         // }
 
                         boundary = "--" + it->second.substr(startp, len);
-                        boundary_end = boundary + "--";
+                        // boundary_end = boundary + "--";
 
                         // boundary = "--" + it->second.substr(startp, len);
                         // // cerr << boundary.back() << endl << endl;

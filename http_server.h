@@ -722,7 +722,105 @@ void uploadFileHandler(int fd, const string & contentStr, const string & boundar
     // TODO: where to put folder info? 
     HttpDebugLog( fd, "upload file handler");
 
+    // string boundary_end = boundary + "--";
+    size_t boundary_size = boundary.size();
+    // size_t boundary_end_size = boundary_end.size();
 
 
+    size_t cur_part_start = 0;
+    size_t cur_part_end = -boundary_size;
+
+    vector<string> parts;
+
+
+
+    cur_part_start = contentStr.find(boundary, cur_part_end + boundary_size);
+
+    // if (cur_part_start == string::npos)
+    // {
+    //     HttpDebugLog( fd, "end spliting multipart content");
+    //     break;
+    // }
+
+    do
+    {
+        
+        cur_part_end = contentStr.find(boundary, cur_part_start + boundary_size);
+
+        if (cur_part_end == string::npos)
+        {
+            HttpDebugLog( fd, "no more boundary!!!");
+            break;
+        }
+
+        parts.emplace_back(contentStr.substr(cur_part_start + boundary_size, cur_part_end - cur_part_start - boundary_size));
+        cur_part_start = cur_part_end;
+    }
+    while (cur_part_end != string::npos);
+    
+    
+
+    const string separation_line = "\r\n\r\n"; 
+    const string form_input_name = "; name=\"";
+    const string form_filename = "; filename=\"";
+
+    // for (const string & str : parts)
+    {
+        // hardcode
+        const string & str = parts[0];
+
+        auto p_sep = str.find(separation_line);
+
+        string headers = str.substr(0, p_sep - 0);
+        string bytes = str.substr(p_sep + separation_line.size());
+
+        HttpDebugLog( fd, "*******headers:\n%s\nbytes:\n%s", headers.c_str(), bytes.c_str());
+
+        // hardcode header part
+        auto p_name_start = headers.find(form_input_name) + form_input_name.size();
+        auto p_name_end = headers.find( "\"", p_name_start );
+        
+
+        string name_value = headers.substr(p_name_start, p_name_end - p_name_start);
+        HttpDebugLog( fd, "name=%s", name_value.c_str());
+        // auto p_name = header.find(form_)
+
+        // assume first is file
+        auto p_filename_start = headers.find(form_filename) + form_filename.size();
+        auto p_filename_end = headers.find( "\"", p_filename_start );
+
+        string filename_value = headers.substr(p_filename_start, p_filename_end - p_filename_start);
+        HttpDebugLog( fd, "filename=%s", filename_value.c_str());
+
+
+        // HttpDebugLog( fd, "%d %d ", filename_value.c_str());
+
+    }
+
+    HttpDebugLog( fd, "parts.size() = %d", (int)parts.size());
+
+    {
+        //hardcode
+        const string & str = parts[1];
+
+        auto p_sep = str.find(separation_line);
+
+        string headers = str.substr(0, p_sep - 0);
+        string bytes = str.substr(p_sep + separation_line.size());
+
+        // hardcode header part
+        auto p_name_start = headers.find(form_input_name) + form_input_name.size();
+        auto p_name_end = headers.find( "\"", p_name_start );
+
+        string name_value = headers.substr(p_name_start, p_name_end - p_name_start);
+        HttpDebugLog( fd, "name=%s", name_value.c_str());
+        
+
+    }
+
+
+
+    // refresh page
+    // TODO: ajax refresh
     sendFileToClient(fd, "/drive.html");
 }
