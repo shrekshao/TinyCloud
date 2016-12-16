@@ -57,19 +57,44 @@
                         <!-- TODO: delete UI -->
 
 
-                        <form id="js-upload-form" method="post" action="/drive" enctype="multipart/form-data">
+                        <form id="js-upload-form" method="post" action="/drive" enctype="multipart/form-data" >
                             <!--<input id="input-1" type="file" class="file">-->
-                            <div class="input-group">
+                            <div class="form-group">
                                 <h4>Upload Files</h4>
-                                <input id="input-file" type="file" name="file">
-                                <!--<input type="hidden" id="upload-file-folder" name="cur-folder" value="/">-->
-                                <input type="submit" value="Upload">
+                                <input id="input-file" type="file" name="file" >
+                                <input type="hidden" id="upload-file-folder" name="cur-folder" value="/">
+                                <input type="submit" value="Upload" class="btn btn-primary">
                             </div>
                         </form> 
-                        <input type="hidden" id="upload-file-folder" name="cur-folder" value="/">
+
+                        <!--<form id="js-upload-form" method="post" action="/drive" enctype="multipart/form-data">
+                        <div class="input-group">
+                            <span class="input-group-btn">
+                                <button id="fake-file-button-browse" type="button" class="btn btn-default">
+                                    <span class="glyphicon glyphicon-file"></span>
+                                </button>
+                            </span>
+                            <input type="file" id="files-input-upload" style="display:none">
+                            <input type="text" id="fake-file-input-name" disabled="disabled" placeholder="File not selected" class="form-control">
+                            <span class="input-group-btn">
+                                <button type="button" class="btn btn-default" disabled="disabled" id="fake-file-button-upload">
+                                    <span class="glyphicon glyphicon-upload"></span>
+                                </button>
+                            </span>
+
+                            <input type="hidden" id="upload-file-folder" name="cur-folder" value="/">
+                        </div>
+                        </form>-->
+
+
+
+
+                        <!--<input type="hidden" id="upload-file-folder" name="cur-folder" value="/">-->
                         
                         <br />
                         
+
+
                         <!-- Drop Zone -->
                         <div class="upload-drop-zone" id="drop-zone"> Or drag and drop files here to upload</div>
                         <br />

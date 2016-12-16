@@ -644,11 +644,7 @@ void getFilelistHandler(int fd, const string & folder, string & threadUsername)
 }
 
 
-void uploadFileHandler(int fd, const string & contentStr, string & threadUsername)
-{
-    // TODO: where to put folder info? 
-    HttpDebugLog( fd, "upload file handler");
-}
+
 
 void insertFolderHandler(int fd, const string & contentStr, string & threadUsername)
 {
@@ -692,7 +688,7 @@ void insertFolderHandler(int fd, const string & contentStr, string & threadUsern
 static const unordered_map<string, FunctionHandlerPost> postRequestHandlers({
     {"/", &loginHandler}
     , {"/register", &registerHandler}
-    , {"/drive", &uploadFileHandler}
+    // , {"/drive", &uploadFileHandler}
     , {"/get-file-list", &getFilelistHandler}
 
     , {"/insert-folder", &insertFolderHandler}
@@ -712,4 +708,21 @@ void handlePostRequest(int fd, const string & uri, const string & contentStr, st
     {
         (*(it->second))(fd, contentStr, threadUsername);
     }
+}
+
+
+
+
+
+
+
+
+void uploadFileHandler(int fd, const string & contentStr, const string & boundary, const string & threadUser)
+{
+    // TODO: where to put folder info? 
+    HttpDebugLog( fd, "upload file handler");
+
+
+
+    sendFileToClient(fd, "/drive.html");
 }

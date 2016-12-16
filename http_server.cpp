@@ -65,6 +65,9 @@ void* httpClientThread(void* params)
     
     // printDebugMessage(comm_fd, "Server Status: " + to_string(receivingStatus) + "\n");
 
+
+    // TODO: need to refine
+
     if(reading_content == receivingStatus)
     {
         // printDebugMessage(comm_fd, "Server State: reading_content" + to_string(receivingStatus) + "\n");
@@ -127,10 +130,86 @@ void* httpClientThread(void* params)
         }
         
     }
-    // else if (reading_content_multipart == receivingStatus)
-    // {
+    else if (reading_content_multipart == receivingStatus)
+    {
+        auto it_content_length = headersReceived.find("Content-Length");
+        if (it_content_length == headersReceived.end())
+        {
+            // ERROR, content-length not received
+            printDebugMessage(comm_fd, "ERR: Content-Length not received");
+            receivingStatus = waiting_request;
+            ss.clear();
+            continue;
+        }
+        
+        int contentLength = stoi(it_content_length->second);
+        cerr << endl << contentLength << endl;
 
-    // }
+
+
+        char * contentBuf = new char [ contentLength+1 ];
+        contentBuf[contentLength] = '\0';
+
+
+        streampos curPos = ss.tellg();
+        ss.seekg (0, ss.end);
+        int sslength = (int)ss.tellg() - (int)curPos;
+        ss.seekg (curPos);
+
+        if (sslength > 0)
+        {
+            ss.read(contentBuf, sslength);
+            ss.clear();
+            HttpDebugLog(comm_fd, "ss remain: %d", (int)sslength);
+        }
+        
+
+        
+        
+        ssize_t alreadyRead = 0 + sslength;
+        ssize_t curRead = 0 + sslength;
+
+        while ( alreadyRead < contentLength )
+        {
+            curRead = read(comm_fd, &contentBuf[curRead], contentLength - alreadyRead);
+            
+            if (curRead > 0)
+            {
+                alreadyRead += curRead;
+                HttpDebugLog(comm_fd, "curRead: %d", (int)curRead);
+            }
+            else if (curRead == 0)
+            {
+                HttpDebugLog(comm_fd, "data not arrived, alreadyRead: %d", (int)alreadyRead);
+            }
+            else
+            {
+                //error
+                HttpDebugLog(comm_fd, "error read from socket");
+            }
+        }
+
+
+
+
+        
+        receivingStatus = waiting_request;
+        string contentStr(contentBuf);
+        
+        delete [] contentBuf;
+
+        HttpDebugLog(comm_fd, "multipart form data: \n%s", contentStr.c_str());
+
+        // hard code for multipart handler
+        if (uri == "/drive")
+        {
+            uploadFileHandler(comm_fd, contentStr, boundary, threadUsername);
+        }
+
+        continue;
+        
+        
+    }
 
 
 
@@ -245,6 +324,7 @@ void* httpClientThread(void* params)
                     {
                         HttpDebugLog( comm_fd, "MULTIPART CONTENT BRANCH!!!");
 
+                       
                         receivingStatus = reading_content_multipart;
 
                         multipart_oss.clear();
@@ -257,16 +337,16 @@ void* httpClientThread(void* params)
                         //     cerr << "has \\r !!!!!!!\n";
                         // }
 
-                        // boundary = it->second.substr(startp, endp);
-                        // boundary_end = boundary + "--";
-
                         boundary = "--" + it->second.substr(startp, len);
-                        // cerr << boundary.back() << endl << endl;
-                        boundary_end = boundary + "--\r";
-                        boundary += "\r";
+                        boundary_end = boundary + "--";
 
-                        HttpDebugLog( comm_fd, "boundary: %s\nboundary_end: %s\n", boundary.c_str(), boundary_end.c_str());
-                        HttpDebugLog( comm_fd, "boundary: %d\nboundary_end: %d\n", (int)boundary.size(), (int)boundary_end.size());
+                        // boundary = "--" + it->second.substr(startp, len);
+                        // // cerr << boundary.back() << endl << endl;
+                        // boundary_end = boundary + "--\r";
+                        // boundary += "\r";
+
+                        // HttpDebugLog( comm_fd, "boundary: %s\nboundary_end: %s\n", boundary.c_str(), boundary_end.c_str());
+                        // HttpDebugLog( comm_fd, "boundary: %d\nboundary_end: %d\n", (int)boundary.size(), (int)boundary_end.size());
                     }
                     else
                     {
@@ -333,33 +413,33 @@ void* httpClientThread(void* params)
 
         
     }
-    else if (reading_content_multipart == receivingStatus)
-    {
-        HttpDebugLog( comm_fd, "reading_content_multipart");
-        if (line == boundary_end)
-        {
-            HttpDebugLog( comm_fd, "reading_content_multipart --- boundary end");
-            receivingStatus = waiting_request;
-            // multipart_oss << '\n';
+    // else if (reading_content_multipart == receivingStatus)
+    // {
+    //     HttpDebugLog( comm_fd, "reading_content_multipart");
+    //     if (line == boundary_end)
+    //     {
+    //         HttpDebugLog( comm_fd, "reading_content_multipart --- boundary end");
+    //         receivingStatus = waiting_request;
+    //         // multipart_oss << '\n';
 
-            string multipart_content = multipart_oss.str();
-            HttpDebugLog( comm_fd, "multipler content string: %s", multipart_content.c_str());
+    //         string multipart_content = multipart_oss.str();
+    //         // HttpDebugLog( comm_fd, "multipler content string: %s", multipart_content.c_str());
 
-            handlePostRequest(comm_fd, uri, multipart_content, threadUsername);
-        }
-        else if (line == boundary)
-        {
-            HttpDebugLog( comm_fd, "reading_content_multipart --- boundary");
-            multipart_oss << '\n';
-        }
-        else
-        {
-            HttpDebugLog( comm_fd, "reading_content_multipart --- content");
-            cerr << "line size: " << line.size() << endl;
-            multipart_oss << line;
-        }
+    //         handlePostRequest(comm_fd, uri, multipart_content, threadUsername);
+    //     }
+    //     else if (line == boundary)
+    //     {
+    //         HttpDebugLog( comm_fd, "reading_content_multipart --- boundary");
+    //         multipart_oss << '\n';
+    //     }
+    //     else
+    //     {
+    //         HttpDebugLog( comm_fd, "reading_content_multipart --- content");
+    //         // cerr << "line size: " << line.size() << endl;
+    //         multipart_oss << line;
+    //     }
         
-    }
+    // }
 
 
   }
