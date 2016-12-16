@@ -648,14 +648,14 @@ void getFilelistHandler(int fd, const string & folder, string & threadUsername)
 
 void insertFolderHandler(int fd, const string & contentStr, string & threadUsername)
 {
-
     istringstream iss_content(contentStr);
     string curFolder, foldername;
     getline(iss_content, curFolder, '&');
     getline(iss_content, foldername, '&');
 
 
-    string fullPathFolder = "/" + threadUsername; // with user name
+    // string fullPathFolder = "/" + threadUsername; // with user name
+    string fullPathFolder;
 
     if (curFolder == "/")
     {
@@ -679,7 +679,24 @@ void insertFolderHandler(int fd, const string & contentStr, string & threadUsern
     getFilelistHandler(fd, curFolder, threadUsername);
 }
 
+void uploadFileToStorage(const string & threadUsername, const string & curFolder, const string & filename, const string & data)
+{
 
+    string fullPathFolder;
+
+    if (curFolder == "/")
+    {
+        fullPathFolder = "/" + threadUsername + "/" + filename;
+        // curFolder += threadUsername;
+    }
+    else
+    {
+        fullPathFolder = curFolder + "/" + filename;
+    }
+
+
+    fsClient.UploadFile(threadUsername, fullPathFolder, data);
+}
 
 
 
@@ -717,7 +734,7 @@ void handlePostRequest(int fd, const string & uri, const string & contentStr, st
 
 
 
-void uploadFileHandler(int fd, const string & contentStr, const string & boundary, const string & threadUser)
+void uploadFileHandler(int fd, const string & contentStr, const string & boundary, const string & threadUsername)
 {
     // TODO: where to put folder info? 
     HttpDebugLog( fd, "upload file handler");
@@ -764,17 +781,20 @@ void uploadFileHandler(int fd, const string & contentStr, const string & boundar
     const string form_input_name = "; name=\"";
     const string form_filename = "; filename=\"";
 
+
+    string filename_value;
+    string file_bytes;
     // for (const string & str : parts)
     {
-        // hardcode
+        // hardcode: file
         const string & str = parts[0];
 
         auto p_sep = str.find(separation_line);
 
         string headers = str.substr(0, p_sep - 0);
-        string bytes = str.substr(p_sep + separation_line.size());
+        string file_bytes = str.substr(p_sep + separation_line.size());
 
-        HttpDebugLog( fd, "*******headers:\n%s\nbytes:\n%s", headers.c_str(), bytes.c_str());
+        // HttpDebugLog( fd, "*******headers:\n%s\nbytes:\n%s", headers.c_str(), file_bytes.c_str());
 
         // hardcode header part
         auto p_name_start = headers.find(form_input_name) + form_input_name.size();
@@ -789,24 +809,23 @@ void uploadFileHandler(int fd, const string & contentStr, const string & boundar
         auto p_filename_start = headers.find(form_filename) + form_filename.size();
         auto p_filename_end = headers.find( "\"", p_filename_start );
 
-        string filename_value = headers.substr(p_filename_start, p_filename_end - p_filename_start);
+        filename_value = headers.substr(p_filename_start, p_filename_end - p_filename_start);
         HttpDebugLog( fd, "filename=%s", filename_value.c_str());
-
-
         // HttpDebugLog( fd, "%d %d ", filename_value.c_str());
 
     }
 
     HttpDebugLog( fd, "parts.size() = %d", (int)parts.size());
 
+    string curFolder;
     {
-        //hardcode
+        //hardcode: cur-folder
         const string & str = parts[1];
 
         auto p_sep = str.find(separation_line);
 
         string headers = str.substr(0, p_sep - 0);
-        string bytes = str.substr(p_sep + separation_line.size());
+        curFolder = str.substr(p_sep + separation_line.size());
 
         // hardcode header part
         auto p_name_start = headers.find(form_input_name) + form_input_name.size();
@@ -814,9 +833,12 @@ void uploadFileHandler(int fd, const string & contentStr, const string & boundar
 
         string name_value = headers.substr(p_name_start, p_name_end - p_name_start);
         HttpDebugLog( fd, "name=%s", name_value.c_str());
-        
-
     }
+
+
+
+    // upload file call rpc
+    uploadFileToStorage(threadUsername, curFolder, filename_value, file_bytes);
 
 
 

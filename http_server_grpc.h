@@ -75,17 +75,37 @@ class FileSystemClient {
     Status status = stub_->InsertFileList(&context, request, &reply);
 
     if (status.ok()) {
-      cerr << "insert folder ok\n";
+      cerr << "rpc: insert folder ok\n";
       // return true;
     } else {
-      cerr << "Err insert folder failed!\n";
+      cerr << "rpc: Err insert folder failed!\n";
       // return false;
     }
   }
 
-  void UploadFile()
+  void UploadFile(const string & username, const string & filename, const string & data)
   {
-    // TODO
+    ClientContext context;
+
+    FileChunk chunk;
+    backend::Empty response;
+
+    chunk.set_username(username);
+    chunk.set_filename(filename);
+    chunk.set_length(data.size());
+    chunk.set_data(data);
+
+    chunk.set_orig_length(data.size());
+    chunk.set_orig_data(data);
+
+    Status status = stub_->PutFile(&context, chunk, &response);
+    if (status.ok()) {
+      cerr << "rpc: upload file ok\n";
+      // return true;
+    } else {
+      cerr << "rpc: Err upload failed!\n";
+      // return false;
+    }
   }
 
  private:
