@@ -322,6 +322,7 @@ int main(int argc, char** argv) {
     //}
     //*/
 
+    /* File storage test
     ifstream ifs1("file1.txt", ios::binary|ios::ate);
     ifstream::pos_type pos1 = ifs1.tellg();
 
@@ -347,6 +348,14 @@ int main(int argc, char** argv) {
 
     cout << "second put" << endl;
     cout << bigtable_service.put("tianli", "file2", (unsigned char *) pChars2, ".txt", length2) << endl;
+
+    char *pChars3 = new char[length2+1];
+    pChars3[length2] = '\0';
+    cout << "get file2, length:" << length2 << endl;
+    cout << bigtable_service.get("tianli", "file2", (unsigned char *) pChars3, length2) << endl;
+
+    //printf("%s\n", pChars3);
+    */
 
     RunGC();
     RunServer();

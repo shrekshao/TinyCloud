@@ -37,6 +37,8 @@ int BigTabler::put (string username, string file_name, unsigned char file_conten
     cout << "Current SS Buffer Length = " << (sizeof(ss_buffer)/sizeof(*ss_buffer)) << endl;
     cout << "\n";
     */
+
+    //printf("cur_pt: %d\n%s\n", cur_pt, file_content);
     put_m.lock();
 
     // Check if there is already a file with this name
@@ -90,12 +92,13 @@ int BigTabler::put (string username, string file_name, unsigned char file_conten
         for (int i = 0; i < file_size; i++) {
             memtable[cur_pt + i] = file_content[i];
         }
-        cur_pt += file_size;
 
         // put the file metainfo in big table
         big_table.at(username).emplace(piecewise_construct, forward_as_tuple(file_name), forward_as_tuple(cur_pt, file_size, username, file_name, file_type, to_string(file_id), false, false));
 
         memtable_file.emplace(memtable_file.end(), username+"/"+file_name);
+
+        cur_pt += file_size;
     }
     put_m.unlock();
     return 1;
@@ -221,6 +224,7 @@ int BigTabler::get (string username, string file_name, unsigned char* res, unsig
         int len = min(file_meta->file_length, res_size);
         for (int i = 0; i < len; i++) {
             res[i] = memtable[file_meta->buffer_start+i];
+            //printf("hello %d, %c", file_meta->buffer_start+i, (char) res[i]);
         }
         return len;
     }
