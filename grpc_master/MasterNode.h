@@ -45,6 +45,8 @@ public:
     int storage_size;
     vector<string> user_list;
     StorageNodeInfo() {
+        storage_size = 0;
+        user_number = 0;
     }
 };
 
