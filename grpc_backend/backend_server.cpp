@@ -38,20 +38,24 @@ Indexer indexer_service_backup;
 BigTabler bigtable_service(server_ip);
 BigTabler bigtable_service_backup(server_ip);
 
-// Open log
-ofstream primary_log(string("primary_log.txt"));
-ofstream replica_log(string("replica_log.txt"));
-
 // Log FIFO counter
 int primary_fifo = 0;
 int replica_fifo = 0;
 
+// Log mutex
+mutex primary_mutex;
+mutex replica_mutex;
+
 // Logic and data behind the server's behavior.
 class StorageServiceImpl final : public Storage::Service {
     Status GetFileList(ServerContext* context, const FileListRequest* request, FileListReply* reply) override {
+
+        // Lock primary
+        primary_mutex.lock();
+
         map<string, Node> res;
         int success = indexer_service.display(request->foldername(), res);
-        fprintf(stderr, "success: %d\n", success);
+        //fprintf(stderr, "success: %d\n", success);
         if (success == 1) {
             for (map<string, Node>::iterator it = res.begin(); it != res.end(); ++it) {
                 backend::FileInfo fi;
@@ -61,41 +65,74 @@ class StorageServiceImpl final : public Storage::Service {
                 (*reply->mutable_filelist())[it->first] = fi;
             }
 
+            primary_mutex.unlock();
             return Status::OK;
         } else {
+            primary_mutex.unlock();
             return Status::CANCELLED;
         }
     }
 
     Status InsertFileList(ServerContext* context, const FileListRequest* request, Empty* reply) override {
+
+        // Write to log, lock primary
+        primary_mutex.lock();
+        ofstream primary_log(string("primary_log.txt"));
+        string log("InsertFileList:insert(" + request->foldername() + ", false)\n");
+        primary_log.write(log.c_str(), log.size());
+        primary_log.close();
+
         int success = indexer_service.insert(request->foldername(), false);
         if (success == 1) {
+            primary_mutex.unlock();
             return Status::OK;
         } else {
+            primary_mutex.unlock();
             return Status::CANCELLED;
         }
     }
 
     Status PutFile(ServerContext* context, const FileChunk* request, Empty* reply) override {
+
+        // Write to log, lock primary
+        primary_mutex.lock();
+        ofstream primary_log(string("primary_log.txt"));
+        string log("PutFile:put(" + request->username() + request->filename() + ", " +  request->filetype() + ", " + to_string(request->length()) + "):insert(" + \
+                request->username() + "/" + request->filename() + ", true)\n");
+        primary_log.write(log.c_str(), log.size());
+        primary_log.close();
+
         int success1 = bigtable_service.put(request->username(), request->filename(), (unsigned char *) request->data().c_str(), request->filetype(), request->length());
         int success2 = indexer_service.insert(request->username()+"/"+request->filename(), true);
         if (success1 == 1 && success2 == 1) {
+            primary_mutex.unlock();
             return Status::OK;
         } else {
+            primary_mutex.unlock();
             return Status::CANCELLED;
         }
     }
 
     Status UpdateFile(ServerContext* context, const FileChunk* request, Empty* reply) override {
+
+        // Lock primary
+        primary_mutex.lock();
+
         int success = bigtable_service.put(request->username(), request->filename(), (unsigned char *) request->orig_data().c_str(), (unsigned char *) request->data().c_str(), request->filetype(), request->orig_length(), request->length());
         if (success == 1) {
+            primary_mutex.unlock();
             return Status::OK;
         } else {
+            primary_mutex.unlock();
             return Status::CANCELLED;
         }
     }
 
     Status GetFile(ServerContext* context, const FileChunkRequest* request, FileChunk* reply) override {
+
+        // Lock primary
+        primary_mutex.lock();
+
         FileMeta* file_meta = bigtable_service.getMeta(request->username(), request->filename());
 
         if (file_meta == NULL) {
@@ -111,13 +148,23 @@ class StorageServiceImpl final : public Storage::Service {
         int success = bigtable_service.get(request->username(), request->filename(), (unsigned char *) temp, file_meta->file_length);
         if (success == file_meta->file_length) {
             reply->set_data((char *)temp);
+            primary_mutex.unlock();
             return Status::OK;
         } else {
+            primary_mutex.unlock();
             return Status::CANCELLED;
         }
     }
 
     Status DeleteFile(ServerContext* context, const FileChunkRequest* request, Empty* reply) override {
+
+        // Write to log, lock primary
+        primary_mutex.lock();
+        ofstream primary_log(string("primary_log.txt"));
+        string log("DeleteFile:put(" + request->username() + ", " + request->filename() + ")\n");
+        primary_log.write(log.c_str(), log.size());
+        primary_log.close();
+
         pair<int, bool> file_info = indexer_service.checkIsFile(request->username()+"/"+request->filename());
 
         if (file_info.first == -1) {
@@ -326,7 +373,7 @@ int main(int argc, char** argv) {
     }
     //*/
 
-    /* File storage test
+    ///* File storage test
     ifstream ifs1("file1.txt", ios::binary|ios::ate);
     ifstream::pos_type pos1 = ifs1.tellg();
 
@@ -358,8 +405,8 @@ int main(int argc, char** argv) {
     cout << "get file2, length:" << length2 << endl;
     cout << bigtable_service.get("tianli", "file2", (unsigned char *) pChars3, length2) << endl;
 
-    //printf("%s\n", pChars3);
-    */
+    printf("%s\n", pChars3);
+    //*/
 
     RunServer();
 
