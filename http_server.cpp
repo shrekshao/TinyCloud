@@ -105,7 +105,7 @@ void* httpClientThread(void* params)
             ss.read(contentBuf, contentLength);
             contentBuf[contentLength] = '\0';
             // printDebugMessage(comm_fd, contentBuf);          
-            string contentStr(contentBuf);
+            string contentStr(contentBuf, contentLength);
             // contentStr += "\n";
             // printDebugMessage(comm_fd, contentStr);
             HttpDebugLog( comm_fd, "%d, %s", contentLength, contentStr.c_str());
@@ -194,7 +194,7 @@ void* httpClientThread(void* params)
 
         
         receivingStatus = waiting_request;
-        string contentStr(contentBuf);
+        string contentStr(contentBuf, contentLength);
         
         delete [] contentBuf;
 
