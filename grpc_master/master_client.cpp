@@ -10,6 +10,8 @@ master_client msClient(grpc::CreateChannel(
 
 int main(int argc, char *argv[])
 {
+    cout << "-------------------------------------\n";
+
     string username = "wuzhengx";
     if (msClient.CreateUser(username)) {
         cout << "User: " << username << " is created!\n";
@@ -74,6 +76,20 @@ int main(int argc, char *argv[])
             } else {
                 cout << "Node: " << it->first << ". Status: Offline\n";
             }
+        }
+    } else {
+        cout << "Retrived Node Status Failed!\n";
+    }
+
+    cout << "-------------------------------------\n";
+
+    map<string, NodeInfo> res_3;
+    if (msClient.GetNodesInfo(res_3)) {
+        cout << "Retrived Node Info Successfully!\n";
+        for (auto it = res_3.begin(); it != res_3.end(); ++it)
+        {
+            cout << "Node: " << it->first << ". User Number: " << it->second.user_number() << "\n";
+            cout << "User List: " << it->second.user_list() << "\n";
         }
     } else {
         cout << "Retrived Node Status Failed!\n";

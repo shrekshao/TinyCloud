@@ -30,6 +30,7 @@ using master::Empty;
 using master::NodesStatusReply;
 using master::NodesInfoReply;
 using master::NodeIndexRequest;
+using master::NodeInfo;
 
 class master_client {
 public:
@@ -139,6 +140,30 @@ public:
         }
     }
 
+    // return a map of node info
+    bool GetNodesInfo(map<string, NodeInfo> &res) {
+        // data that are sending to the master
+        Empty request;
+
+        // container for the reply message
+        NodesInfoReply reply;
+
+        // Context for the client. It could be used to convey extra information to
+        // the server and/or tweak certain RPC behaviors.
+        ClientContext context;
+
+        // The actual RPC.
+        Status status = stub_->GetNodesInfo(&context, request, &reply);
+
+        if (status.ok()) {
+            res = std::map<string, NodeInfo>(reply.nodeinfo().begin(), reply.nodeinfo().end());
+            return true;
+        } else {
+            std::cerr << status.error_code() << ": " << status.error_message()
+                      << std::endl;
+            return false;
+        }
+    }
 
 private:
     std::unique_ptr<Master::Stub> stub_;
