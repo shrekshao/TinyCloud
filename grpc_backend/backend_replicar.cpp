@@ -113,8 +113,8 @@ class StorageServiceImpl final : public Storage::Service {
         unsigned char *orig_data_temp = new unsigned char [request->orig_length()];
         unsigned char *data_temp = new unsigned char [request->length()];
 
-        memcpy(orig_data_temp, request->orig_data(), request->orig_length());
-        memcpy(data_temp, request->data(), request->length());
+        memcpy(orig_data_temp, request->orig_data().c_str(), request->orig_length());
+        memcpy(data_temp, request->data().c_str(), request->length());
 
         int success = bigtable_service.cput(request->username(), request->filename(), (unsigned char *) request->orig_data().c_str(), (unsigned char *) request->data().c_str(), request->filetype(), request->orig_length(), request->length());
         if (success == 1) {
