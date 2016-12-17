@@ -38,139 +38,17 @@ const char*  replica_server_ip = "0.0.0.0:50052";
 Indexer indexer_service;
 
 // File service in-memory storage
-BigTabler bigtable_service(primary_server_ip);
+BigTabler bigtable_service(replica_server_ip);
 
 // Log mutex
-mutex primary_mutex;
-
-/*
- * Client Class to call replica server
- */
-class ReplicaClient {
-public:
-    ReplicaClient(std::shared_ptr<Channel> channel) : stub_(Storage::NewStub(channel)) {}
-
-    // Assambles the client's payload, sends it and presents the response back
-    // from the server.
-    int InsertFileList_Backup(string foldername) {
-        // Data we are sending to the server.
-        FileListRequest request;
-        request.set_foldername(foldername);
-
-        // Container for the data we expect from the server.
-        Empty reply;
-
-        // Context for the client. It could be used to convey extra information to
-        // the server and/or tweak certain RPC behaviors.
-        ClientContext context;
-
-        // The actual RPC.
-        Status status = stub_->InsertFileList(&context, request, &reply);
-
-        // Act upon its status.
-        if (status.ok()) {
-            return 1;
-        } else {
-            std::cout << status.error_code() << ": " << status.error_message() << std::endl;
-            return -1;
-        }
-    }
-
-    int PutFile_Backup(string username, string filename, unsigned int length, string filetype, unsigned char* data) {
-        // Data we are sending to the server.
-        FileChunk request;
-        request.set_username(username);
-        request.set_filename(filename);
-        request.set_length(length);
-        request.set_filetype(filetype);
-        request.set_data((char *) data, length);
-
-        // Container for the data we expect from the server.
-        Empty reply;
-
-        // Context for the client. It could be used to convey extra information to
-        // the server and/or tweak certain RPC behaviors.
-        ClientContext context;
-
-        // The actual RPC.
-        Status status = stub_->PutFile(&context, request, &reply);
-
-        // Act upon its status.
-        if (status.ok()) {
-            return 1;
-        } else {
-            std::cout << status.error_code() << ": " << status.error_message() << std::endl;
-            return -1;
-        }
-    }
-
-    int UpdateFile_Backup(string username, string filename, unsigned int length, string filetype, unsigned char* data, unsigned int orig_length, unsigned char* orig_data) {
-        // Data we are sending to the server.
-        FileChunk request;
-        request.set_username(username);
-        request.set_filename(filename);
-        request.set_length(length);
-        request.set_filetype(filetype);
-        request.set_data((char *) data, length);
-        request.set_orig_length(orig_length);
-        request.set_orig_data((char *) orig_data, orig_length);
-
-        // Container for the data we expect from the server.
-        Empty reply;
-
-        // Context for the client. It could be used to convey extra information to
-        // the server and/or tweak certain RPC behaviors.
-        ClientContext context;
-
-        // The actual RPC.
-        Status status = stub_->UpdateFile(&context, request, &reply);
-
-        // Act upon its status.
-        if (status.ok()) {
-            return 1;
-        } else {
-            std::cout << status.error_code() << ": " << status.error_message() << std::endl;
-            return -1;
-        }
-    }
-
-    int DeleteFile_Backup(string username, string filename) {
-        // Data we are sending to the server.
-        FileChunkRequest request;
-        request.set_username(username);
-        request.set_filename(filename);
-
-        // Container for the data we expect from the server.
-        Empty reply;
-
-        // Context for the client. It could be used to convey extra information to
-        // the server and/or tweak certain RPC behaviors.
-        ClientContext context;
-
-        // The actual RPC.
-        Status status = stub_->DeleteFile(&context, request, &reply);
-
-        // Act upon its status.
-        if (status.ok()) {
-            return 1;
-        } else {
-            std::cout << status.error_code() << ": " << status.error_message() << std::endl;
-            return -1;
-        }
-    }
-
-private:
-    std::unique_ptr<Storage::Stub> stub_;
-};
-
-ReplicaClient replicar(grpc::CreateChannel(replica_server_ip, grpc::InsecureChannelCredentials()));
+mutex replica_mutex;
 
 // Logic and data behind the server's behavior.
 class StorageServiceImpl final : public Storage::Service {
     Status GetFileList(ServerContext* context, const FileListRequest* request, FileListReply* reply) override {
 
         // Lock primary
-        primary_mutex.lock();
+        replica_mutex.lock();
 
         map<string, Node> res;
         int success = indexer_service.display(request->foldername(), res);
@@ -184,65 +62,45 @@ class StorageServiceImpl final : public Storage::Service {
                 (*reply->mutable_filelist())[it->first] = fi;
             }
 
-            primary_mutex.unlock();
+            replica_mutex.unlock();
             return Status::OK;
         } else {
-            primary_mutex.unlock();
+            replica_mutex.unlock();
             return Status::CANCELLED;
         }
     }
 
     Status InsertFileList(ServerContext* context, const FileListRequest* request, Empty* reply) override {
 
-        // Lock primary
-        primary_mutex.lock();
-
-        // Send to replica server
-        if (replicar.InsertFileList_Backup(request->foldername()) == -1) {
-            fprintf(stderr, "InsertFileList: replica rpc return -1, possibly replica down\n");
-        }
-
-        // Write to primary log
+        // Write to log, lock primary
+        replica_mutex.lock();
         string log("InsertFileList:insert(" + request->foldername() + ", false)\n");
         writeToLog(log);
 
         int success = indexer_service.insert(request->foldername(), false);
         if (success == 1) {
-            primary_mutex.unlock();
+            replica_mutex.unlock();
             return Status::OK;
         } else {
-            primary_mutex.unlock();
+            replica_mutex.unlock();
             return Status::CANCELLED;
         }
     }
 
     Status PutFile(ServerContext* context, const FileChunk* request, Empty* reply) override {
 
-        // Lock primary
-        primary_mutex.lock();
-
-        unsigned char *data_temp = new unsigned char [request->length()];
-
-        memcpy(data_temp, request->data().c_str(), request->length());
-
-        // Send to replica server
-        if (replicar.PutFile_Backup(request->username(), request->filename(), request->length(), request->filetype(), data_temp) == -1) {
-            fprintf(stderr, "PutFile: replica rpc return -1, possibly repica down\n");
-        }
-
-        // Write to log
+        // Write to log, lock primary
+        replica_mutex.lock();
         string log("PutFile:put(" + request->username() + request->filename() + ", " +  request->filetype() + ", " + to_string(request->length()) + "):insert(" + request->username() + "/" + request->filename() + ", true)\n");
         writeToLog(log);
 
-        int success1 = bigtable_service.put(request->username(), request->filename(), data_temp, request->filetype(), request->length());
+        int success1 = bigtable_service.put(request->username(), request->filename(), (unsigned char *) request->data().c_str(), request->filetype(), request->length());
         int success2 = indexer_service.insert(request->username()+"/"+request->filename(), true);
-
-        free(data_temp);
         if (success1 == 1 && success2 == 1) {
-            primary_mutex.unlock();
+            replica_mutex.unlock();
             return Status::OK;
         } else {
-            primary_mutex.unlock();
+            replica_mutex.unlock();
             return Status::CANCELLED;
         }
     }
@@ -250,18 +108,13 @@ class StorageServiceImpl final : public Storage::Service {
     Status UpdateFile(ServerContext* context, const FileChunk* request, Empty* reply) override {
 
         // Lock primary
-        primary_mutex.lock();
+        replica_mutex.lock();
 
         unsigned char *orig_data_temp = new unsigned char [request->orig_length()];
         unsigned char *data_temp = new unsigned char [request->length()];
 
-        memcpy(orig_data_temp, request->orig_data().c_str(), request->orig_length());
-        memcpy(data_temp, request->data().c_str(), request->length());
-
-        // Send to replica server
-        if (replicar.UpdateFile_Backup(request->username(), request->filename(), request->length(), request->filetype(), data_temp, request->orig_length(), orig_data_temp) == -1) {
-            fprintf(stderr, "UpdateFile: replica rpc return -1, possibly repica down\n");
-        }
+        memcpy(orig_data_temp, request->orig_data(), request->orig_length());
+        memcpy(data_temp, request->data(), request->length());
 
         int success = bigtable_service.cput(request->username(), request->filename(), (unsigned char *) request->orig_data().c_str(), (unsigned char *) request->data().c_str(), request->filetype(), request->orig_length(), request->length());
         if (success == 1) {
@@ -276,19 +129,19 @@ class StorageServiceImpl final : public Storage::Service {
             if (success1 == 1) {
                 success2 = bigtable_service.put(request->username(), request->filename(), data_temp, request->filetype(), request->length());
             } else {
-                primary_mutex.unlock();
+                replica_mutex.unlock();
                 return Status::CANCELLED;
             }
 
             if (success2 == 1) {
-                primary_mutex.unlock();
+                replica_mutex.unlock();
                 return Status::OK;
             } else {
-                primary_mutex.unlock();
+                replica_mutex.unlock();
                 return Status::CANCELLED;
             }
         } else {
-            primary_mutex.unlock();
+            replica_mutex.unlock();
             return Status::CANCELLED;
         }
     }
@@ -296,12 +149,12 @@ class StorageServiceImpl final : public Storage::Service {
     Status GetFile(ServerContext* context, const FileChunkRequest* request, FileChunk* reply) override {
 
         // Lock primary
-        primary_mutex.lock();
+        replica_mutex.lock();
 
         FileMeta* file_meta = bigtable_service.getMeta(request->username(), request->filename());
 
         if (file_meta == NULL) {
-            primary_mutex.unlock();
+            replica_mutex.unlock();
             return Status::CANCELLED;
         }
 
@@ -314,60 +167,53 @@ class StorageServiceImpl final : public Storage::Service {
         int success = bigtable_service.get(request->username(), request->filename(), (unsigned char *) temp, file_meta->file_length);
         if (success == file_meta->file_length) {
             reply->set_data((char *)temp, file_meta->file_length);
-            primary_mutex.unlock();
+            replica_mutex.unlock();
             return Status::OK;
         } else {
-            primary_mutex.unlock();
+            replica_mutex.unlock();
             return Status::CANCELLED;
         }
     }
 
     Status DeleteFile(ServerContext* context, const FileChunkRequest* request, Empty* reply) override {
 
-        // Lock primary
-        primary_mutex.lock();
-
-        // Send to replica server
-        if (replicar.DeleteFile_Backup(request->username(), request->filename()) == -1) {
-            fprintf(stderr, "DeleteFile: replica rpc return -1, possibly repica down\n");
-        }
-
-        //Write to log
-        string log("DeleteFile:delet(" + request->username() + ", " + request->filename() + ")\n");
+        // Write to log, lock primary
+        replica_mutex.lock();
+        string log("DeleteFile:put(" + request->username() + ", " + request->filename() + ")\n");
         writeToLog(log);
 
         pair<int, bool> file_info = indexer_service.checkIsFile(request->username()+"/"+request->filename());
 
         if (file_info.first == -1) {
-            primary_mutex.unlock();
+            replica_mutex.unlock();
             return Status::CANCELLED;
         }
 
         if (file_info.second) {
             int success1 = indexer_service.delet(request->username()+"/"+request->filename());
             if (success1 == -1) {
-                primary_mutex.unlock();
+                replica_mutex.unlock();
                 return Status::CANCELLED;
             }
             int success2 = bigtable_service.delet(request->username(), request->filename());
             if (success1 == 1 && success2 == 1) {
-                primary_mutex.unlock();
+                replica_mutex.unlock();
                 return Status::OK;
             } else {
-                primary_mutex.unlock();
+                replica_mutex.unlock();
                 return Status::CANCELLED;
             }
         } else {
             vector<string> delete_candidates;
             int success = indexer_service.findAllChildren(request->username()+"/"+request->filename(), delete_candidates);
             if (success == -1) {
-                primary_mutex.unlock();
+                replica_mutex.unlock();
                 return Status::CANCELLED;
             }
 
             int success1 = indexer_service.delet(request->username()+"/"+request->filename());
             if (success1 == -1) {
-                primary_mutex.unlock();
+                replica_mutex.unlock();
                 return Status::CANCELLED;
             }
 
@@ -378,10 +224,10 @@ class StorageServiceImpl final : public Storage::Service {
             }
 
             if (success1 == 1 && success2 == 1) {
-                primary_mutex.unlock();
+                replica_mutex.unlock();
                 return Status::OK;
             } else {
-                primary_mutex.unlock();
+                replica_mutex.unlock();
                 return Status::CANCELLED;
             }
         }
@@ -390,7 +236,7 @@ class StorageServiceImpl final : public Storage::Service {
 };
 
 void RunServer() {
-    // Primary port
+    /*// Primary port
     std::string primary_server_address(primary_server_ip);
     StorageServiceImpl primary_service;
 
@@ -403,8 +249,8 @@ void RunServer() {
     // Finally assemble the server.
     std::unique_ptr<Server> primary_server(primary_builder.BuildAndStart());
     std::cout << "Server primary listening on " << primary_server_address << std::endl;
+    */
 
-    /*
     // Replica port
     std::string replica_server_address(replica_server_ip);
     StorageServiceImpl replica_service;
@@ -419,14 +265,14 @@ void RunServer() {
     std::unique_ptr<Server> replica_server(replica_builder.BuildAndStart());
     std::cout << "Server replica listening on " << replica_server_address << std::endl;
 
-    replica_server->Wait();
-    */
-
     RunGC();
+
+    replica_server->Wait();
+
     // Wait for the server to shutdown. Note that some other thread must be
     // responsible for shutting down the server for this call to ever return.
 
-    primary_server->Wait();
+    //primary_server->Wait();
 }
 
 void* gcHelper(void*) {
@@ -502,7 +348,8 @@ int main(int argc, char** argv) {
 }
 
 void writeToLog(string& msg) {
-    ofstream replica_log(string("primary_log.txt"));
+    ofstream replica_log(string("replica_log.txt"));
     replica_log.write(msg.c_str(), msg.size());
     replica_log.close();
 }
+

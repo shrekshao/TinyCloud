@@ -107,7 +107,7 @@ int BigTabler::put (string username, string file_name, unsigned char file_conten
  * return: 1    do update
  *         -1   no update
  */
-int BigTabler::put (string username, string file_name, unsigned char orig_file_content[], unsigned char file_content[], string file_type, unsigned int orig_file_size, unsigned int file_size) {
+int BigTabler::cput (string username, string file_name, unsigned char orig_file_content[], unsigned char file_content[], string file_type, unsigned int orig_file_size, unsigned int file_size) {
     /*
     cout << "User Name: " << username << "\n";
     cout << "File Name: " << file_name << "\n";
@@ -134,12 +134,6 @@ int BigTabler::put (string username, string file_name, unsigned char orig_file_c
                     return -1;
                 }
             }
-
-            // Write to log
-            ofstream primary_log(string("primary_log.txt"));
-            string log("UpdateFile:delet(" + username + ", " + file_name + ")" + ":put(" + username + ", " + file_name + ", " + file_type + ", " + to_string(file_size) + ")\n");
-            primary_log.write(log.c_str(), log.size());
-            primary_log.close();
 
             delet(username, file_name);
 

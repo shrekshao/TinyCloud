@@ -51,20 +51,6 @@ service Storage {
   rpc GetFile (FileChunkRequest) returns (FileChunk) {}
   // Delete a file
   rpc DeleteFile (FileChunkRequest) returns (Empty) {}
-
-  // Backup Communication
-  // Get file list
-  rpc GetFileList_Backup (FileListRequest) returns (FileListReply) {}
-  // Insert a directory
-  rpc InsertFileList_Backup (FileListRequest) returns (Empty) {}
-  // Upload a file
-  rpc PutFile_Backup (FileChunk) returns (Empty) {}
-  // Update a file
-  rpc UpdateFile_Backup (FileChunk) returns (Empty) {}
-  // Get a file
-  rpc GetFile_Backup (FileChunkRequest) returns (FileChunk) {}
-  // Delete a file
-  rpc DeleteFile_Backup (FileChunkRequest) returns (Empty) {}
 }
 
 // The request message containing the user/folder's name.
