@@ -62,6 +62,16 @@ class Storage GRPC_FINAL {
    public:
     virtual ~StubInterface() {}
     // Frontend Backend Normal Communication
+    // Create new user
+    virtual ::grpc::Status CreateUser(::grpc::ClientContext* context, const ::backend::UserAccount& request, ::backend::Empty* response) = 0;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::backend::Empty>> AsyncCreateUser(::grpc::ClientContext* context, const ::backend::UserAccount& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::backend::Empty>>(AsyncCreateUserRaw(context, request, cq));
+    }
+    // Get password
+    virtual ::grpc::Status GetPassword(::grpc::ClientContext* context, const ::backend::UserAccountRequest& request, ::backend::UserAccount* response) = 0;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::backend::UserAccount>> AsyncGetPassword(::grpc::ClientContext* context, const ::backend::UserAccountRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::backend::UserAccount>>(AsyncGetPasswordRaw(context, request, cq));
+    }
     // Get file list
     virtual ::grpc::Status GetFileList(::grpc::ClientContext* context, const ::backend::FileListRequest& request, ::backend::FileListReply* response) = 0;
     std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::backend::FileListReply>> AsyncGetFileList(::grpc::ClientContext* context, const ::backend::FileListRequest& request, ::grpc::CompletionQueue* cq) {
@@ -93,6 +103,8 @@ class Storage GRPC_FINAL {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::backend::Empty>>(AsyncDeleteFileRaw(context, request, cq));
     }
   private:
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::backend::Empty>* AsyncCreateUserRaw(::grpc::ClientContext* context, const ::backend::UserAccount& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::backend::UserAccount>* AsyncGetPasswordRaw(::grpc::ClientContext* context, const ::backend::UserAccountRequest& request, ::grpc::CompletionQueue* cq) = 0;
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::backend::FileListReply>* AsyncGetFileListRaw(::grpc::ClientContext* context, const ::backend::FileListRequest& request, ::grpc::CompletionQueue* cq) = 0;
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::backend::Empty>* AsyncInsertFileListRaw(::grpc::ClientContext* context, const ::backend::FileListRequest& request, ::grpc::CompletionQueue* cq) = 0;
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::backend::Empty>* AsyncPutFileRaw(::grpc::ClientContext* context, const ::backend::FileChunk& request, ::grpc::CompletionQueue* cq) = 0;
@@ -103,6 +115,14 @@ class Storage GRPC_FINAL {
   class Stub GRPC_FINAL : public StubInterface {
    public:
     Stub(const std::shared_ptr< ::grpc::ChannelInterface>& channel);
+    ::grpc::Status CreateUser(::grpc::ClientContext* context, const ::backend::UserAccount& request, ::backend::Empty* response) GRPC_OVERRIDE;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::backend::Empty>> AsyncCreateUser(::grpc::ClientContext* context, const ::backend::UserAccount& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::backend::Empty>>(AsyncCreateUserRaw(context, request, cq));
+    }
+    ::grpc::Status GetPassword(::grpc::ClientContext* context, const ::backend::UserAccountRequest& request, ::backend::UserAccount* response) GRPC_OVERRIDE;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::backend::UserAccount>> AsyncGetPassword(::grpc::ClientContext* context, const ::backend::UserAccountRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::backend::UserAccount>>(AsyncGetPasswordRaw(context, request, cq));
+    }
     ::grpc::Status GetFileList(::grpc::ClientContext* context, const ::backend::FileListRequest& request, ::backend::FileListReply* response) GRPC_OVERRIDE;
     std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::backend::FileListReply>> AsyncGetFileList(::grpc::ClientContext* context, const ::backend::FileListRequest& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::backend::FileListReply>>(AsyncGetFileListRaw(context, request, cq));
@@ -130,12 +150,16 @@ class Storage GRPC_FINAL {
 
    private:
     std::shared_ptr< ::grpc::ChannelInterface> channel_;
+    ::grpc::ClientAsyncResponseReader< ::backend::Empty>* AsyncCreateUserRaw(::grpc::ClientContext* context, const ::backend::UserAccount& request, ::grpc::CompletionQueue* cq) GRPC_OVERRIDE;
+    ::grpc::ClientAsyncResponseReader< ::backend::UserAccount>* AsyncGetPasswordRaw(::grpc::ClientContext* context, const ::backend::UserAccountRequest& request, ::grpc::CompletionQueue* cq) GRPC_OVERRIDE;
     ::grpc::ClientAsyncResponseReader< ::backend::FileListReply>* AsyncGetFileListRaw(::grpc::ClientContext* context, const ::backend::FileListRequest& request, ::grpc::CompletionQueue* cq) GRPC_OVERRIDE;
     ::grpc::ClientAsyncResponseReader< ::backend::Empty>* AsyncInsertFileListRaw(::grpc::ClientContext* context, const ::backend::FileListRequest& request, ::grpc::CompletionQueue* cq) GRPC_OVERRIDE;
     ::grpc::ClientAsyncResponseReader< ::backend::Empty>* AsyncPutFileRaw(::grpc::ClientContext* context, const ::backend::FileChunk& request, ::grpc::CompletionQueue* cq) GRPC_OVERRIDE;
     ::grpc::ClientAsyncResponseReader< ::backend::Empty>* AsyncUpdateFileRaw(::grpc::ClientContext* context, const ::backend::FileChunk& request, ::grpc::CompletionQueue* cq) GRPC_OVERRIDE;
     ::grpc::ClientAsyncResponseReader< ::backend::FileChunk>* AsyncGetFileRaw(::grpc::ClientContext* context, const ::backend::FileChunkRequest& request, ::grpc::CompletionQueue* cq) GRPC_OVERRIDE;
     ::grpc::ClientAsyncResponseReader< ::backend::Empty>* AsyncDeleteFileRaw(::grpc::ClientContext* context, const ::backend::FileChunkRequest& request, ::grpc::CompletionQueue* cq) GRPC_OVERRIDE;
+    const ::grpc::RpcMethod rpcmethod_CreateUser_;
+    const ::grpc::RpcMethod rpcmethod_GetPassword_;
     const ::grpc::RpcMethod rpcmethod_GetFileList_;
     const ::grpc::RpcMethod rpcmethod_InsertFileList_;
     const ::grpc::RpcMethod rpcmethod_PutFile_;
@@ -150,6 +174,10 @@ class Storage GRPC_FINAL {
     Service();
     virtual ~Service();
     // Frontend Backend Normal Communication
+    // Create new user
+    virtual ::grpc::Status CreateUser(::grpc::ServerContext* context, const ::backend::UserAccount* request, ::backend::Empty* response);
+    // Get password
+    virtual ::grpc::Status GetPassword(::grpc::ServerContext* context, const ::backend::UserAccountRequest* request, ::backend::UserAccount* response);
     // Get file list
     virtual ::grpc::Status GetFileList(::grpc::ServerContext* context, const ::backend::FileListRequest* request, ::backend::FileListReply* response);
     // Insert a directory
@@ -164,12 +192,52 @@ class Storage GRPC_FINAL {
     virtual ::grpc::Status DeleteFile(::grpc::ServerContext* context, const ::backend::FileChunkRequest* request, ::backend::Empty* response);
   };
   template <class BaseClass>
+  class WithAsyncMethod_CreateUser : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service *service) {}
+   public:
+    WithAsyncMethod_CreateUser() {
+      ::grpc::Service::MarkMethodAsync(0);
+    }
+    ~WithAsyncMethod_CreateUser() GRPC_OVERRIDE {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status CreateUser(::grpc::ServerContext* context, const ::backend::UserAccount* request, ::backend::Empty* response) GRPC_FINAL GRPC_OVERRIDE {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    void RequestCreateUser(::grpc::ServerContext* context, ::backend::UserAccount* request, ::grpc::ServerAsyncResponseWriter< ::backend::Empty>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+      ::grpc::Service::RequestAsyncUnary(0, context, request, response, new_call_cq, notification_cq, tag);
+    }
+  };
+  template <class BaseClass>
+  class WithAsyncMethod_GetPassword : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service *service) {}
+   public:
+    WithAsyncMethod_GetPassword() {
+      ::grpc::Service::MarkMethodAsync(1);
+    }
+    ~WithAsyncMethod_GetPassword() GRPC_OVERRIDE {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status GetPassword(::grpc::ServerContext* context, const ::backend::UserAccountRequest* request, ::backend::UserAccount* response) GRPC_FINAL GRPC_OVERRIDE {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    void RequestGetPassword(::grpc::ServerContext* context, ::backend::UserAccountRequest* request, ::grpc::ServerAsyncResponseWriter< ::backend::UserAccount>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+      ::grpc::Service::RequestAsyncUnary(1, context, request, response, new_call_cq, notification_cq, tag);
+    }
+  };
+  template <class BaseClass>
   class WithAsyncMethod_GetFileList : public BaseClass {
    private:
     void BaseClassMustBeDerivedFromService(const Service *service) {}
    public:
     WithAsyncMethod_GetFileList() {
-      ::grpc::Service::MarkMethodAsync(0);
+      ::grpc::Service::MarkMethodAsync(2);
     }
     ~WithAsyncMethod_GetFileList() GRPC_OVERRIDE {
       BaseClassMustBeDerivedFromService(this);
@@ -180,7 +248,7 @@ class Storage GRPC_FINAL {
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     void RequestGetFileList(::grpc::ServerContext* context, ::backend::FileListRequest* request, ::grpc::ServerAsyncResponseWriter< ::backend::FileListReply>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
-      ::grpc::Service::RequestAsyncUnary(0, context, request, response, new_call_cq, notification_cq, tag);
+      ::grpc::Service::RequestAsyncUnary(2, context, request, response, new_call_cq, notification_cq, tag);
     }
   };
   template <class BaseClass>
@@ -189,7 +257,7 @@ class Storage GRPC_FINAL {
     void BaseClassMustBeDerivedFromService(const Service *service) {}
    public:
     WithAsyncMethod_InsertFileList() {
-      ::grpc::Service::MarkMethodAsync(1);
+      ::grpc::Service::MarkMethodAsync(3);
     }
     ~WithAsyncMethod_InsertFileList() GRPC_OVERRIDE {
       BaseClassMustBeDerivedFromService(this);
@@ -200,7 +268,7 @@ class Storage GRPC_FINAL {
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     void RequestInsertFileList(::grpc::ServerContext* context, ::backend::FileListRequest* request, ::grpc::ServerAsyncResponseWriter< ::backend::Empty>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
-      ::grpc::Service::RequestAsyncUnary(1, context, request, response, new_call_cq, notification_cq, tag);
+      ::grpc::Service::RequestAsyncUnary(3, context, request, response, new_call_cq, notification_cq, tag);
     }
   };
   template <class BaseClass>
@@ -209,7 +277,7 @@ class Storage GRPC_FINAL {
     void BaseClassMustBeDerivedFromService(const Service *service) {}
    public:
     WithAsyncMethod_PutFile() {
-      ::grpc::Service::MarkMethodAsync(2);
+      ::grpc::Service::MarkMethodAsync(4);
     }
     ~WithAsyncMethod_PutFile() GRPC_OVERRIDE {
       BaseClassMustBeDerivedFromService(this);
@@ -220,7 +288,7 @@ class Storage GRPC_FINAL {
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     void RequestPutFile(::grpc::ServerContext* context, ::backend::FileChunk* request, ::grpc::ServerAsyncResponseWriter< ::backend::Empty>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
-      ::grpc::Service::RequestAsyncUnary(2, context, request, response, new_call_cq, notification_cq, tag);
+      ::grpc::Service::RequestAsyncUnary(4, context, request, response, new_call_cq, notification_cq, tag);
     }
   };
   template <class BaseClass>
@@ -229,7 +297,7 @@ class Storage GRPC_FINAL {
     void BaseClassMustBeDerivedFromService(const Service *service) {}
    public:
     WithAsyncMethod_UpdateFile() {
-      ::grpc::Service::MarkMethodAsync(3);
+      ::grpc::Service::MarkMethodAsync(5);
     }
     ~WithAsyncMethod_UpdateFile() GRPC_OVERRIDE {
       BaseClassMustBeDerivedFromService(this);
@@ -240,7 +308,7 @@ class Storage GRPC_FINAL {
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     void RequestUpdateFile(::grpc::ServerContext* context, ::backend::FileChunk* request, ::grpc::ServerAsyncResponseWriter< ::backend::Empty>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
-      ::grpc::Service::RequestAsyncUnary(3, context, request, response, new_call_cq, notification_cq, tag);
+      ::grpc::Service::RequestAsyncUnary(5, context, request, response, new_call_cq, notification_cq, tag);
     }
   };
   template <class BaseClass>
@@ -249,7 +317,7 @@ class Storage GRPC_FINAL {
     void BaseClassMustBeDerivedFromService(const Service *service) {}
    public:
     WithAsyncMethod_GetFile() {
-      ::grpc::Service::MarkMethodAsync(4);
+      ::grpc::Service::MarkMethodAsync(6);
     }
     ~WithAsyncMethod_GetFile() GRPC_OVERRIDE {
       BaseClassMustBeDerivedFromService(this);
@@ -260,7 +328,7 @@ class Storage GRPC_FINAL {
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     void RequestGetFile(::grpc::ServerContext* context, ::backend::FileChunkRequest* request, ::grpc::ServerAsyncResponseWriter< ::backend::FileChunk>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
-      ::grpc::Service::RequestAsyncUnary(4, context, request, response, new_call_cq, notification_cq, tag);
+      ::grpc::Service::RequestAsyncUnary(6, context, request, response, new_call_cq, notification_cq, tag);
     }
   };
   template <class BaseClass>
@@ -269,7 +337,7 @@ class Storage GRPC_FINAL {
     void BaseClassMustBeDerivedFromService(const Service *service) {}
    public:
     WithAsyncMethod_DeleteFile() {
-      ::grpc::Service::MarkMethodAsync(5);
+      ::grpc::Service::MarkMethodAsync(7);
     }
     ~WithAsyncMethod_DeleteFile() GRPC_OVERRIDE {
       BaseClassMustBeDerivedFromService(this);
@@ -280,17 +348,51 @@ class Storage GRPC_FINAL {
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     void RequestDeleteFile(::grpc::ServerContext* context, ::backend::FileChunkRequest* request, ::grpc::ServerAsyncResponseWriter< ::backend::Empty>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
-      ::grpc::Service::RequestAsyncUnary(5, context, request, response, new_call_cq, notification_cq, tag);
+      ::grpc::Service::RequestAsyncUnary(7, context, request, response, new_call_cq, notification_cq, tag);
     }
   };
-  typedef WithAsyncMethod_GetFileList<WithAsyncMethod_InsertFileList<WithAsyncMethod_PutFile<WithAsyncMethod_UpdateFile<WithAsyncMethod_GetFile<WithAsyncMethod_DeleteFile<Service > > > > > > AsyncService;
+  typedef WithAsyncMethod_CreateUser<WithAsyncMethod_GetPassword<WithAsyncMethod_GetFileList<WithAsyncMethod_InsertFileList<WithAsyncMethod_PutFile<WithAsyncMethod_UpdateFile<WithAsyncMethod_GetFile<WithAsyncMethod_DeleteFile<Service > > > > > > > > AsyncService;
+  template <class BaseClass>
+  class WithGenericMethod_CreateUser : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service *service) {}
+   public:
+    WithGenericMethod_CreateUser() {
+      ::grpc::Service::MarkMethodGeneric(0);
+    }
+    ~WithGenericMethod_CreateUser() GRPC_OVERRIDE {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status CreateUser(::grpc::ServerContext* context, const ::backend::UserAccount* request, ::backend::Empty* response) GRPC_FINAL GRPC_OVERRIDE {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+  };
+  template <class BaseClass>
+  class WithGenericMethod_GetPassword : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service *service) {}
+   public:
+    WithGenericMethod_GetPassword() {
+      ::grpc::Service::MarkMethodGeneric(1);
+    }
+    ~WithGenericMethod_GetPassword() GRPC_OVERRIDE {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status GetPassword(::grpc::ServerContext* context, const ::backend::UserAccountRequest* request, ::backend::UserAccount* response) GRPC_FINAL GRPC_OVERRIDE {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+  };
   template <class BaseClass>
   class WithGenericMethod_GetFileList : public BaseClass {
    private:
     void BaseClassMustBeDerivedFromService(const Service *service) {}
    public:
     WithGenericMethod_GetFileList() {
-      ::grpc::Service::MarkMethodGeneric(0);
+      ::grpc::Service::MarkMethodGeneric(2);
     }
     ~WithGenericMethod_GetFileList() GRPC_OVERRIDE {
       BaseClassMustBeDerivedFromService(this);
@@ -307,7 +409,7 @@ class Storage GRPC_FINAL {
     void BaseClassMustBeDerivedFromService(const Service *service) {}
    public:
     WithGenericMethod_InsertFileList() {
-      ::grpc::Service::MarkMethodGeneric(1);
+      ::grpc::Service::MarkMethodGeneric(3);
     }
     ~WithGenericMethod_InsertFileList() GRPC_OVERRIDE {
       BaseClassMustBeDerivedFromService(this);
@@ -324,7 +426,7 @@ class Storage GRPC_FINAL {
     void BaseClassMustBeDerivedFromService(const Service *service) {}
    public:
     WithGenericMethod_PutFile() {
-      ::grpc::Service::MarkMethodGeneric(2);
+      ::grpc::Service::MarkMethodGeneric(4);
     }
     ~WithGenericMethod_PutFile() GRPC_OVERRIDE {
       BaseClassMustBeDerivedFromService(this);
@@ -341,7 +443,7 @@ class Storage GRPC_FINAL {
     void BaseClassMustBeDerivedFromService(const Service *service) {}
    public:
     WithGenericMethod_UpdateFile() {
-      ::grpc::Service::MarkMethodGeneric(3);
+      ::grpc::Service::MarkMethodGeneric(5);
     }
     ~WithGenericMethod_UpdateFile() GRPC_OVERRIDE {
       BaseClassMustBeDerivedFromService(this);
@@ -358,7 +460,7 @@ class Storage GRPC_FINAL {
     void BaseClassMustBeDerivedFromService(const Service *service) {}
    public:
     WithGenericMethod_GetFile() {
-      ::grpc::Service::MarkMethodGeneric(4);
+      ::grpc::Service::MarkMethodGeneric(6);
     }
     ~WithGenericMethod_GetFile() GRPC_OVERRIDE {
       BaseClassMustBeDerivedFromService(this);
@@ -375,7 +477,7 @@ class Storage GRPC_FINAL {
     void BaseClassMustBeDerivedFromService(const Service *service) {}
    public:
     WithGenericMethod_DeleteFile() {
-      ::grpc::Service::MarkMethodGeneric(5);
+      ::grpc::Service::MarkMethodGeneric(7);
     }
     ~WithGenericMethod_DeleteFile() GRPC_OVERRIDE {
       BaseClassMustBeDerivedFromService(this);

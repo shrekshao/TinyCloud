@@ -16,6 +16,8 @@
 namespace backend {
 
 static const char* Storage_method_names[] = {
+  "/backend.Storage/CreateUser",
+  "/backend.Storage/GetPassword",
   "/backend.Storage/GetFileList",
   "/backend.Storage/InsertFileList",
   "/backend.Storage/PutFile",
@@ -30,13 +32,31 @@ std::unique_ptr< Storage::Stub> Storage::NewStub(const std::shared_ptr< ::grpc::
 }
 
 Storage::Stub::Stub(const std::shared_ptr< ::grpc::ChannelInterface>& channel)
-  : channel_(channel), rpcmethod_GetFileList_(Storage_method_names[0], ::grpc::RpcMethod::NORMAL_RPC, channel)
-  , rpcmethod_InsertFileList_(Storage_method_names[1], ::grpc::RpcMethod::NORMAL_RPC, channel)
-  , rpcmethod_PutFile_(Storage_method_names[2], ::grpc::RpcMethod::NORMAL_RPC, channel)
-  , rpcmethod_UpdateFile_(Storage_method_names[3], ::grpc::RpcMethod::NORMAL_RPC, channel)
-  , rpcmethod_GetFile_(Storage_method_names[4], ::grpc::RpcMethod::NORMAL_RPC, channel)
-  , rpcmethod_DeleteFile_(Storage_method_names[5], ::grpc::RpcMethod::NORMAL_RPC, channel)
+  : channel_(channel), rpcmethod_CreateUser_(Storage_method_names[0], ::grpc::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_GetPassword_(Storage_method_names[1], ::grpc::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_GetFileList_(Storage_method_names[2], ::grpc::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_InsertFileList_(Storage_method_names[3], ::grpc::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_PutFile_(Storage_method_names[4], ::grpc::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_UpdateFile_(Storage_method_names[5], ::grpc::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_GetFile_(Storage_method_names[6], ::grpc::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_DeleteFile_(Storage_method_names[7], ::grpc::RpcMethod::NORMAL_RPC, channel)
   {}
+
+::grpc::Status Storage::Stub::CreateUser(::grpc::ClientContext* context, const ::backend::UserAccount& request, ::backend::Empty* response) {
+  return ::grpc::BlockingUnaryCall(channel_.get(), rpcmethod_CreateUser_, context, request, response);
+}
+
+::grpc::ClientAsyncResponseReader< ::backend::Empty>* Storage::Stub::AsyncCreateUserRaw(::grpc::ClientContext* context, const ::backend::UserAccount& request, ::grpc::CompletionQueue* cq) {
+  return new ::grpc::ClientAsyncResponseReader< ::backend::Empty>(channel_.get(), cq, rpcmethod_CreateUser_, context, request);
+}
+
+::grpc::Status Storage::Stub::GetPassword(::grpc::ClientContext* context, const ::backend::UserAccountRequest& request, ::backend::UserAccount* response) {
+  return ::grpc::BlockingUnaryCall(channel_.get(), rpcmethod_GetPassword_, context, request, response);
+}
+
+::grpc::ClientAsyncResponseReader< ::backend::UserAccount>* Storage::Stub::AsyncGetPasswordRaw(::grpc::ClientContext* context, const ::backend::UserAccountRequest& request, ::grpc::CompletionQueue* cq) {
+  return new ::grpc::ClientAsyncResponseReader< ::backend::UserAccount>(channel_.get(), cq, rpcmethod_GetPassword_, context, request);
+}
 
 ::grpc::Status Storage::Stub::GetFileList(::grpc::ClientContext* context, const ::backend::FileListRequest& request, ::backend::FileListReply* response) {
   return ::grpc::BlockingUnaryCall(channel_.get(), rpcmethod_GetFileList_, context, request, response);
@@ -91,36 +111,60 @@ Storage::Service::Service() {
   AddMethod(new ::grpc::RpcServiceMethod(
       Storage_method_names[0],
       ::grpc::RpcMethod::NORMAL_RPC,
+      new ::grpc::RpcMethodHandler< Storage::Service, ::backend::UserAccount, ::backend::Empty>(
+          std::mem_fn(&Storage::Service::CreateUser), this)));
+  AddMethod(new ::grpc::RpcServiceMethod(
+      Storage_method_names[1],
+      ::grpc::RpcMethod::NORMAL_RPC,
+      new ::grpc::RpcMethodHandler< Storage::Service, ::backend::UserAccountRequest, ::backend::UserAccount>(
+          std::mem_fn(&Storage::Service::GetPassword), this)));
+  AddMethod(new ::grpc::RpcServiceMethod(
+      Storage_method_names[2],
+      ::grpc::RpcMethod::NORMAL_RPC,
       new ::grpc::RpcMethodHandler< Storage::Service, ::backend::FileListRequest, ::backend::FileListReply>(
           std::mem_fn(&Storage::Service::GetFileList), this)));
   AddMethod(new ::grpc::RpcServiceMethod(
-      Storage_method_names[1],
+      Storage_method_names[3],
       ::grpc::RpcMethod::NORMAL_RPC,
       new ::grpc::RpcMethodHandler< Storage::Service, ::backend::FileListRequest, ::backend::Empty>(
           std::mem_fn(&Storage::Service::InsertFileList), this)));
   AddMethod(new ::grpc::RpcServiceMethod(
-      Storage_method_names[2],
+      Storage_method_names[4],
       ::grpc::RpcMethod::NORMAL_RPC,
       new ::grpc::RpcMethodHandler< Storage::Service, ::backend::FileChunk, ::backend::Empty>(
           std::mem_fn(&Storage::Service::PutFile), this)));
   AddMethod(new ::grpc::RpcServiceMethod(
-      Storage_method_names[3],
+      Storage_method_names[5],
       ::grpc::RpcMethod::NORMAL_RPC,
       new ::grpc::RpcMethodHandler< Storage::Service, ::backend::FileChunk, ::backend::Empty>(
           std::mem_fn(&Storage::Service::UpdateFile), this)));
   AddMethod(new ::grpc::RpcServiceMethod(
-      Storage_method_names[4],
+      Storage_method_names[6],
       ::grpc::RpcMethod::NORMAL_RPC,
       new ::grpc::RpcMethodHandler< Storage::Service, ::backend::FileChunkRequest, ::backend::FileChunk>(
           std::mem_fn(&Storage::Service::GetFile), this)));
   AddMethod(new ::grpc::RpcServiceMethod(
-      Storage_method_names[5],
+      Storage_method_names[7],
       ::grpc::RpcMethod::NORMAL_RPC,
       new ::grpc::RpcMethodHandler< Storage::Service, ::backend::FileChunkRequest, ::backend::Empty>(
           std::mem_fn(&Storage::Service::DeleteFile), this)));
 }
 
 Storage::Service::~Service() {
+}
+
+::grpc::Status Storage::Service::CreateUser(::grpc::ServerContext* context, const ::backend::UserAccount* request, ::backend::Empty* response) {
+  (void) context;
+  (void) request;
+  (void) response;
+  return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+}
+
+::grpc::Status Storage::Service::GetPassword(::grpc::ServerContext* context, const ::backend::UserAccountRequest* request, ::backend::UserAccount* response) {
+  (void) context;
+  (void) request;
+  (void) response;
+  return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
 }
 
 ::grpc::Status Storage::Service::GetFileList(::grpc::ServerContext* context, const ::backend::FileListRequest* request, ::backend::FileListReply* response) {

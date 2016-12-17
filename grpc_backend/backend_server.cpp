@@ -30,6 +30,8 @@ using backend::Empty;
 using backend::FileChunk;
 using backend::FileChunkRequest;
 using backend::Storage;
+using backend::UserAccount;
+using backend::UserAccountRequest;
 
 const char*  primary_server_ip = "0.0.0.0:50051";
 const char*  replica_server_ip = "0.0.0.0:50052";
@@ -66,6 +68,30 @@ public:
 
         // The actual RPC.
         Status status = stub_->InsertFileList(&context, request, &reply);
+
+        // Act upon its status.
+        if (status.ok()) {
+            return 1;
+        } else {
+            std::cout << status.error_code() << ": " << status.error_message() << std::endl;
+            return -1;
+        }
+    }
+
+    int CreateUser_Backup(string username, string password) {
+        // Data we are sending to the server.
+        UserAccount request;
+        request.set_username(username);
+
+        // Container for the data we expect from the server.
+        Empty reply;
+
+        // Context for the client. It could be used to convey extra information to
+        // the server and/or tweak certain RPC behaviors.
+        ClientContext context;
+
+        // The actual RPC.
+        Status status = stub_->CreateUser(&context, request, &reply);
 
         // Act upon its status.
         if (status.ok()) {
@@ -167,6 +193,56 @@ ReplicaClient replicar(grpc::CreateChannel(replica_server_ip, grpc::InsecureChan
 
 // Logic and data behind the server's behavior.
 class StorageServiceImpl final : public Storage::Service {
+
+    Status CreateUser(ServerContext* context, const UserAccount* request, Empty* reply) override {
+        // Lock primary
+        primary_mutex.lock();
+
+        // Send to replica server
+        if (replicar.CreateUser_Backup(request->username(), request->password()) == -1) {
+            fprintf(stderr, "CreateUser: replica rpc return -1, possibly replica down\n");
+        }
+
+        // Write to primary log
+        string log("CreateUser:insert(" + request->username() + ", false):crateuser(" + request->username() + ", " + request->password() + ")\n");
+        writeToLog(log);
+
+        int success1 = indexer_service.insert(request->username(), false);
+        if (success1 == -1) {
+            primary_mutex.unlock();
+            return Status::CANCELLED;
+        }
+
+        int success2 = bigtable_service.createuser(request->username(), request->password());
+        if (success2 == 1) {
+            primary_mutex.unlock();
+            return Status::OK;
+        } else {
+            primary_mutex.unlock();
+            return Status::CANCELLED;
+        }
+    }
+
+    Status GetPassword(ServerContext* context, const UserAccountRequest* request, UserAccount* reply) override {
+
+        // Lock primary
+        primary_mutex.lock();
+
+        string res;
+        int success = bigtable_service.getpassword(request->username(), res);
+        //fprintf(stderr, "success: %d\n", success);
+        if (success == 1) {
+            reply->set_username(request->username());
+            reply->set_password(res);
+
+            primary_mutex.unlock();
+            return Status::OK;
+        } else {
+            primary_mutex.unlock();
+            return Status::CANCELLED;
+        }
+    }
+
     Status GetFileList(ServerContext* context, const FileListRequest* request, FileListReply* reply) override {
 
         // Lock primary

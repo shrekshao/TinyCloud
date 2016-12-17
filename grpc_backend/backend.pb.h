@@ -44,6 +44,8 @@ class FileChunkRequest;
 class FileInfo;
 class FileListReply;
 class FileListRequest;
+class UserAccount;
+class UserAccountRequest;
 
 // ===================================================================
 
@@ -333,6 +335,192 @@ class FileInfo : public ::google::protobuf::Message /* @@protoc_insertion_point(
 
   void InitAsDefaultInstance();
   static FileInfo* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class UserAccount : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:backend.UserAccount) */ {
+ public:
+  UserAccount();
+  virtual ~UserAccount();
+
+  UserAccount(const UserAccount& from);
+
+  inline UserAccount& operator=(const UserAccount& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const UserAccount& default_instance();
+
+  void Swap(UserAccount* other);
+
+  // implements Message ----------------------------------------------
+
+  inline UserAccount* New() const { return New(NULL); }
+
+  UserAccount* New(::google::protobuf::Arena* arena) const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const UserAccount& from);
+  void MergeFrom(const UserAccount& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
+      bool deterministic, ::google::protobuf::uint8* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const {
+    return InternalSerializeWithCachedSizesToArray(false, output);
+  }
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(UserAccount* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return _internal_metadata_.arena();
+  }
+  inline void* MaybeArenaPtr() const {
+    return _internal_metadata_.raw_arena_ptr();
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // optional string username = 1;
+  void clear_username();
+  static const int kUsernameFieldNumber = 1;
+  const ::std::string& username() const;
+  void set_username(const ::std::string& value);
+  void set_username(const char* value);
+  void set_username(const char* value, size_t size);
+  ::std::string* mutable_username();
+  ::std::string* release_username();
+  void set_allocated_username(::std::string* username);
+
+  // optional string password = 2;
+  void clear_password();
+  static const int kPasswordFieldNumber = 2;
+  const ::std::string& password() const;
+  void set_password(const ::std::string& value);
+  void set_password(const char* value);
+  void set_password(const char* value, size_t size);
+  ::std::string* mutable_password();
+  ::std::string* release_password();
+  void set_allocated_password(::std::string* password);
+
+  // @@protoc_insertion_point(class_scope:backend.UserAccount)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  bool _is_default_instance_;
+  ::google::protobuf::internal::ArenaStringPtr username_;
+  ::google::protobuf::internal::ArenaStringPtr password_;
+  mutable int _cached_size_;
+  friend void  protobuf_AddDesc_backend_2eproto();
+  friend void protobuf_AssignDesc_backend_2eproto();
+  friend void protobuf_ShutdownFile_backend_2eproto();
+
+  void InitAsDefaultInstance();
+  static UserAccount* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class UserAccountRequest : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:backend.UserAccountRequest) */ {
+ public:
+  UserAccountRequest();
+  virtual ~UserAccountRequest();
+
+  UserAccountRequest(const UserAccountRequest& from);
+
+  inline UserAccountRequest& operator=(const UserAccountRequest& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const UserAccountRequest& default_instance();
+
+  void Swap(UserAccountRequest* other);
+
+  // implements Message ----------------------------------------------
+
+  inline UserAccountRequest* New() const { return New(NULL); }
+
+  UserAccountRequest* New(::google::protobuf::Arena* arena) const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const UserAccountRequest& from);
+  void MergeFrom(const UserAccountRequest& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
+      bool deterministic, ::google::protobuf::uint8* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const {
+    return InternalSerializeWithCachedSizesToArray(false, output);
+  }
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(UserAccountRequest* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return _internal_metadata_.arena();
+  }
+  inline void* MaybeArenaPtr() const {
+    return _internal_metadata_.raw_arena_ptr();
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // optional string username = 1;
+  void clear_username();
+  static const int kUsernameFieldNumber = 1;
+  const ::std::string& username() const;
+  void set_username(const ::std::string& value);
+  void set_username(const char* value);
+  void set_username(const char* value, size_t size);
+  ::std::string* mutable_username();
+  ::std::string* release_username();
+  void set_allocated_username(::std::string* username);
+
+  // @@protoc_insertion_point(class_scope:backend.UserAccountRequest)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  bool _is_default_instance_;
+  ::google::protobuf::internal::ArenaStringPtr username_;
+  mutable int _cached_size_;
+  friend void  protobuf_AddDesc_backend_2eproto();
+  friend void protobuf_AssignDesc_backend_2eproto();
+  friend void protobuf_ShutdownFile_backend_2eproto();
+
+  void InitAsDefaultInstance();
+  static UserAccountRequest* default_instance_;
 };
 // -------------------------------------------------------------------
 
@@ -839,6 +1027,146 @@ inline void FileInfo::set_is_file(bool value) {
 
 // -------------------------------------------------------------------
 
+// UserAccount
+
+// optional string username = 1;
+inline void UserAccount::clear_username() {
+  username_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline const ::std::string& UserAccount::username() const {
+  // @@protoc_insertion_point(field_get:backend.UserAccount.username)
+  return username_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void UserAccount::set_username(const ::std::string& value) {
+  
+  username_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:backend.UserAccount.username)
+}
+inline void UserAccount::set_username(const char* value) {
+  
+  username_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:backend.UserAccount.username)
+}
+inline void UserAccount::set_username(const char* value, size_t size) {
+  
+  username_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:backend.UserAccount.username)
+}
+inline ::std::string* UserAccount::mutable_username() {
+  
+  // @@protoc_insertion_point(field_mutable:backend.UserAccount.username)
+  return username_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline ::std::string* UserAccount::release_username() {
+  // @@protoc_insertion_point(field_release:backend.UserAccount.username)
+  
+  return username_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void UserAccount::set_allocated_username(::std::string* username) {
+  if (username != NULL) {
+    
+  } else {
+    
+  }
+  username_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), username);
+  // @@protoc_insertion_point(field_set_allocated:backend.UserAccount.username)
+}
+
+// optional string password = 2;
+inline void UserAccount::clear_password() {
+  password_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline const ::std::string& UserAccount::password() const {
+  // @@protoc_insertion_point(field_get:backend.UserAccount.password)
+  return password_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void UserAccount::set_password(const ::std::string& value) {
+  
+  password_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:backend.UserAccount.password)
+}
+inline void UserAccount::set_password(const char* value) {
+  
+  password_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:backend.UserAccount.password)
+}
+inline void UserAccount::set_password(const char* value, size_t size) {
+  
+  password_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:backend.UserAccount.password)
+}
+inline ::std::string* UserAccount::mutable_password() {
+  
+  // @@protoc_insertion_point(field_mutable:backend.UserAccount.password)
+  return password_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline ::std::string* UserAccount::release_password() {
+  // @@protoc_insertion_point(field_release:backend.UserAccount.password)
+  
+  return password_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void UserAccount::set_allocated_password(::std::string* password) {
+  if (password != NULL) {
+    
+  } else {
+    
+  }
+  password_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), password);
+  // @@protoc_insertion_point(field_set_allocated:backend.UserAccount.password)
+}
+
+// -------------------------------------------------------------------
+
+// UserAccountRequest
+
+// optional string username = 1;
+inline void UserAccountRequest::clear_username() {
+  username_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline const ::std::string& UserAccountRequest::username() const {
+  // @@protoc_insertion_point(field_get:backend.UserAccountRequest.username)
+  return username_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void UserAccountRequest::set_username(const ::std::string& value) {
+  
+  username_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:backend.UserAccountRequest.username)
+}
+inline void UserAccountRequest::set_username(const char* value) {
+  
+  username_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:backend.UserAccountRequest.username)
+}
+inline void UserAccountRequest::set_username(const char* value, size_t size) {
+  
+  username_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:backend.UserAccountRequest.username)
+}
+inline ::std::string* UserAccountRequest::mutable_username() {
+  
+  // @@protoc_insertion_point(field_mutable:backend.UserAccountRequest.username)
+  return username_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline ::std::string* UserAccountRequest::release_username() {
+  // @@protoc_insertion_point(field_release:backend.UserAccountRequest.username)
+  
+  return username_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void UserAccountRequest::set_allocated_username(::std::string* username) {
+  if (username != NULL) {
+    
+  } else {
+    
+  }
+  username_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), username);
+  // @@protoc_insertion_point(field_set_allocated:backend.UserAccountRequest.username)
+}
+
+// -------------------------------------------------------------------
+
 // FileChunkRequest
 
 // optional string username = 1;
@@ -1186,6 +1514,10 @@ inline void FileChunk::set_allocated_orig_data(::std::string* orig_data) {
 // Empty
 
 #endif  // !PROTOBUF_INLINE_NOT_IN_HEADERS
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------
