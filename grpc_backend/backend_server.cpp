@@ -147,7 +147,7 @@ class StorageServiceImpl final : public Storage::Service {
         unsigned char temp[file_meta->file_length];
         int success = bigtable_service.get(request->username(), request->filename(), (unsigned char *) temp, file_meta->file_length);
         if (success == file_meta->file_length) {
-            reply->set_data((char *)temp);
+            reply->set_data((char *)temp, file_meta->file_length);
             primary_mutex.unlock();
             return Status::OK;
         } else {
@@ -210,15 +210,20 @@ class StorageServiceImpl final : public Storage::Service {
                 primary_mutex.unlock();
                 return Status::OK;
             } else {
-
+                primary_mutex.unlock();
                 return Status::CANCELLED;
             }
         }
     }
 
     Status GetFileList_Backup(ServerContext* context, const FileListRequest* request, FileListReply* reply) override {
+
+        // Lock primary
+        replica_mutex.lock();
+
         map<string, Node> res;
-        int success = indexer_service_backup.display(request->foldername(), res);
+        int success = indexer_service.display(request->foldername(), res);
+        //fprintf(stderr, "success: %d\n", success);
         if (success == 1) {
             for (map<string, Node>::iterator it = res.begin(); it != res.end(); ++it) {
                 backend::FileInfo fi;
@@ -228,42 +233,75 @@ class StorageServiceImpl final : public Storage::Service {
                 (*reply->mutable_filelist())[it->first] = fi;
             }
 
+            replica_mutex.unlock();
             return Status::OK;
         } else {
+            replica_mutex.unlock();
             return Status::CANCELLED;
         }
     }
 
     Status InsertFileList_Backup(ServerContext* context, const FileListRequest* request, Empty* reply) override {
-        int success = indexer_service_backup.insert(request->foldername(), false);
+
+        // Write to log, lock primary
+        replica_mutex.lock();
+        ofstream replica_log(string("replica_log.txt"));
+        string log("InsertFileList:insert(" + request->foldername() + ", false)\n");
+        replica_log.write(log.c_str(), log.size());
+        replica_log.close();
+
+        int success = indexer_service.insert(request->foldername(), false);
         if (success == 1) {
+            primary_mutex.unlock();
             return Status::OK;
         } else {
+            primary_mutex.unlock();
             return Status::CANCELLED;
         }
     }
 
     Status PutFile_Backup(ServerContext* context, const FileChunk* request, Empty* reply) override {
-        int success1 = bigtable_service_backup.put(request->username(), request->filename(), (unsigned char *) request->data().c_str(), request->filetype(), request->length());
-        int success2 = indexer_service_backup.insert(request->username()+"/"+request->filename(), true);
+
+        // Write to log, lock primary
+        primary_mutex.lock();
+        ofstream primary_log(string("primary_log.txt"));
+        string log("PutFile:put(" + request->username() + request->filename() + ", " +  request->filetype() + ", " + to_string(request->length()) + "):insert(" + \
+                request->username() + "/" + request->filename() + ", true)\n");
+        primary_log.write(log.c_str(), log.size());
+        primary_log.close();
+
+        int success1 = bigtable_service.put(request->username(), request->filename(), (unsigned char *) request->data().c_str(), request->filetype(), request->length());
+        int success2 = indexer_service.insert(request->username()+"/"+request->filename(), true);
         if (success1 == 1 && success2 == 1) {
+            primary_mutex.unlock();
             return Status::OK;
         } else {
+            primary_mutex.unlock();
             return Status::CANCELLED;
         }
     }
 
     Status UpdateFile_Backup(ServerContext* context, const FileChunk* request, Empty* reply) override {
-        int success = bigtable_service_backup.put(request->username(), request->filename(), (unsigned char *) request->orig_data().c_str(), (unsigned char *) request->data().c_str(), request->filetype(), request->orig_length(), request->length());
+
+        // Lock primary
+        primary_mutex.lock();
+
+        int success = bigtable_service.put(request->username(), request->filename(), (unsigned char *) request->orig_data().c_str(), (unsigned char *) request->data().c_str(), request->filetype(), request->orig_length(), request->length());
         if (success == 1) {
+            primary_mutex.unlock();
             return Status::OK;
         } else {
+            primary_mutex.unlock();
             return Status::CANCELLED;
         }
     }
 
     Status GetFile_Backup(ServerContext* context, const FileChunkRequest* request, FileChunk* reply) override {
-        FileMeta* file_meta = bigtable_service_backup.getMeta(request->username(), request->filename());
+
+        // Lock primary
+        primary_mutex.lock();
+
+        FileMeta* file_meta = bigtable_service.getMeta(request->username(), request->filename());
 
         if (file_meta == NULL) {
             return Status::CANCELLED;
@@ -275,54 +313,72 @@ class StorageServiceImpl final : public Storage::Service {
         reply->set_filetype(file_meta->file_type);
 
         unsigned char temp[file_meta->file_length];
-        int success = bigtable_service_backup.get(request->username(), request->filename(), (unsigned char *) temp, file_meta->file_length);
+        int success = bigtable_service.get(request->username(), request->filename(), (unsigned char *) temp, file_meta->file_length);
         if (success == file_meta->file_length) {
             reply->set_data((char *)temp);
+            primary_mutex.unlock();
             return Status::OK;
         } else {
+            primary_mutex.unlock();
             return Status::CANCELLED;
         }
     }
 
     Status DeleteFile_Backup(ServerContext* context, const FileChunkRequest* request, Empty* reply) override {
-        pair<int, bool> file_info = indexer_service_backup.checkIsFile(request->username()+"/"+request->filename());
+
+        // Write to log, lock primary
+        primary_mutex.lock();
+        ofstream primary_log(string("primary_log.txt"));
+        string log("DeleteFile:put(" + request->username() + ", " + request->filename() + ")\n");
+        primary_log.write(log.c_str(), log.size());
+        primary_log.close();
+
+        pair<int, bool> file_info = indexer_service.checkIsFile(request->username()+"/"+request->filename());
 
         if (file_info.first == -1) {
+            primary_mutex.unlock();
             return Status::CANCELLED;
         }
 
         if (file_info.second) {
-            int success1 = indexer_service_backup.delet(request->username()+"/"+request->filename());
+            int success1 = indexer_service.delet(request->username()+"/"+request->filename());
             if (success1 == -1) {
+                primary_mutex.unlock();
                 return Status::CANCELLED;
             }
-            int success2 = bigtable_service_backup.delet(request->username(), request->filename());
+            int success2 = bigtable_service.delet(request->username(), request->filename());
             if (success1 == 1 && success2 == 1) {
+                primary_mutex.unlock();
                 return Status::OK;
             } else {
+                primary_mutex.unlock();
                 return Status::CANCELLED;
             }
         } else {
             vector<string> delete_candidates;
-            int success = indexer_service_backup.findAllChildren(request->username()+"/"+request->filename(), delete_candidates);
+            int success = indexer_service.findAllChildren(request->username()+"/"+request->filename(), delete_candidates);
             if (success == -1) {
+                primary_mutex.unlock();
                 return Status::CANCELLED;
             }
 
-            int success1 = indexer_service_backup.delet(request->username()+"/"+request->filename());
+            int success1 = indexer_service.delet(request->username()+"/"+request->filename());
             if (success1 == -1) {
+                primary_mutex.unlock();
                 return Status::CANCELLED;
             }
 
             int success2 = 1;
             for (string str : delete_candidates) {
                 int delim = str.find("/");
-                success2 = (success2 == 1 && bigtable_service_backup.delet(str.substr(0, delim), str.substr(delim+1, str.length()-delim-1)) == 1) ? 1 : -1;
+                success2 = (success2 == 1 && bigtable_service.delet(str.substr(0, delim), str.substr(delim+1, str.length()-delim-1)) == 1) ? 1 : -1;
             }
 
             if (success1 == 1 && success2 == 1) {
+                primary_mutex.unlock();
                 return Status::OK;
             } else {
+                primary_mutex.unlock();
                 return Status::CANCELLED;
             }
         }
