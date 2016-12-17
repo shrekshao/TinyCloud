@@ -29,6 +29,7 @@ int Indexer::display(string cur_dir, map<string, Node> &res) {
         Node* temp = node_finder(element.string(), cur_node);
         if (temp == NULL) {
             // ERROR
+            fprintf(stderr, "Folder does not exist!\n");
             return -1;
         }
         // iterated to next level
@@ -37,6 +38,7 @@ int Indexer::display(string cur_dir, map<string, Node> &res) {
     }
 
     if (cur_node->is_file) {
+        fprintf(stderr, "Cannot display file list under a file!\n");
         return -1;
     }
 
