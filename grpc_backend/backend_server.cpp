@@ -30,11 +30,19 @@ const char*  server_ip = "0.0.0.0:50051";
 
 // Indexer service in-memory storage
 Indexer indexer_service;
-Indexer inderxer_service_backup;
+Indexer indexer_service_backup;
 
 // File service in-memory storage
 BigTabler bigtable_service(server_ip);
 BigTabler bigtable_service_backup(server_ip);
+
+// Open log
+ofstream primary_log(string("primary_log.txt"));
+ofstream replica_log(string("replica_log.txt"));
+
+// Log FIFO counter
+int primary_fifo = 0;
+int replica_fifo = 0;
 
 // Logic and data behind the server's behavior.
 class StorageServiceImpl final : public Storage::Service {
@@ -152,7 +160,7 @@ class StorageServiceImpl final : public Storage::Service {
 
     Status GetFileList_Backup(ServerContext* context, const FileListRequest* request, FileListReply* reply) override {
         map<string, Node> res;
-        int success = indexer_service.display(request->foldername(), res);
+        int success = indexer_service_backup.display(request->foldername(), res);
         if (success == 1) {
             for (map<string, Node>::iterator it = res.begin(); it != res.end(); ++it) {
                 backend::FileInfo fi;
@@ -169,7 +177,7 @@ class StorageServiceImpl final : public Storage::Service {
     }
 
     Status InsertFileList_Backup(ServerContext* context, const FileListRequest* request, Empty* reply) override {
-        int success = indexer_service.insert(request->foldername(), false);
+        int success = indexer_service_backup.insert(request->foldername(), false);
         if (success == 1) {
             return Status::OK;
         } else {
@@ -178,8 +186,8 @@ class StorageServiceImpl final : public Storage::Service {
     }
 
     Status PutFile_Backup(ServerContext* context, const FileChunk* request, Empty* reply) override {
-        int success1 = bigtable_service.put(request->username(), request->filename(), (unsigned char *) request->data().c_str(), request->filetype(), request->length());
-        int success2 = indexer_service.insert(request->username()+"/"+request->filename(), true);
+        int success1 = bigtable_service_backup.put(request->username(), request->filename(), (unsigned char *) request->data().c_str(), request->filetype(), request->length());
+        int success2 = indexer_service_backup.insert(request->username()+"/"+request->filename(), true);
         if (success1 == 1 && success2 == 1) {
             return Status::OK;
         } else {
@@ -188,7 +196,7 @@ class StorageServiceImpl final : public Storage::Service {
     }
 
     Status UpdateFile_Backup(ServerContext* context, const FileChunk* request, Empty* reply) override {
-        int success = bigtable_service.put(request->username(), request->filename(), (unsigned char *) request->orig_data().c_str(), (unsigned char *) request->data().c_str(), request->filetype(), request->orig_length(), request->length());
+        int success = bigtable_service_backup.put(request->username(), request->filename(), (unsigned char *) request->orig_data().c_str(), (unsigned char *) request->data().c_str(), request->filetype(), request->orig_length(), request->length());
         if (success == 1) {
             return Status::OK;
         } else {
@@ -197,7 +205,7 @@ class StorageServiceImpl final : public Storage::Service {
     }
 
     Status GetFile_Backup(ServerContext* context, const FileChunkRequest* request, FileChunk* reply) override {
-        FileMeta* file_meta = bigtable_service.getMeta(request->username(), request->filename());
+        FileMeta* file_meta = bigtable_service_backup.getMeta(request->username(), request->filename());
 
         if (file_meta == NULL) {
             return Status::CANCELLED;
@@ -209,7 +217,7 @@ class StorageServiceImpl final : public Storage::Service {
         reply->set_filetype(file_meta->file_type);
 
         unsigned char temp[file_meta->file_length];
-        int success = bigtable_service.get(request->username(), request->filename(), (unsigned char *) temp, file_meta->file_length);
+        int success = bigtable_service_backup.get(request->username(), request->filename(), (unsigned char *) temp, file_meta->file_length);
         if (success == file_meta->file_length) {
             reply->set_data((char *)temp);
             return Status::OK;
@@ -219,18 +227,18 @@ class StorageServiceImpl final : public Storage::Service {
     }
 
     Status DeleteFile_Backup(ServerContext* context, const FileChunkRequest* request, Empty* reply) override {
-        pair<int, bool> file_info = indexer_service.checkIsFile(request->username()+"/"+request->filename());
+        pair<int, bool> file_info = indexer_service_backup.checkIsFile(request->username()+"/"+request->filename());
 
         if (file_info.first == -1) {
             return Status::CANCELLED;
         }
 
         if (file_info.second) {
-            int success1 = indexer_service.delet(request->username()+"/"+request->filename());
+            int success1 = indexer_service_backup.delet(request->username()+"/"+request->filename());
             if (success1 == -1) {
                 return Status::CANCELLED;
             }
-            int success2 = bigtable_service.delet(request->username(), request->filename());
+            int success2 = bigtable_service_backup.delet(request->username(), request->filename());
             if (success1 == 1 && success2 == 1) {
                 return Status::OK;
             } else {
@@ -238,12 +246,12 @@ class StorageServiceImpl final : public Storage::Service {
             }
         } else {
             vector<string> delete_candidates;
-            int success = indexer_service.findAllChildren(request->username()+"/"+request->filename(), delete_candidates);
+            int success = indexer_service_backup.findAllChildren(request->username()+"/"+request->filename(), delete_candidates);
             if (success == -1) {
                 return Status::CANCELLED;
             }
 
-            int success1 = indexer_service.delet(request->username()+"/"+request->filename());
+            int success1 = indexer_service_backup.delet(request->username()+"/"+request->filename());
             if (success1 == -1) {
                 return Status::CANCELLED;
             }
@@ -251,7 +259,7 @@ class StorageServiceImpl final : public Storage::Service {
             int success2 = 1;
             for (string str : delete_candidates) {
                 int delim = str.find("/");
-                success2 = (success2 == 1 && bigtable_service.delet(str.substr(0, delim), str.substr(delim+1, str.length()-delim-1)) == 1) ? 1 : -1;
+                success2 = (success2 == 1 && bigtable_service_backup.delet(str.substr(0, delim), str.substr(delim+1, str.length()-delim-1)) == 1) ? 1 : -1;
             }
 
             if (success1 == 1 && success2 == 1) {
@@ -295,28 +303,54 @@ void RunGC() {
     int rc = 0;
     pthread_t gcthread;
 
-    while (rc == 0) {
-        pthread_create(&gcthread, NULL, &gcHelper, NULL);
-        rc = pthread_join(gcthread, NULL);
-    }
+    pthread_create(&gcthread, NULL, &gcHelper, NULL);
+    rc = pthread_join(gcthread, NULL);
 }
 
 int main(int argc, char** argv) {
-    /* Indexer test
+    ///* Indexer test
     cout << indexer_service.insert("/tianli", false) << endl;
     cout << indexer_service.insert("/tianli/folder1", false) << endl;
     cout << indexer_service.insert("/tianli/folder2", false) << endl;
-    cout << indexer_service.insert("/tianli/file3", true) << endl;
+    //cout << indexer_service.insert("/tianli/file3", true) << endl;
     cout << indexer_service.insert("/tianli/folder1/folder1.1", false) << endl;
-    map<string, Node> res;
-    int success = indexer_service.display("/tianli/folder1", res);
-    cout << success << endl;
-    for (map<string, Node>::iterator it = res.begin(); it != res.end(); ++it) {
-        cout << it->first << " " << it->second.is_file << endl;
-    }
-    */
-    RunServer();
+    //map<string, Node> res;
+    //int success = indexer_service.display("/tianli/folder1", res);
+    //cout << success << endl;
+    //for (map<string, Node>::iterator it = res.begin(); it != res.end(); ++it) {
+    //    cout << it->first << " " << it->second.is_file << endl;
+    //}
+    //*/
+
+    ifstream ifs1("file1.txt", ios::binary|ios::ate);
+    ifstream::pos_type pos1 = ifs1.tellg();
+
+    int length1 = pos1;
+
+    char *pChars1 = new char[length1];
+    ifs1.seekg(0, ios::beg);
+    ifs1.read(pChars1, length1);
+    ifs1.close();
+
+    cout << "First put" << endl;
+    cout << bigtable_service.put("tianli", "file1", (unsigned char *) pChars1, ".txt", length1) << endl;
+
+    ifstream ifs2("file2.txt", ios::binary|ios::ate);
+    ifstream::pos_type pos2 = ifs2.tellg();
+
+    int length2 = pos2;
+
+    char *pChars2 = new char[length2];
+    ifs2.seekg(0, ios::beg);
+    ifs2.read(pChars2, length2);
+    ifs2.close();
+
+    cout << "second put" << endl;
+    cout << bigtable_service.put("tianli", "file2", (unsigned char *) pChars2, ".txt", length2) << endl;
+
     RunGC();
+    RunServer();
+
 
 
     return 0;
