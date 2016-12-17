@@ -117,9 +117,12 @@ void protobuf_AssignDesc_master_2eproto() {
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(NodeIndexRequest, _internal_metadata_),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(NodeIndexRequest, _is_default_instance_));
   NodeInfo_descriptor_ = file->message_type(4);
-  static const int NodeInfo_offsets_[2] = {
+  static const int NodeInfo_offsets_[5] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(NodeInfo, user_list_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(NodeInfo, user_number_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(NodeInfo, buffer_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(NodeInfo, status_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(NodeInfo, buffer_length_),
   };
   NodeInfo_reflection_ =
     ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
@@ -242,20 +245,23 @@ void protobuf_AddDesc_master_2eproto() {
     "tatus\030\001 \003(\0132).master.NodesStatusReply.No"
     "desstatusEntry\0322\n\020NodesstatusEntry\022\013\n\003ke"
     "y\030\001 \001(\t\022\r\n\005value\030\002 \001(\010:\0028\001\"!\n\020NodeIndexR"
-    "equest\022\r\n\005index\030\001 \001(\004\"2\n\010NodeInfo\022\021\n\tuse"
-    "r_list\030\001 \001(\t\022\023\n\013user_number\030\002 \001(\004\"\213\001\n\016No"
-    "desInfoReply\0226\n\010nodeinfo\030\001 \003(\0132$.master."
-    "NodesInfoReply.NodeinfoEntry\032A\n\rNodeinfo"
-    "Entry\022\013\n\003key\030\001 \001(\t\022\037\n\005value\030\002 \001(\0132\020.mast"
-    "er.NodeInfo:\0028\001\"\007\n\005Empty2\260\002\n\006Master\022>\n\013G"
-    "etUserAddr\022\027.master.UserNameRequest\032\024.ma"
-    "ster.AddressReply\"\000\0226\n\nCreateUser\022\027.mast"
-    "er.UserNameRequest\032\r.master.Empty\"\000\022;\n\016G"
-    "etNodesStatus\022\r.master.Empty\032\030.master.No"
-    "desStatusReply\"\000\0227\n\014GetNodesInfo\022\r.maste"
-    "r.Empty\032\026.master.NodesInfoReply\"\000\0228\n\013Dis"
-    "ableNode\022\030.master.NodeIndexRequest\032\r.mas"
-    "ter.Empty\"\000B\006\242\002\003HLWb\006proto3", 787);
+    "equest\022\r\n\005index\030\001 \001(\004\"i\n\010NodeInfo\022\021\n\tuse"
+    "r_list\030\001 \001(\t\022\023\n\013user_number\030\002 \001(\004\022\016\n\006buf"
+    "fer\030\003 \001(\t\022\016\n\006status\030\004 \001(\010\022\025\n\rbuffer_leng"
+    "th\030\005 \001(\004\"\213\001\n\016NodesInfoReply\0226\n\010nodeinfo\030"
+    "\001 \003(\0132$.master.NodesInfoReply.NodeinfoEn"
+    "try\032A\n\rNodeinfoEntry\022\013\n\003key\030\001 \001(\t\022\037\n\005val"
+    "ue\030\002 \001(\0132\020.master.NodeInfo:\0028\001\"\007\n\005Empty2"
+    "\351\002\n\006Master\022>\n\013GetUserAddr\022\027.master.UserN"
+    "ameRequest\032\024.master.AddressReply\"\000\0226\n\nCr"
+    "eateUser\022\027.master.UserNameRequest\032\r.mast"
+    "er.Empty\"\000\022;\n\016GetNodesStatus\022\r.master.Em"
+    "pty\032\030.master.NodesStatusReply\"\000\0227\n\014GetNo"
+    "desInfo\022\r.master.Empty\032\026.master.NodesInf"
+    "oReply\"\000\0228\n\013DisableNode\022\030.master.NodeInd"
+    "exRequest\032\r.master.Empty\"\000\0227\n\nEnableNode"
+    "\022\030.master.NodeIndexRequest\032\r.master.Empt"
+    "y\"\000B\006\242\002\003HLWb\006proto3", 899);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "master.proto", &protobuf_RegisterTypes);
   UserNameRequest::default_instance_ = new UserNameRequest();
@@ -1447,6 +1453,9 @@ void NodeIndexRequest::clear_index() {
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
 const int NodeInfo::kUserListFieldNumber;
 const int NodeInfo::kUserNumberFieldNumber;
+const int NodeInfo::kBufferFieldNumber;
+const int NodeInfo::kStatusFieldNumber;
+const int NodeInfo::kBufferLengthFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 NodeInfo::NodeInfo()
@@ -1473,6 +1482,9 @@ void NodeInfo::SharedCtor() {
   _cached_size_ = 0;
   user_list_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   user_number_ = GOOGLE_ULONGLONG(0);
+  buffer_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  status_ = false;
+  buffer_length_ = GOOGLE_ULONGLONG(0);
 }
 
 NodeInfo::~NodeInfo() {
@@ -1482,6 +1494,7 @@ NodeInfo::~NodeInfo() {
 
 void NodeInfo::SharedDtor() {
   user_list_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  buffer_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   if (this != default_instance_) {
   }
 }
@@ -1513,8 +1526,30 @@ NodeInfo* NodeInfo::New(::google::protobuf::Arena* arena) const {
 
 void NodeInfo::Clear() {
 // @@protoc_insertion_point(message_clear_start:master.NodeInfo)
+#if defined(__clang__)
+#define ZR_HELPER_(f) \
+  _Pragma("clang diagnostic push") \
+  _Pragma("clang diagnostic ignored \"-Winvalid-offsetof\"") \
+  __builtin_offsetof(NodeInfo, f) \
+  _Pragma("clang diagnostic pop")
+#else
+#define ZR_HELPER_(f) reinterpret_cast<char*>(\
+  &reinterpret_cast<NodeInfo*>(16)->f)
+#endif
+
+#define ZR_(first, last) do {\
+  ::memset(&first, 0,\
+           ZR_HELPER_(last) - ZR_HELPER_(first) + sizeof(last));\
+} while (0)
+
+  ZR_(buffer_length_, status_);
   user_list_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   user_number_ = GOOGLE_ULONGLONG(0);
+  buffer_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+
+#undef ZR_HELPER_
+#undef ZR_
+
 }
 
 bool NodeInfo::MergePartialFromCodedStream(
@@ -1550,6 +1585,53 @@ bool NodeInfo::MergePartialFromCodedStream(
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::uint64, ::google::protobuf::internal::WireFormatLite::TYPE_UINT64>(
                  input, &user_number_)));
+
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(26)) goto parse_buffer;
+        break;
+      }
+
+      // optional string buffer = 3;
+      case 3: {
+        if (tag == 26) {
+         parse_buffer:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
+                input, this->mutable_buffer()));
+          DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+            this->buffer().data(), this->buffer().length(),
+            ::google::protobuf::internal::WireFormatLite::PARSE,
+            "master.NodeInfo.buffer"));
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(32)) goto parse_status;
+        break;
+      }
+
+      // optional bool status = 4;
+      case 4: {
+        if (tag == 32) {
+         parse_status:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   bool, ::google::protobuf::internal::WireFormatLite::TYPE_BOOL>(
+                 input, &status_)));
+
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(40)) goto parse_buffer_length;
+        break;
+      }
+
+      // optional uint64 buffer_length = 5;
+      case 5: {
+        if (tag == 40) {
+         parse_buffer_length:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint64, ::google::protobuf::internal::WireFormatLite::TYPE_UINT64>(
+                 input, &buffer_length_)));
 
         } else {
           goto handle_unusual;
@@ -1597,6 +1679,26 @@ void NodeInfo::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteUInt64(2, this->user_number(), output);
   }
 
+  // optional string buffer = 3;
+  if (this->buffer().size() > 0) {
+    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+      this->buffer().data(), this->buffer().length(),
+      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
+      "master.NodeInfo.buffer");
+    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
+      3, this->buffer(), output);
+  }
+
+  // optional bool status = 4;
+  if (this->status() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteBool(4, this->status(), output);
+  }
+
+  // optional uint64 buffer_length = 5;
+  if (this->buffer_length() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt64(5, this->buffer_length(), output);
+  }
+
   // @@protoc_insertion_point(serialize_end:master.NodeInfo)
 }
 
@@ -1619,6 +1721,27 @@ void NodeInfo::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormatLite::WriteUInt64ToArray(2, this->user_number(), target);
   }
 
+  // optional string buffer = 3;
+  if (this->buffer().size() > 0) {
+    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+      this->buffer().data(), this->buffer().length(),
+      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
+      "master.NodeInfo.buffer");
+    target =
+      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
+        3, this->buffer(), target);
+  }
+
+  // optional bool status = 4;
+  if (this->status() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteBoolToArray(4, this->status(), target);
+  }
+
+  // optional uint64 buffer_length = 5;
+  if (this->buffer_length() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt64ToArray(5, this->buffer_length(), target);
+  }
+
   // @@protoc_insertion_point(serialize_to_array_end:master.NodeInfo)
   return target;
 }
@@ -1639,6 +1762,25 @@ int NodeInfo::ByteSize() const {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::UInt64Size(
         this->user_number());
+  }
+
+  // optional string buffer = 3;
+  if (this->buffer().size() > 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::StringSize(
+        this->buffer());
+  }
+
+  // optional bool status = 4;
+  if (this->status() != 0) {
+    total_size += 1 + 1;
+  }
+
+  // optional uint64 buffer_length = 5;
+  if (this->buffer_length() != 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::UInt64Size(
+        this->buffer_length());
   }
 
   GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
@@ -1676,6 +1818,16 @@ void NodeInfo::MergeFrom(const NodeInfo& from) {
   if (from.user_number() != 0) {
     set_user_number(from.user_number());
   }
+  if (from.buffer().size() > 0) {
+
+    buffer_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.buffer_);
+  }
+  if (from.status() != 0) {
+    set_status(from.status());
+  }
+  if (from.buffer_length() != 0) {
+    set_buffer_length(from.buffer_length());
+  }
 }
 
 void NodeInfo::CopyFrom(const ::google::protobuf::Message& from) {
@@ -1704,6 +1856,9 @@ void NodeInfo::Swap(NodeInfo* other) {
 void NodeInfo::InternalSwap(NodeInfo* other) {
   user_list_.Swap(&other->user_list_);
   std::swap(user_number_, other->user_number_);
+  buffer_.Swap(&other->buffer_);
+  std::swap(status_, other->status_);
+  std::swap(buffer_length_, other->buffer_length_);
   _internal_metadata_.Swap(&other->_internal_metadata_);
   std::swap(_cached_size_, other->_cached_size_);
 }
@@ -1775,6 +1930,78 @@ void NodeInfo::clear_user_number() {
   
   user_number_ = value;
   // @@protoc_insertion_point(field_set:master.NodeInfo.user_number)
+}
+
+// optional string buffer = 3;
+void NodeInfo::clear_buffer() {
+  buffer_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ const ::std::string& NodeInfo::buffer() const {
+  // @@protoc_insertion_point(field_get:master.NodeInfo.buffer)
+  return buffer_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void NodeInfo::set_buffer(const ::std::string& value) {
+  
+  buffer_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:master.NodeInfo.buffer)
+}
+ void NodeInfo::set_buffer(const char* value) {
+  
+  buffer_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:master.NodeInfo.buffer)
+}
+ void NodeInfo::set_buffer(const char* value, size_t size) {
+  
+  buffer_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:master.NodeInfo.buffer)
+}
+ ::std::string* NodeInfo::mutable_buffer() {
+  
+  // @@protoc_insertion_point(field_mutable:master.NodeInfo.buffer)
+  return buffer_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ ::std::string* NodeInfo::release_buffer() {
+  // @@protoc_insertion_point(field_release:master.NodeInfo.buffer)
+  
+  return buffer_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void NodeInfo::set_allocated_buffer(::std::string* buffer) {
+  if (buffer != NULL) {
+    
+  } else {
+    
+  }
+  buffer_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), buffer);
+  // @@protoc_insertion_point(field_set_allocated:master.NodeInfo.buffer)
+}
+
+// optional bool status = 4;
+void NodeInfo::clear_status() {
+  status_ = false;
+}
+ bool NodeInfo::status() const {
+  // @@protoc_insertion_point(field_get:master.NodeInfo.status)
+  return status_;
+}
+ void NodeInfo::set_status(bool value) {
+  
+  status_ = value;
+  // @@protoc_insertion_point(field_set:master.NodeInfo.status)
+}
+
+// optional uint64 buffer_length = 5;
+void NodeInfo::clear_buffer_length() {
+  buffer_length_ = GOOGLE_ULONGLONG(0);
+}
+ ::google::protobuf::uint64 NodeInfo::buffer_length() const {
+  // @@protoc_insertion_point(field_get:master.NodeInfo.buffer_length)
+  return buffer_length_;
+}
+ void NodeInfo::set_buffer_length(::google::protobuf::uint64 value) {
+  
+  buffer_length_ = value;
+  // @@protoc_insertion_point(field_set:master.NodeInfo.buffer_length)
 }
 
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS

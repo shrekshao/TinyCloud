@@ -38,17 +38,17 @@
 // using this name space
 using namespace std;
 
-const string _log_file = "master_server_log.txt";
-
 // design a class for saving a node
 class StorageNodeInfo {
 public:
     int user_number;
     int storage_size;
     vector<string> user_list;
+    bool crashed;
     StorageNodeInfo() {
         storage_size = 0;
         user_number = 0;
+        crashed = false;
     }
 };
 
@@ -80,6 +80,8 @@ public:
     int get_info(map<string, StorageNodeInfo> &info);
     // disenable a node from master
     int disenable_node(int index);
+    // disenable a node from master
+    int enable_node(int index);
     // suppliment function
     int hash_user2node(string username) {
         hash<string> hash_fn;

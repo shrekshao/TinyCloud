@@ -31,6 +31,8 @@ MasterNode::MasterNode(string config_file) {
         index++;
     }
     max_node_number = index;
+
+    // open the log file for flushing in the log file
 }
 
 // Get User Node IP:Port As A String
@@ -86,6 +88,10 @@ int MasterNode::get_info(map<string, StorageNodeInfo> &info) {
         // adding the user count for this node
         info[ip_mapping[it->second]].user_number++;
     }
+    // getting the status of the server
+    for (int i = 0; i < max_node_number; i++) {
+        info[ip_mapping[i]].crashed = crash_mapping[i];
+    }
     return 1;
 }
 
@@ -94,6 +100,17 @@ int MasterNode::disenable_node(int index) {
     cout << "[MASTER]:Receiving DISENABLE Call\n";
     if (!crash_mapping[index]) {
         crash_mapping[index] = true;
+        return 1;
+    } else {
+        return 0;
+    }
+}
+
+// Enable One Node For Testing
+int MasterNode::enable_node(int index) {
+    cout << "[MASTER]:Receiving ENABLE Call\n";
+    if (crash_mapping[index]) {
+        crash_mapping[index] = false;
         return 1;
     } else {
         return 0;
