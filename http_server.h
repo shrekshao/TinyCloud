@@ -694,7 +694,7 @@ void uploadFileToStorage(const string & threadUsername, const string & curFolder
         fullPathFolder = curFolder + "/" + filename;
     }
 
-
+    HttpDebugLog( 999, "fullPathFolder: %s, filename: %s", fullPathFolder.c_str(), filename.c_str());
     fsClient.UploadFile(threadUsername, fullPathFolder, data);
 }
 

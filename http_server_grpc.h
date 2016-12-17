@@ -16,6 +16,7 @@ using grpc::ClientContext;
 using grpc::Status;
 
 using backend::FileListRequest;
+using backend::FileChunkRequest;
 using backend::FileListReply;
 using backend::Empty;
 using backend::FileChunk;
@@ -103,8 +104,51 @@ class FileSystemClient {
       cerr << "rpc: upload file ok\n";
       // return true;
     } else {
-      cerr << "rpc: Err upload failed!\n";
+      cerr << "rpc: Err upload file failed!\n";
       // return false;
+    }
+  }
+
+  void DeleteFile(const string & username, const string & url)
+  {
+    ClientContext context;
+
+    FileChunkRequest request;
+    backend::Empty response;
+
+    request.set_username(username);
+    request.set_filename(url);
+
+    Status status = stub_->DeleteFile(&context, request, &response);
+    if (status.ok()) {
+      cerr << "rpc: delete file ok\n";
+      // return true;
+    } else {
+      cerr << "rpc: delete file failed!\n";
+      // return false;
+    }
+  }
+
+  bool GetFile(const string & username, const string & url, string & data)
+  {
+    ClientContext context;
+
+    FileChunkRequest request;
+    FileChunk response;
+
+    request.set_username(username);
+    request.set_filename(url);
+
+    Status status = stub_->GetFile(&context, request, &response);
+    if (status.ok()) {
+      cerr << "rpc: get file ok\n";
+
+      data = response.data();
+
+      return true;
+    } else {
+      cerr << "rpc: get file failed!\n";
+      return false;
     }
   }
 
