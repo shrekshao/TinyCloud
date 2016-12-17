@@ -19,6 +19,8 @@
 
 #include "http_server_grpc.h"
 
+#include "grpc_master/master_client.h"
+
 
 using namespace std;
 
@@ -26,7 +28,8 @@ using namespace std;
 static FileSystemClient fsClient(grpc::CreateChannel(
       "localhost:50051", grpc::InsecureChannelCredentials()));
 
-
+static MasterClient masterClient(grpc::CreateChannel(
+      "localhost:52013", grpc::InsecureChannelCredentials()));
 
 
 

@@ -5,7 +5,7 @@
 
 using namespace std;
 
-master_client msClient(grpc::CreateChannel(
+MasterClient msClient(grpc::CreateChannel(
         "localhost:52013", grpc::InsecureChannelCredentials()));
 
 int main(int argc, char *argv[])
