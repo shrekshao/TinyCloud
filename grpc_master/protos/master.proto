@@ -57,6 +57,11 @@ service Master {
     // Return Type: Empty
     // Disable One Node As Requested
     rpc DisableNode (NodeIndexRequest) returns (Empty) {}
+
+    // Return Type: Empty
+    // Disable One Node As Requested
+    rpc EnableNode (NodeIndexRequest) returns (Empty) {}
+
 }
 
 message UserNameRequest {
@@ -78,6 +83,9 @@ message NodeIndexRequest {
 message NodeInfo {
     string user_list = 1;
     uint64 user_number = 2;
+    string buffer = 3;
+    bool status = 4;
+    uint64 buffer_length = 5;
 }
 
 message NodesInfoReply {
