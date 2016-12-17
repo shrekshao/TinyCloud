@@ -26,6 +26,40 @@ BigTabler::BigTabler (string s) {
 }
 
 /*
+ * Create user account in bigtable under col password
+ * return: 1    success
+ *         -1   fail
+ */
+int BigTabler::createuser (string username, string password) {
+    // Check if there is already a file with this name
+    auto it = big_table.find(username);
+    if (it == big_table.end()) {
+        big_table.emplace(piecewise_construct, forward_as_tuple(username), forward_as_tuple());
+        // put the file metainfo in big table
+        big_table.at(username).emplace(piecewise_construct, forward_as_tuple("password"), forward_as_tuple(0, 0, username, password, "password", to_string(0), false, false));
+        return 1;
+    } else {
+        return -1;
+    }
+}
+
+/*
+ * Get user password in bigtable under col password
+ * return: 1    success
+ *         -1   fail
+ */
+int BigTabler::getpassword (string username, string& res) {
+    // Check if there is already a file with this name
+    auto it = big_table.find(username);
+    if (it == big_table.end()) {
+        return -1;
+    } else {
+        res = big_table.at(username).at("password").file_name;
+        return 1;
+    }
+}
+
+/*
  * Insert a file to the system, should have a lock, only one call at a time
  * return: 1    success
  *         -1   fail

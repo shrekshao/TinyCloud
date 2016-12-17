@@ -30,6 +30,8 @@ using backend::Empty;
 using backend::FileChunk;
 using backend::FileChunkRequest;
 using backend::Storage;
+using backend::UserAccount;
+using backend::UserAccountRequest;
 
 const char*  primary_server_ip = "0.0.0.0:50051";
 const char*  replica_server_ip = "0.0.0.0:50052";
@@ -45,6 +47,51 @@ mutex replica_mutex;
 
 // Logic and data behind the server's behavior.
 class StorageServiceImpl final : public Storage::Service {
+
+    Status CreateUser(ServerContext* context, const UserAccount* request, Empty* reply) override {
+        // Lock primary
+        replica_mutex.lock();
+
+        // Write to primary log
+        string log("CreateUser:insert(" + request->username() + ", false):crateuser(" + request->username() + ", " + request->password() + ")\n");
+        writeToLog(log);
+
+        int success1 = indexer_service.insert(request->username(), false);
+        if (success1 == -1) {
+            replica_mutex.unlock();
+            return Status::CANCELLED;
+        }
+
+        int success2 = bigtable_service.createuser(request->username(), request->password());
+        if (success2 == 1) {
+            replica_mutex.unlock();
+            return Status::OK;
+        } else {
+            replica_mutex.unlock();
+            return Status::CANCELLED;
+        }
+    }
+
+    Status GetPassword(ServerContext* context, const UserAccountRequest* request, UserAccount* reply) override {
+
+        // Lock primary
+        replica_mutex.lock();
+
+        string res;
+        int success = bigtable_service.getpassword(request->username(), res);
+        //fprintf(stderr, "success: %d\n", success);
+        if (success == 1) {
+            reply->set_username(request->username());
+            reply->set_password(res);
+
+            replica_mutex.unlock();
+            return Status::OK;
+        } else {
+            replica_mutex.unlock();
+            return Status::CANCELLED;
+        }
+    }
+
     Status GetFileList(ServerContext* context, const FileListRequest* request, FileListReply* reply) override {
 
         // Lock primary

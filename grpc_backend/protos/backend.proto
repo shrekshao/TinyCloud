@@ -39,6 +39,10 @@ package backend;
 // The storage service definition.
 service Storage {
   // Frontend Backend Normal Communication
+  // Create new user
+  rpc CreateUser (UserAccount) returns (Empty) {}
+  // Get password
+  rpc GetPassword (UserAccountRequest) returns (UserAccount) {}
   // Get file list
   rpc GetFileList (FileListRequest) returns (FileListReply) {}
   // Insert a directory
@@ -67,6 +71,15 @@ message FileInfo {
     string full_path = 1;
     string name = 2;
     bool is_file = 3;
+}
+
+message UserAccount {
+    string username = 1;
+    string password = 2;
+}
+
+message UserAccountRequest {
+    string username = 1;
 }
 
 message FileChunkRequest {
