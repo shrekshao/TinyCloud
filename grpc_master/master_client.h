@@ -2,8 +2,8 @@
 // Created by Frank Wu on 16/12/2016.
 //
 
-#ifndef TINYCLOUD_MasterClient_H
-#define TINYCLOUD_MasterClient_H
+#ifndef TINYCLOUD_MASTER_CLIENT_H
+#define TINYCLOUD_MASTER_CLIENT_H
 
 #include <iostream>
 #include <memory>
@@ -26,15 +26,15 @@ using grpc::Status;
 using master::Master;
 using master::UserNameRequest;
 using master::AddressReply;
-// using master::Empty;
+using master::Empty;
 using master::NodesStatusReply;
 using master::NodesInfoReply;
 using master::NodeIndexRequest;
 using master::NodeInfo;
 
-class MasterClient {
+class master_client {
 public:
-    MasterClient(std::shared_ptr<Channel> channel)
+    master_client(std::shared_ptr<Channel> channel)
     : stub_(Master::NewStub(channel)) {}
 
     // return true if success
@@ -71,7 +71,7 @@ public:
         request.set_username(username);
 
         // container for the reply message
-        master::Empty reply;
+        Empty reply;
 
         // Context for the client. It could be used to convey extra information to
         // the server and/or tweak certain RPC behaviors.
@@ -93,7 +93,7 @@ public:
     // return a map of node status
     bool GetNodesStatus(std::map<string, bool> & res) {
         // data that are sending to the master
-        master::Empty request;
+        Empty request;
 
         // container for the reply message
         NodesStatusReply reply;
@@ -122,7 +122,7 @@ public:
         request.set_index(index);
 
         // container for the reply message
-        master::Empty reply;
+        Empty reply;
 
         // Context for the client. It could be used to convey extra information to
         // the server and/or tweak certain RPC behaviors.
@@ -143,7 +143,7 @@ public:
     // return a map of node info
     bool GetNodesInfo(map<string, NodeInfo> &res) {
         // data that are sending to the master
-        master::Empty request;
+        Empty request;
 
         // container for the reply message
         NodesInfoReply reply;
@@ -170,4 +170,4 @@ private:
 };
 
 
-#endif //TINYCLOUD_MasterClient_H
+#endif //TINYCLOUD_MASTER_CLIENT_H
