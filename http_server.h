@@ -739,6 +739,76 @@ void insertFolderHandler(int fd, const string & contentStr, string & threadUsern
     getFilelistHandler(fd, curFolder, threadUsername);
 }
 
+
+
+void deleteItemHandler(int fd, const string & contentStr, string & threadUsername)
+{
+    istringstream iss_content(contentStr);
+    string curFolder, url;
+    getline(iss_content, curFolder, '&');
+    getline(iss_content, url, '\r');
+
+    // get rid of username/
+
+    // cull username
+    string fullPathURL;
+    {
+        auto p_second_slash = url.find('/', 1);
+        fullPathURL = url.substr(p_second_slash + 1); 
+    }
+
+    HttpDebugLog( fd, "item to delete url: %s, cull username path: %s, curFolder: %s", url.c_str(), fullPathURL.c_str(), curFolder.c_str());
+
+    fsClient.DeleteItem(threadUsername, fullPathURL);
+    getFilelistHandler(fd, curFolder, threadUsername);
+}
+
+
+
+
+// {uri, FunctionHandlerPost}
+static const unordered_map<string, FunctionHandlerPost> postRequestHandlers({
+    {"/", &loginHandler}
+    , {"/register", &registerHandler}
+    // , {"/drive", &uploadFileHandler}
+    , {"/get-file-list", &getFilelistHandler}
+
+    , {"/insert-folder", &insertFolderHandler}
+
+    , {"/delete-item", &deleteItemHandler}
+});
+
+
+void handlePostRequest(int fd, const string & uri, const string & contentStr, string & threadUsername)
+{
+    auto it = postRequestHandlers.find(uri);
+    if (it == postRequestHandlers.end())
+    {
+        // 400 not valid uri post
+        HttpDebugLog( fd, "Invalid post url request: %s", uri.c_str());
+        send400Page(fd);
+    }
+    else
+    {
+        (*(it->second))(fd, contentStr, threadUsername);
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+// ---------- irregular post request handlers -----------------
+
+
 void uploadFileToStorage(const string & threadUsername, const string & curFolder, const string & filename, const string & data)
 {
 
@@ -771,47 +841,10 @@ void uploadFileToStorage(const string & threadUsername, const string & curFolder
     {
         extname = filename.substr(p_dot + 1);
     }
-    
-
-
 
     HttpDebugLog( 999, "fullPathFolder: %s, filename: %s, extname: %s", fullPathFolder.c_str(), filename.c_str(), extname.c_str());
     fsClient.UploadFile(threadUsername, fullPathFolder, data, extname);
 }
-
-
-
-
-// {uri, FunctionHandlerPost}
-static const unordered_map<string, FunctionHandlerPost> postRequestHandlers({
-    {"/", &loginHandler}
-    , {"/register", &registerHandler}
-    // , {"/drive", &uploadFileHandler}
-    , {"/get-file-list", &getFilelistHandler}
-
-    , {"/insert-folder", &insertFolderHandler}
-});
-
-
-void handlePostRequest(int fd, const string & uri, const string & contentStr, string & threadUsername)
-{
-    auto it = postRequestHandlers.find(uri);
-    if (it == postRequestHandlers.end())
-    {
-        // 400 not valid uri post
-        HttpDebugLog( fd, "Invalid post url request: %s", uri.c_str());
-        send400Page(fd);
-    }
-    else
-    {
-        (*(it->second))(fd, contentStr, threadUsername);
-    }
-}
-
-
-
-
-
 
 
 

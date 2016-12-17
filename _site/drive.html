@@ -138,13 +138,33 @@
     var cur_folder = '/';   // only used for uploading file and insert folders 
 
 
-    function deleteFile(url) {
+    function deleteItem(url) {
         console.log('delete filename: ' + url);
+
+        $.ajax({
+            url: '/delete-item',
+            type: 'post',
+            data: cur_folder + '&' + url,
+            contentType: 'text',
+            beforeSend: function(xhr){
+                console.log('beforeSend');
+                if (xhr.overrideMimeType)
+                {
+                    console.log('override app json');
+                    xhr.overrideMimeType("application/json");
+                }
+            },
+            dataType: 'json',
+            // dataType: 'application/json',
+            // dataType: 'text',
+
+            success: buildFileList
+        });
     }
 
-    function deleteFolder(url) {
-        console.log('delete folder: ' + url);
-    }
+    // function deleteFolder(url) {
+    //     console.log('delete folder: ' + url);
+    // }
 
 
 
@@ -234,7 +254,7 @@
             
             row = `<div class="list-group-item list-group-item-success">
                         <span class="badge alert-success pull-right"> 
-                            <a onclick="deleteFolder('${key}')"><i class="fa fa-trash"></i></a> 
+                            <a onclick="deleteItem('${key}')"><i class="fa fa-trash"></i></a> 
                         </span>
                           <i class="fa fa-folder"></i>  <a onclick="getFileListAjax('${key}')">${info.name}</a> 
                     </div>`;
@@ -246,10 +266,12 @@
             //               <i class="fa fa-file-o"></i>  ${info.name}
             //         </a>`;
 
+            // <i class="fa fa-cloud-download"></i> 
+
             row = `<div class="list-group-item list-group-item-success">
                         <span class="badge alert-success pull-right">
-                            <i class="fa fa-cloud-download"></i> 
-                            <a onclick="deleteFile('${key}')"><i class="fa fa-trash"></i></a>
+                            
+                            <a onclick="deleteItem('${key}')"><i class="fa fa-trash"></i></a>
                         </span>
                           <i class="fa fa-file-o"></i>  <a href="${'fromCloud/' + key}" download>${info.name}</a>
                     </div>`;

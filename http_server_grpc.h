@@ -122,7 +122,7 @@ class FileSystemClient {
     }
   }
 
-  void DeleteFile(const string & username, const string & url)
+  void DeleteItem(const string & username, const string & url)
   {
     ClientContext context;
 
