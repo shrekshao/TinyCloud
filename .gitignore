@@ -4,3 +4,6 @@ backend_server
 grpc_backend/BigTabler
 grpc_backend/Indexer
 grpc_backend/backend_server
+grpc_master/MasterNode
+grpc_master/master_server
+grpc_master/master_client
