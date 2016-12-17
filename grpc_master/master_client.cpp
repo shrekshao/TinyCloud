@@ -30,6 +30,15 @@ int main(int argc, char *argv[])
 
     cout << "-------------------------------------\n";
 
+    string username_3 = "ganxiaoqing";
+    if (msClient.CreateUser(username_3)) {
+        cout << "User: " << username_3 << " is created!\n";
+    } else {
+        cout << "User: " << username_3 << " is failed to create!\n";
+    }
+
+    cout << "-------------------------------------\n";
+
     string addr;
     if (msClient.GetUserAddr(username, addr)) {
         cout << "Retrived Info Successfully!\n";
