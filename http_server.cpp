@@ -393,12 +393,15 @@ void* httpClientThread(void* params)
                 header.clear();
 
                 // hard code
-                auto p_question_mark = uri.find('?');
+                // auto p_question_mark = uri.find('?');
+                // auto p_split = uri.find("/drive/");
+                // auto p_split = uri.find(threadUsername);
+                auto p_split = uri.find(downloadFromCloudStr);
 
-                if (p_question_mark != string::npos)
+                if (p_split != string::npos)
                 {
                     // download file from cloud drive
-                    uri = uri.substr(p_question_mark + 1);
+                    uri = uri.substr(p_split + downloadFromCloudStr.size());
 
                     sendFileToClientFromDrive(comm_fd, uri, threadUsername);
                 }

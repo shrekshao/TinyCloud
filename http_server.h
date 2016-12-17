@@ -75,6 +75,8 @@ static const string HTML_404_PAGE = "404 Not Found\r\nThe requested URL was not 
 
 static const string siteRoot = "_site/";
 
+static const string downloadFromCloudStr = "fromCloud/";
+
 
 
 static const unordered_set<string> textFileExtensions ({"txt", "html", "css", "js"});
@@ -399,10 +401,20 @@ void sendFileToClientFromDrive(int fd, const string & url, const string & thread
     HttpDebugLog(fd, "start download file from drive, url: %s", url.c_str());
 
 
+    // cull username
+    string fullPathURL;
+    {
+        auto p_second_slash = url.find('/', 1);
+        fullPathURL = url.substr(p_second_slash + 1); 
+    }
+
+
+
+
     string data;
     string extname;
 
-    if(fsClient.GetFile(threadUsername, url, data, extname))
+    if(fsClient.GetFile(threadUsername, fullPathURL, data, extname))
     {
         string file_cat = "application";
         auto it = extToFileCat.find(extname);
@@ -411,17 +423,22 @@ void sendFileToClientFromDrive(int fd, const string & url, const string & thread
             file_cat = it->second;
         }
         string content_type = file_cat + "/" + extname;
-        // GeneralHeader header = {content_type, length};
-        header.content_type = content_type;
-        header.content_length = data.size();
-        header.send(fd);
 
-        // separate line
-        do_write(fd, &CRLF.at(0), CRLF.size());
+        HttpDebugLog(fd, "data length: %d", (int)data.size());
+        sendData(fd, content_type, data);
 
-        // content
 
-        do_write(fd, data.c_str(), data.size());
+        // // GeneralHeader header = {content_type, length};
+        // header.content_type = content_type;
+        // header.content_length = data.size();
+        // header.send(fd);
+
+        // // separate line
+        // do_write(fd, &CRLF.at(0), CRLF.size());
+
+        // // content
+
+        // do_write(fd, data.c_str(), data.size());
     }
     else
     {
