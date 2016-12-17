@@ -17,7 +17,7 @@ namespace backend {
 
 static const char* Storage_method_names[] = {
   "/backend.Storage/CreateUser",
-  "/backend.Storage/GetPassword",
+  "/backend.Storage/CheckPassword",
   "/backend.Storage/GetFileList",
   "/backend.Storage/InsertFileList",
   "/backend.Storage/PutFile",
@@ -33,7 +33,7 @@ std::unique_ptr< Storage::Stub> Storage::NewStub(const std::shared_ptr< ::grpc::
 
 Storage::Stub::Stub(const std::shared_ptr< ::grpc::ChannelInterface>& channel)
   : channel_(channel), rpcmethod_CreateUser_(Storage_method_names[0], ::grpc::RpcMethod::NORMAL_RPC, channel)
-  , rpcmethod_GetPassword_(Storage_method_names[1], ::grpc::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_CheckPassword_(Storage_method_names[1], ::grpc::RpcMethod::NORMAL_RPC, channel)
   , rpcmethod_GetFileList_(Storage_method_names[2], ::grpc::RpcMethod::NORMAL_RPC, channel)
   , rpcmethod_InsertFileList_(Storage_method_names[3], ::grpc::RpcMethod::NORMAL_RPC, channel)
   , rpcmethod_PutFile_(Storage_method_names[4], ::grpc::RpcMethod::NORMAL_RPC, channel)
@@ -50,12 +50,12 @@ Storage::Stub::Stub(const std::shared_ptr< ::grpc::ChannelInterface>& channel)
   return new ::grpc::ClientAsyncResponseReader< ::backend::Empty>(channel_.get(), cq, rpcmethod_CreateUser_, context, request);
 }
 
-::grpc::Status Storage::Stub::GetPassword(::grpc::ClientContext* context, const ::backend::UserAccountRequest& request, ::backend::UserAccount* response) {
-  return ::grpc::BlockingUnaryCall(channel_.get(), rpcmethod_GetPassword_, context, request, response);
+::grpc::Status Storage::Stub::CheckPassword(::grpc::ClientContext* context, const ::backend::UserAccount& request, ::backend::UserAccountReply* response) {
+  return ::grpc::BlockingUnaryCall(channel_.get(), rpcmethod_CheckPassword_, context, request, response);
 }
 
-::grpc::ClientAsyncResponseReader< ::backend::UserAccount>* Storage::Stub::AsyncGetPasswordRaw(::grpc::ClientContext* context, const ::backend::UserAccountRequest& request, ::grpc::CompletionQueue* cq) {
-  return new ::grpc::ClientAsyncResponseReader< ::backend::UserAccount>(channel_.get(), cq, rpcmethod_GetPassword_, context, request);
+::grpc::ClientAsyncResponseReader< ::backend::UserAccountReply>* Storage::Stub::AsyncCheckPasswordRaw(::grpc::ClientContext* context, const ::backend::UserAccount& request, ::grpc::CompletionQueue* cq) {
+  return new ::grpc::ClientAsyncResponseReader< ::backend::UserAccountReply>(channel_.get(), cq, rpcmethod_CheckPassword_, context, request);
 }
 
 ::grpc::Status Storage::Stub::GetFileList(::grpc::ClientContext* context, const ::backend::FileListRequest& request, ::backend::FileListReply* response) {
@@ -116,8 +116,8 @@ Storage::Service::Service() {
   AddMethod(new ::grpc::RpcServiceMethod(
       Storage_method_names[1],
       ::grpc::RpcMethod::NORMAL_RPC,
-      new ::grpc::RpcMethodHandler< Storage::Service, ::backend::UserAccountRequest, ::backend::UserAccount>(
-          std::mem_fn(&Storage::Service::GetPassword), this)));
+      new ::grpc::RpcMethodHandler< Storage::Service, ::backend::UserAccount, ::backend::UserAccountReply>(
+          std::mem_fn(&Storage::Service::CheckPassword), this)));
   AddMethod(new ::grpc::RpcServiceMethod(
       Storage_method_names[2],
       ::grpc::RpcMethod::NORMAL_RPC,
@@ -160,7 +160,7 @@ Storage::Service::~Service() {
   return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
 }
 
-::grpc::Status Storage::Service::GetPassword(::grpc::ServerContext* context, const ::backend::UserAccountRequest* request, ::backend::UserAccount* response) {
+::grpc::Status Storage::Service::CheckPassword(::grpc::ServerContext* context, const ::backend::UserAccount* request, ::backend::UserAccountReply* response) {
   (void) context;
   (void) request;
   (void) response;

@@ -45,7 +45,7 @@ class FileInfo;
 class FileListReply;
 class FileListRequest;
 class UserAccount;
-class UserAccountRequest;
+class UserAccountReply;
 
 // ===================================================================
 
@@ -437,32 +437,32 @@ class UserAccount : public ::google::protobuf::Message /* @@protoc_insertion_poi
 };
 // -------------------------------------------------------------------
 
-class UserAccountRequest : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:backend.UserAccountRequest) */ {
+class UserAccountReply : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:backend.UserAccountReply) */ {
  public:
-  UserAccountRequest();
-  virtual ~UserAccountRequest();
+  UserAccountReply();
+  virtual ~UserAccountReply();
 
-  UserAccountRequest(const UserAccountRequest& from);
+  UserAccountReply(const UserAccountReply& from);
 
-  inline UserAccountRequest& operator=(const UserAccountRequest& from) {
+  inline UserAccountReply& operator=(const UserAccountReply& from) {
     CopyFrom(from);
     return *this;
   }
 
   static const ::google::protobuf::Descriptor* descriptor();
-  static const UserAccountRequest& default_instance();
+  static const UserAccountReply& default_instance();
 
-  void Swap(UserAccountRequest* other);
+  void Swap(UserAccountReply* other);
 
   // implements Message ----------------------------------------------
 
-  inline UserAccountRequest* New() const { return New(NULL); }
+  inline UserAccountReply* New() const { return New(NULL); }
 
-  UserAccountRequest* New(::google::protobuf::Arena* arena) const;
+  UserAccountReply* New(::google::protobuf::Arena* arena) const;
   void CopyFrom(const ::google::protobuf::Message& from);
   void MergeFrom(const ::google::protobuf::Message& from);
-  void CopyFrom(const UserAccountRequest& from);
-  void MergeFrom(const UserAccountRequest& from);
+  void CopyFrom(const UserAccountReply& from);
+  void MergeFrom(const UserAccountReply& from);
   void Clear();
   bool IsInitialized() const;
 
@@ -481,7 +481,7 @@ class UserAccountRequest : public ::google::protobuf::Message /* @@protoc_insert
   void SharedCtor();
   void SharedDtor();
   void SetCachedSize(int size) const;
-  void InternalSwap(UserAccountRequest* other);
+  void InternalSwap(UserAccountReply* other);
   private:
   inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
     return _internal_metadata_.arena();
@@ -497,30 +497,25 @@ class UserAccountRequest : public ::google::protobuf::Message /* @@protoc_insert
 
   // accessors -------------------------------------------------------
 
-  // optional string username = 1;
-  void clear_username();
-  static const int kUsernameFieldNumber = 1;
-  const ::std::string& username() const;
-  void set_username(const ::std::string& value);
-  void set_username(const char* value);
-  void set_username(const char* value, size_t size);
-  ::std::string* mutable_username();
-  ::std::string* release_username();
-  void set_allocated_username(::std::string* username);
+  // optional bool correct = 1;
+  void clear_correct();
+  static const int kCorrectFieldNumber = 1;
+  bool correct() const;
+  void set_correct(bool value);
 
-  // @@protoc_insertion_point(class_scope:backend.UserAccountRequest)
+  // @@protoc_insertion_point(class_scope:backend.UserAccountReply)
  private:
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   bool _is_default_instance_;
-  ::google::protobuf::internal::ArenaStringPtr username_;
+  bool correct_;
   mutable int _cached_size_;
   friend void  protobuf_AddDesc_backend_2eproto();
   friend void protobuf_AssignDesc_backend_2eproto();
   friend void protobuf_ShutdownFile_backend_2eproto();
 
   void InitAsDefaultInstance();
-  static UserAccountRequest* default_instance_;
+  static UserAccountReply* default_instance_;
 };
 // -------------------------------------------------------------------
 
@@ -1119,50 +1114,20 @@ inline void UserAccount::set_allocated_password(::std::string* password) {
 
 // -------------------------------------------------------------------
 
-// UserAccountRequest
+// UserAccountReply
 
-// optional string username = 1;
-inline void UserAccountRequest::clear_username() {
-  username_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+// optional bool correct = 1;
+inline void UserAccountReply::clear_correct() {
+  correct_ = false;
 }
-inline const ::std::string& UserAccountRequest::username() const {
-  // @@protoc_insertion_point(field_get:backend.UserAccountRequest.username)
-  return username_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+inline bool UserAccountReply::correct() const {
+  // @@protoc_insertion_point(field_get:backend.UserAccountReply.correct)
+  return correct_;
 }
-inline void UserAccountRequest::set_username(const ::std::string& value) {
+inline void UserAccountReply::set_correct(bool value) {
   
-  username_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:backend.UserAccountRequest.username)
-}
-inline void UserAccountRequest::set_username(const char* value) {
-  
-  username_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:backend.UserAccountRequest.username)
-}
-inline void UserAccountRequest::set_username(const char* value, size_t size) {
-  
-  username_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
-      ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:backend.UserAccountRequest.username)
-}
-inline ::std::string* UserAccountRequest::mutable_username() {
-  
-  // @@protoc_insertion_point(field_mutable:backend.UserAccountRequest.username)
-  return username_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline ::std::string* UserAccountRequest::release_username() {
-  // @@protoc_insertion_point(field_release:backend.UserAccountRequest.username)
-  
-  return username_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline void UserAccountRequest::set_allocated_username(::std::string* username) {
-  if (username != NULL) {
-    
-  } else {
-    
-  }
-  username_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), username);
-  // @@protoc_insertion_point(field_set_allocated:backend.UserAccountRequest.username)
+  correct_ = value;
+  // @@protoc_insertion_point(field_set:backend.UserAccountReply.correct)
 }
 
 // -------------------------------------------------------------------

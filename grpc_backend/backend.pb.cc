@@ -34,9 +34,9 @@ const ::google::protobuf::internal::GeneratedMessageReflection*
 const ::google::protobuf::Descriptor* UserAccount_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   UserAccount_reflection_ = NULL;
-const ::google::protobuf::Descriptor* UserAccountRequest_descriptor_ = NULL;
+const ::google::protobuf::Descriptor* UserAccountReply_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
-  UserAccountRequest_reflection_ = NULL;
+  UserAccountReply_reflection_ = NULL;
 const ::google::protobuf::Descriptor* FileChunkRequest_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   FileChunkRequest_reflection_ = NULL;
@@ -121,21 +121,21 @@ void protobuf_AssignDesc_backend_2eproto() {
       sizeof(UserAccount),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(UserAccount, _internal_metadata_),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(UserAccount, _is_default_instance_));
-  UserAccountRequest_descriptor_ = file->message_type(4);
-  static const int UserAccountRequest_offsets_[1] = {
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(UserAccountRequest, username_),
+  UserAccountReply_descriptor_ = file->message_type(4);
+  static const int UserAccountReply_offsets_[1] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(UserAccountReply, correct_),
   };
-  UserAccountRequest_reflection_ =
+  UserAccountReply_reflection_ =
     ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
-      UserAccountRequest_descriptor_,
-      UserAccountRequest::default_instance_,
-      UserAccountRequest_offsets_,
+      UserAccountReply_descriptor_,
+      UserAccountReply::default_instance_,
+      UserAccountReply_offsets_,
       -1,
       -1,
       -1,
-      sizeof(UserAccountRequest),
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(UserAccountRequest, _internal_metadata_),
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(UserAccountRequest, _is_default_instance_));
+      sizeof(UserAccountReply),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(UserAccountReply, _internal_metadata_),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(UserAccountReply, _is_default_instance_));
   FileChunkRequest_descriptor_ = file->message_type(5);
   static const int FileChunkRequest_offsets_[2] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(FileChunkRequest, username_),
@@ -218,7 +218,7 @@ void protobuf_RegisterTypes(const ::std::string&) {
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
       UserAccount_descriptor_, &UserAccount::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
-      UserAccountRequest_descriptor_, &UserAccountRequest::default_instance());
+      UserAccountReply_descriptor_, &UserAccountReply::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
       FileChunkRequest_descriptor_, &FileChunkRequest::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
@@ -238,8 +238,8 @@ void protobuf_ShutdownFile_backend_2eproto() {
   delete FileInfo_reflection_;
   delete UserAccount::default_instance_;
   delete UserAccount_reflection_;
-  delete UserAccountRequest::default_instance_;
-  delete UserAccountRequest_reflection_;
+  delete UserAccountReply::default_instance_;
+  delete UserAccountReply_reflection_;
   delete FileChunkRequest::default_instance_;
   delete FileChunkRequest_reflection_;
   delete FileChunk::default_instance_;
@@ -263,33 +263,33 @@ void protobuf_AddDesc_backend_2eproto() {
     "y\030\001 \001(\t\022 \n\005value\030\002 \001(\0132\021.backend.FileInf"
     "o:\0028\001\"<\n\010FileInfo\022\021\n\tfull_path\030\001 \001(\t\022\014\n\004"
     "name\030\002 \001(\t\022\017\n\007is_file\030\003 \001(\010\"1\n\013UserAccou"
-    "nt\022\020\n\010username\030\001 \001(\t\022\020\n\010password\030\002 \001(\t\"&"
-    "\n\022UserAccountRequest\022\020\n\010username\030\001 \001(\t\"6"
-    "\n\020FileChunkRequest\022\020\n\010username\030\001 \001(\t\022\020\n\010"
-    "filename\030\002 \001(\t\"\207\001\n\tFileChunk\022\020\n\010username"
-    "\030\001 \001(\t\022\020\n\010filename\030\002 \001(\t\022\016\n\006length\030\003 \001(\004"
-    "\022\020\n\010filetype\030\004 \001(\t\022\014\n\004data\030\005 \001(\014\022\023\n\013orig"
-    "_length\030\006 \001(\004\022\021\n\torig_data\030\007 \001(\014\"\007\n\005Empt"
-    "y2\340\003\n\007Storage\0224\n\nCreateUser\022\024.backend.Us"
-    "erAccount\032\016.backend.Empty\"\000\022B\n\013GetPasswo"
-    "rd\022\033.backend.UserAccountRequest\032\024.backen"
-    "d.UserAccount\"\000\022A\n\013GetFileList\022\030.backend"
-    ".FileListRequest\032\026.backend.FileListReply"
-    "\"\000\022<\n\016InsertFileList\022\030.backend.FileListR"
-    "equest\032\016.backend.Empty\"\000\022/\n\007PutFile\022\022.ba"
-    "ckend.FileChunk\032\016.backend.Empty\"\000\0222\n\nUpd"
-    "ateFile\022\022.backend.FileChunk\032\016.backend.Em"
-    "pty\"\000\022:\n\007GetFile\022\031.backend.FileChunkRequ"
-    "est\032\022.backend.FileChunk\"\000\0229\n\nDeleteFile\022"
-    "\031.backend.FileChunkRequest\032\016.backend.Emp"
-    "ty\"\000B\006\242\002\003HLWb\006proto3", 1060);
+    "nt\022\020\n\010username\030\001 \001(\t\022\020\n\010password\030\002 \001(\t\"#"
+    "\n\020UserAccountReply\022\017\n\007correct\030\001 \001(\010\"6\n\020F"
+    "ileChunkRequest\022\020\n\010username\030\001 \001(\t\022\020\n\010fil"
+    "ename\030\002 \001(\t\"\207\001\n\tFileChunk\022\020\n\010username\030\001 "
+    "\001(\t\022\020\n\010filename\030\002 \001(\t\022\016\n\006length\030\003 \001(\004\022\020\n"
+    "\010filetype\030\004 \001(\t\022\014\n\004data\030\005 \001(\014\022\023\n\013orig_le"
+    "ngth\030\006 \001(\004\022\021\n\torig_data\030\007 \001(\014\"\007\n\005Empty2\340"
+    "\003\n\007Storage\0224\n\nCreateUser\022\024.backend.UserA"
+    "ccount\032\016.backend.Empty\"\000\022B\n\rCheckPasswor"
+    "d\022\024.backend.UserAccount\032\031.backend.UserAc"
+    "countReply\"\000\022A\n\013GetFileList\022\030.backend.Fi"
+    "leListRequest\032\026.backend.FileListReply\"\000\022"
+    "<\n\016InsertFileList\022\030.backend.FileListRequ"
+    "est\032\016.backend.Empty\"\000\022/\n\007PutFile\022\022.backe"
+    "nd.FileChunk\032\016.backend.Empty\"\000\0222\n\nUpdate"
+    "File\022\022.backend.FileChunk\032\016.backend.Empty"
+    "\"\000\022:\n\007GetFile\022\031.backend.FileChunkRequest"
+    "\032\022.backend.FileChunk\"\000\0229\n\nDeleteFile\022\031.b"
+    "ackend.FileChunkRequest\032\016.backend.Empty\""
+    "\000B\006\242\002\003HLWb\006proto3", 1057);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "backend.proto", &protobuf_RegisterTypes);
   FileListRequest::default_instance_ = new FileListRequest();
   FileListReply::default_instance_ = new FileListReply();
   FileInfo::default_instance_ = new FileInfo();
   UserAccount::default_instance_ = new UserAccount();
-  UserAccountRequest::default_instance_ = new UserAccountRequest();
+  UserAccountReply::default_instance_ = new UserAccountReply();
   FileChunkRequest::default_instance_ = new FileChunkRequest();
   FileChunk::default_instance_ = new FileChunk();
   Empty::default_instance_ = new Empty();
@@ -297,7 +297,7 @@ void protobuf_AddDesc_backend_2eproto() {
   FileListReply::default_instance_->InitAsDefaultInstance();
   FileInfo::default_instance_->InitAsDefaultInstance();
   UserAccount::default_instance_->InitAsDefaultInstance();
-  UserAccountRequest::default_instance_->InitAsDefaultInstance();
+  UserAccountReply::default_instance_->InitAsDefaultInstance();
   FileChunkRequest::default_instance_->InitAsDefaultInstance();
   FileChunk::default_instance_->InitAsDefaultInstance();
   Empty::default_instance_->InitAsDefaultInstance();
@@ -1767,94 +1767,90 @@ void UserAccount::clear_password() {
 // ===================================================================
 
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
-const int UserAccountRequest::kUsernameFieldNumber;
+const int UserAccountReply::kCorrectFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
-UserAccountRequest::UserAccountRequest()
+UserAccountReply::UserAccountReply()
   : ::google::protobuf::Message(), _internal_metadata_(NULL) {
   SharedCtor();
-  // @@protoc_insertion_point(constructor:backend.UserAccountRequest)
+  // @@protoc_insertion_point(constructor:backend.UserAccountReply)
 }
 
-void UserAccountRequest::InitAsDefaultInstance() {
+void UserAccountReply::InitAsDefaultInstance() {
   _is_default_instance_ = true;
 }
 
-UserAccountRequest::UserAccountRequest(const UserAccountRequest& from)
+UserAccountReply::UserAccountReply(const UserAccountReply& from)
   : ::google::protobuf::Message(),
     _internal_metadata_(NULL) {
   SharedCtor();
   MergeFrom(from);
-  // @@protoc_insertion_point(copy_constructor:backend.UserAccountRequest)
+  // @@protoc_insertion_point(copy_constructor:backend.UserAccountReply)
 }
 
-void UserAccountRequest::SharedCtor() {
+void UserAccountReply::SharedCtor() {
     _is_default_instance_ = false;
-  ::google::protobuf::internal::GetEmptyString();
   _cached_size_ = 0;
-  username_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  correct_ = false;
 }
 
-UserAccountRequest::~UserAccountRequest() {
-  // @@protoc_insertion_point(destructor:backend.UserAccountRequest)
+UserAccountReply::~UserAccountReply() {
+  // @@protoc_insertion_point(destructor:backend.UserAccountReply)
   SharedDtor();
 }
 
-void UserAccountRequest::SharedDtor() {
-  username_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+void UserAccountReply::SharedDtor() {
   if (this != default_instance_) {
   }
 }
 
-void UserAccountRequest::SetCachedSize(int size) const {
+void UserAccountReply::SetCachedSize(int size) const {
   GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
   _cached_size_ = size;
   GOOGLE_SAFE_CONCURRENT_WRITES_END();
 }
-const ::google::protobuf::Descriptor* UserAccountRequest::descriptor() {
+const ::google::protobuf::Descriptor* UserAccountReply::descriptor() {
   protobuf_AssignDescriptorsOnce();
-  return UserAccountRequest_descriptor_;
+  return UserAccountReply_descriptor_;
 }
 
-const UserAccountRequest& UserAccountRequest::default_instance() {
+const UserAccountReply& UserAccountReply::default_instance() {
   if (default_instance_ == NULL) protobuf_AddDesc_backend_2eproto();
   return *default_instance_;
 }
 
-UserAccountRequest* UserAccountRequest::default_instance_ = NULL;
+UserAccountReply* UserAccountReply::default_instance_ = NULL;
 
-UserAccountRequest* UserAccountRequest::New(::google::protobuf::Arena* arena) const {
-  UserAccountRequest* n = new UserAccountRequest;
+UserAccountReply* UserAccountReply::New(::google::protobuf::Arena* arena) const {
+  UserAccountReply* n = new UserAccountReply;
   if (arena != NULL) {
     arena->Own(n);
   }
   return n;
 }
 
-void UserAccountRequest::Clear() {
-// @@protoc_insertion_point(message_clear_start:backend.UserAccountRequest)
-  username_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+void UserAccountReply::Clear() {
+// @@protoc_insertion_point(message_clear_start:backend.UserAccountReply)
+  correct_ = false;
 }
 
-bool UserAccountRequest::MergePartialFromCodedStream(
+bool UserAccountReply::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
 #define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
   ::google::protobuf::uint32 tag;
-  // @@protoc_insertion_point(parse_start:backend.UserAccountRequest)
+  // @@protoc_insertion_point(parse_start:backend.UserAccountReply)
   for (;;) {
     ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // optional string username = 1;
+      // optional bool correct = 1;
       case 1: {
-        if (tag == 10) {
-          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
-                input, this->mutable_username()));
-          DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-            this->username().data(), this->username().length(),
-            ::google::protobuf::internal::WireFormatLite::PARSE,
-            "backend.UserAccountRequest.username"));
+        if (tag == 8) {
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   bool, ::google::protobuf::internal::WireFormatLite::TYPE_BOOL>(
+                 input, &correct_)));
+
         } else {
           goto handle_unusual;
         }
@@ -1875,57 +1871,44 @@ bool UserAccountRequest::MergePartialFromCodedStream(
     }
   }
 success:
-  // @@protoc_insertion_point(parse_success:backend.UserAccountRequest)
+  // @@protoc_insertion_point(parse_success:backend.UserAccountReply)
   return true;
 failure:
-  // @@protoc_insertion_point(parse_failure:backend.UserAccountRequest)
+  // @@protoc_insertion_point(parse_failure:backend.UserAccountReply)
   return false;
 #undef DO_
 }
 
-void UserAccountRequest::SerializeWithCachedSizes(
+void UserAccountReply::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:backend.UserAccountRequest)
-  // optional string username = 1;
-  if (this->username().size() > 0) {
-    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-      this->username().data(), this->username().length(),
-      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "backend.UserAccountRequest.username");
-    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
-      1, this->username(), output);
+  // @@protoc_insertion_point(serialize_start:backend.UserAccountReply)
+  // optional bool correct = 1;
+  if (this->correct() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteBool(1, this->correct(), output);
   }
 
-  // @@protoc_insertion_point(serialize_end:backend.UserAccountRequest)
+  // @@protoc_insertion_point(serialize_end:backend.UserAccountReply)
 }
 
-::google::protobuf::uint8* UserAccountRequest::InternalSerializeWithCachedSizesToArray(
+::google::protobuf::uint8* UserAccountReply::InternalSerializeWithCachedSizesToArray(
     bool deterministic, ::google::protobuf::uint8* target) const {
-  // @@protoc_insertion_point(serialize_to_array_start:backend.UserAccountRequest)
-  // optional string username = 1;
-  if (this->username().size() > 0) {
-    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-      this->username().data(), this->username().length(),
-      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "backend.UserAccountRequest.username");
-    target =
-      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        1, this->username(), target);
+  // @@protoc_insertion_point(serialize_to_array_start:backend.UserAccountReply)
+  // optional bool correct = 1;
+  if (this->correct() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteBoolToArray(1, this->correct(), target);
   }
 
-  // @@protoc_insertion_point(serialize_to_array_end:backend.UserAccountRequest)
+  // @@protoc_insertion_point(serialize_to_array_end:backend.UserAccountReply)
   return target;
 }
 
-int UserAccountRequest::ByteSize() const {
-// @@protoc_insertion_point(message_byte_size_start:backend.UserAccountRequest)
+int UserAccountReply::ByteSize() const {
+// @@protoc_insertion_point(message_byte_size_start:backend.UserAccountReply)
   int total_size = 0;
 
-  // optional string username = 1;
-  if (this->username().size() > 0) {
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::StringSize(
-        this->username());
+  // optional bool correct = 1;
+  if (this->correct() != 0) {
+    total_size += 1 + 1;
   }
 
   GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
@@ -1934,116 +1917,85 @@ int UserAccountRequest::ByteSize() const {
   return total_size;
 }
 
-void UserAccountRequest::MergeFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:backend.UserAccountRequest)
+void UserAccountReply::MergeFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:backend.UserAccountReply)
   if (GOOGLE_PREDICT_FALSE(&from == this)) {
     ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
   }
-  const UserAccountRequest* source = 
-      ::google::protobuf::internal::DynamicCastToGenerated<const UserAccountRequest>(
+  const UserAccountReply* source = 
+      ::google::protobuf::internal::DynamicCastToGenerated<const UserAccountReply>(
           &from);
   if (source == NULL) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:backend.UserAccountRequest)
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:backend.UserAccountReply)
     ::google::protobuf::internal::ReflectionOps::Merge(from, this);
   } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:backend.UserAccountRequest)
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:backend.UserAccountReply)
     MergeFrom(*source);
   }
 }
 
-void UserAccountRequest::MergeFrom(const UserAccountRequest& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:backend.UserAccountRequest)
+void UserAccountReply::MergeFrom(const UserAccountReply& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:backend.UserAccountReply)
   if (GOOGLE_PREDICT_FALSE(&from == this)) {
     ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
   }
-  if (from.username().size() > 0) {
-
-    username_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.username_);
+  if (from.correct() != 0) {
+    set_correct(from.correct());
   }
 }
 
-void UserAccountRequest::CopyFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:backend.UserAccountRequest)
+void UserAccountReply::CopyFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:backend.UserAccountReply)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
-void UserAccountRequest::CopyFrom(const UserAccountRequest& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:backend.UserAccountRequest)
+void UserAccountReply::CopyFrom(const UserAccountReply& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:backend.UserAccountReply)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
-bool UserAccountRequest::IsInitialized() const {
+bool UserAccountReply::IsInitialized() const {
 
   return true;
 }
 
-void UserAccountRequest::Swap(UserAccountRequest* other) {
+void UserAccountReply::Swap(UserAccountReply* other) {
   if (other == this) return;
   InternalSwap(other);
 }
-void UserAccountRequest::InternalSwap(UserAccountRequest* other) {
-  username_.Swap(&other->username_);
+void UserAccountReply::InternalSwap(UserAccountReply* other) {
+  std::swap(correct_, other->correct_);
   _internal_metadata_.Swap(&other->_internal_metadata_);
   std::swap(_cached_size_, other->_cached_size_);
 }
 
-::google::protobuf::Metadata UserAccountRequest::GetMetadata() const {
+::google::protobuf::Metadata UserAccountReply::GetMetadata() const {
   protobuf_AssignDescriptorsOnce();
   ::google::protobuf::Metadata metadata;
-  metadata.descriptor = UserAccountRequest_descriptor_;
-  metadata.reflection = UserAccountRequest_reflection_;
+  metadata.descriptor = UserAccountReply_descriptor_;
+  metadata.reflection = UserAccountReply_reflection_;
   return metadata;
 }
 
 #if PROTOBUF_INLINE_NOT_IN_HEADERS
-// UserAccountRequest
+// UserAccountReply
 
-// optional string username = 1;
-void UserAccountRequest::clear_username() {
-  username_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+// optional bool correct = 1;
+void UserAccountReply::clear_correct() {
+  correct_ = false;
 }
- const ::std::string& UserAccountRequest::username() const {
-  // @@protoc_insertion_point(field_get:backend.UserAccountRequest.username)
-  return username_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+ bool UserAccountReply::correct() const {
+  // @@protoc_insertion_point(field_get:backend.UserAccountReply.correct)
+  return correct_;
 }
- void UserAccountRequest::set_username(const ::std::string& value) {
+ void UserAccountReply::set_correct(bool value) {
   
-  username_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:backend.UserAccountRequest.username)
-}
- void UserAccountRequest::set_username(const char* value) {
-  
-  username_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:backend.UserAccountRequest.username)
-}
- void UserAccountRequest::set_username(const char* value, size_t size) {
-  
-  username_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
-      ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:backend.UserAccountRequest.username)
-}
- ::std::string* UserAccountRequest::mutable_username() {
-  
-  // @@protoc_insertion_point(field_mutable:backend.UserAccountRequest.username)
-  return username_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
- ::std::string* UserAccountRequest::release_username() {
-  // @@protoc_insertion_point(field_release:backend.UserAccountRequest.username)
-  
-  return username_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
- void UserAccountRequest::set_allocated_username(::std::string* username) {
-  if (username != NULL) {
-    
-  } else {
-    
-  }
-  username_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), username);
-  // @@protoc_insertion_point(field_set_allocated:backend.UserAccountRequest.username)
+  correct_ = value;
+  // @@protoc_insertion_point(field_set:backend.UserAccountReply.correct)
 }
 
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
