@@ -84,15 +84,25 @@ class FileSystemClient {
     }
   }
 
-  void UploadFile(const string & username, const string & filename, const string & data)
+  void UploadFile(const string & username, const string & url, const string & data, const string &extname)
   {
+    // url without username
+
     ClientContext context;
 
     FileChunk chunk;
     backend::Empty response;
 
     chunk.set_username(username);
-    chunk.set_filename(filename);
+
+    // get rid of /username
+
+    cerr << "rpc received url: " << url << endl;
+
+    chunk.set_filename(url);
+    chunk.set_filetype(extname);
+
+
     chunk.set_length(data.size());
     chunk.set_data(data);
 

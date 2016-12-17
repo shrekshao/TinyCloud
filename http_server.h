@@ -682,20 +682,41 @@ void insertFolderHandler(int fd, const string & contentStr, string & threadUsern
 void uploadFileToStorage(const string & threadUsername, const string & curFolder, const string & filename, const string & data)
 {
 
-    string fullPathFolder;
+    string fullPathFolder;  // without /username
 
     if (curFolder == "/")
     {
-        fullPathFolder = "/" + threadUsername + "/" + filename;
-        // curFolder += threadUsername;
+        // fullPathFolder = "/" + threadUsername + "/" + filename;
+        
+        fullPathFolder = filename;
     }
     else
     {
-        fullPathFolder = curFolder + "/" + filename;
+        // fullPathFolder = curFolder + "/" + filename;
+
+        auto p_second_slash = curFolder.find('/', 1);
+        
+
+        fullPathFolder = curFolder.substr(p_second_slash + 1) + "/" + filename; 
     }
 
-    HttpDebugLog( 999, "fullPathFolder: %s, filename: %s", fullPathFolder.c_str(), filename.c_str());
-    fsClient.UploadFile(threadUsername, fullPathFolder, data);
+
+    string extname;
+    auto p_dot = filename.find_last_of('.');
+    if (p_dot == string::npos)
+    {
+        extname = "no-type-name";
+    }
+    else
+    {
+        extname = filename.substr(p_dot + 1);
+    }
+    
+
+
+
+    HttpDebugLog( 999, "fullPathFolder: %s, filename: %s, extname: %s", fullPathFolder.c_str(), filename.c_str(), extname.c_str());
+    fsClient.UploadFile(threadUsername, fullPathFolder, data, extname);
 }
 
 
@@ -825,7 +846,10 @@ void uploadFileHandler(int fd, const string & contentStr, const string & boundar
         auto p_sep = str.find(separation_line);
 
         string headers = str.substr(0, p_sep - 0);
-        curFolder = str.substr(p_sep + separation_line.size());
+
+        // curFolder = str.substr(p_sep + separation_line.size());
+        istringstream iss(str.substr(p_sep + separation_line.size()));
+        getline(iss, curFolder, '\r');
 
         // hardcode header part
         auto p_name_start = headers.find(form_input_name) + form_input_name.size();

@@ -137,6 +137,18 @@
 <script>
     var cur_folder = '/';   // only used for uploading file and insert folders 
 
+
+    function deleteFile(url) {
+        console.log('delete filename: ' + url);
+    }
+
+    function deleteFolder(url) {
+        console.log('delete folder: ' + url);
+    }
+
+
+
+
     function createFolderAjax() {
         var foldername = $('#folder-name-input').val();
         // var foldername = document.getElementById("folder-name-input").value;
@@ -214,6 +226,7 @@
         var row;
         if (info['folder']) {
             // folder
+
             // row = `<button class="list-group-item list-group-item-success" onclick="getFileListAjax('${key}')">
             //             <span class="badge alert-success pull-right"> <i class="fa fa-trash"></i> </span>
             //               <i class="fa fa-folder"></i>  ${info.name} 
@@ -221,12 +234,13 @@
             
             row = `<div class="list-group-item list-group-item-success">
                         <span class="badge alert-success pull-right"> 
-                            <i class="fa fa-trash"></i> 
+                            <a onclick="deleteFolder('${key}')"><i class="fa fa-trash"></i></a> 
                         </span>
                           <i class="fa fa-folder"></i>  <a onclick="getFileListAjax('${key}')">${info.name}</a> 
                     </div>`;
         } else {
             // file
+
             // row = `<a href="${key}" class="list-group-item list-group-item-success" download>
             //             <span class="badge alert-success pull-right"> <i class="fa fa-cloud-download"></i> <i class="fa fa-trash"></i> </span>
             //               <i class="fa fa-file-o"></i>  ${info.name}
@@ -235,7 +249,7 @@
             row = `<div class="list-group-item list-group-item-success">
                         <span class="badge alert-success pull-right">
                             <i class="fa fa-cloud-download"></i> 
-                            <i class="fa fa-trash"></i>
+                            <a onclick="deleteFile('${key}')"><i class="fa fa-trash"></i></a>
                         </span>
                           <i class="fa fa-file-o"></i>  <a href="${key}" download>${info.name}</a>
                     </div>`;
@@ -248,17 +262,7 @@
     $(function(){
         'use strict';
 
-
         getFileListAjax('/');
-
-
-
-
-
-
-
-
-
 
         // UPLOAD CLASS DEFINITION
         // ======================
@@ -317,9 +321,6 @@
             this.className = 'upload-drop-zone';
             return false;
         }
-
-
-
         
     });
 </script>
