@@ -390,9 +390,27 @@ void* httpClientThread(void* params)
                 }
                 
 
-
                 header.clear();
-                sendFileToClient(comm_fd, uri);
+
+                // hard code
+                auto p_question_mark = uri.find('?');
+
+                if (p_question_mark != string::npos)
+                {
+                    // download file from cloud drive
+                    uri = uri.substr(p_question_mark + 1);
+
+                    sendFileToClientFromDrive(comm_fd, uri);
+                }
+                else
+                {
+                    // regular get files on front-end server
+                    sendFileToClient(comm_fd, uri);
+                }
+
+
+                
+                
             }
             
         }

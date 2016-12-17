@@ -393,6 +393,13 @@ void sendFileToClient(int fd, const string & uri)
 }
 
 
+void sendFileToClientFromDrive(int fd, const string & url)
+{
+    // url is full path name: /username/path/to
+    HttpDebugLog(fd, "download file from drive, url: %s", url.c_str());
+}
+
+
 
 // // --------- get request handlers --------------
 // void getFileListHandler(int fd)
