@@ -13,6 +13,8 @@
 #include "Indexer.h"
 #include "BigTabler.h"
 
+void RunGC();
+
 using namespace std;
 
 using grpc::Server;
@@ -286,6 +288,7 @@ void RunServer() {
     std::unique_ptr<Server> server(builder.BuildAndStart());
     std::cout << "Server listening on " << server_address << std::endl;
 
+    RunGC();
     // Wait for the server to shutdown. Note that some other thread must be
     // responsible for shutting down the server for this call to ever return.
     server->Wait();
@@ -313,14 +316,14 @@ int main(int argc, char** argv) {
     cout << indexer_service.insert("/tianli", false) << endl;
     cout << indexer_service.insert("/tianli/folder1", false) << endl;
     cout << indexer_service.insert("/tianli/folder2", false) << endl;
-    //cout << indexer_service.insert("/tianli/file3", true) << endl;
+    cout << indexer_service.insert("/tianli/file3", true) << endl;
     cout << indexer_service.insert("/tianli/folder1/folder1.1", false) << endl;
-    //map<string, Node> res;
-    //int success = indexer_service.display("/tianli/folder1", res);
-    //cout << success << endl;
-    //for (map<string, Node>::iterator it = res.begin(); it != res.end(); ++it) {
-    //    cout << it->first << " " << it->second.is_file << endl;
-    //}
+    map<string, Node> res;
+    int success = indexer_service.display("/tianli", res);
+    cout << success << endl;
+    for (map<string, Node>::iterator it = res.begin(); it != res.end(); ++it) {
+        cout << it->first << " " << it->second.is_file << endl;
+    }
     //*/
 
     /* File storage test
@@ -358,7 +361,6 @@ int main(int argc, char** argv) {
     //printf("%s\n", pChars3);
     */
 
-    RunGC();
     RunServer();
 
 
