@@ -39,4 +39,4 @@ http_server: $(GRPC_CC_OUTPUT)backend.pb.o $(GRPC_CC_OUTPUT)backend.grpc.pb.o ht
 
 
 clean:
-	rm -fv $(TARGETS) *.o *.pb.h *.pb.cc
+	rm -fv $(TARGETS) *.o

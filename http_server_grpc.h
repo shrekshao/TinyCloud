@@ -16,6 +16,7 @@ using grpc::ClientContext;
 using grpc::Status;
 
 using backend::FileListRequest;
+using backend::FileChunkRequest;
 using backend::FileListReply;
 using backend::Empty;
 using backend::FileChunk;
@@ -83,17 +84,30 @@ class FileSystemClient {
     }
   }
 
-  void UploadFile(const string & username, const string & filename, const string & data)
+  void UploadFile(const string & username, const string & url, const string & data, const string &extname)
   {
+    // url without username
+
     ClientContext context;
 
     FileChunk chunk;
     backend::Empty response;
 
     chunk.set_username(username);
-    chunk.set_filename(filename);
+
+    // get rid of /username
+
+    cerr << "rpc received url: " << url << endl;
+
+    chunk.set_filename(url);
+    chunk.set_filetype(extname);
+
+
     chunk.set_length(data.size());
     chunk.set_data(data);
+
+    cerr << "data size: " << data.size() << endl;
+    cerr << "chunk data size: " << chunk.data().size() << endl;
 
     chunk.set_orig_length(data.size());
     chunk.set_orig_data(data);
@@ -103,8 +117,55 @@ class FileSystemClient {
       cerr << "rpc: upload file ok\n";
       // return true;
     } else {
-      cerr << "rpc: Err upload failed!\n";
+      cerr << "rpc: Err upload file failed!\n";
       // return false;
+    }
+  }
+
+  void DeleteFile(const string & username, const string & url)
+  {
+    ClientContext context;
+
+    FileChunkRequest request;
+    backend::Empty response;
+
+    request.set_username(username);
+    request.set_filename(url);
+
+    Status status = stub_->DeleteFile(&context, request, &response);
+    if (status.ok()) {
+      cerr << "rpc: delete file ok\n";
+      // return true;
+    } else {
+      cerr << "rpc: delete file failed!\n";
+      // return false;
+    }
+  }
+
+  bool GetFile(const string & username, const string & url, string & data, string & extname)
+  {
+    ClientContext context;
+
+    FileChunkRequest request;
+    FileChunk response;
+
+    request.set_username(username);
+    request.set_filename(url);
+
+    Status status = stub_->GetFile(&context, request, &response);
+    if (status.ok()) {
+      cerr << "rpc: get file ok\n";
+
+      data = response.data();
+      extname = response.filetype();
+
+      cerr << "data size: " << data.size() << endl;
+      cerr << "response data size: " << response.data().size() << endl;
+
+      return true;
+    } else {
+      cerr << "rpc: get file failed!\n";
+      return false;
     }
   }
 

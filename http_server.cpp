@@ -105,7 +105,7 @@ void* httpClientThread(void* params)
             ss.read(contentBuf, contentLength);
             contentBuf[contentLength] = '\0';
             // printDebugMessage(comm_fd, contentBuf);          
-            string contentStr(contentBuf);
+            string contentStr(contentBuf, contentLength);
             // contentStr += "\n";
             // printDebugMessage(comm_fd, contentStr);
             HttpDebugLog( comm_fd, "%d, %s", contentLength, contentStr.c_str());
@@ -194,7 +194,7 @@ void* httpClientThread(void* params)
 
         
         receivingStatus = waiting_request;
-        string contentStr(contentBuf);
+        string contentStr(contentBuf, contentLength);
         
         delete [] contentBuf;
 
@@ -390,9 +390,30 @@ void* httpClientThread(void* params)
                 }
                 
 
-
                 header.clear();
-                sendFileToClient(comm_fd, uri);
+
+                // hard code
+                // auto p_question_mark = uri.find('?');
+                // auto p_split = uri.find("/drive/");
+                // auto p_split = uri.find(threadUsername);
+                auto p_split = uri.find(downloadFromCloudStr);
+
+                if (p_split != string::npos)
+                {
+                    // download file from cloud drive
+                    uri = uri.substr(p_split + downloadFromCloudStr.size());
+
+                    sendFileToClientFromDrive(comm_fd, uri, threadUsername);
+                }
+                else
+                {
+                    // regular get files on front-end server
+                    sendFileToClient(comm_fd, uri);
+                }
+
+
+                
+                
             }
             
         }

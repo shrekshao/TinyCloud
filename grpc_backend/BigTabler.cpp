@@ -8,10 +8,14 @@
 // constructor
 BigTabler::BigTabler (string s) {
     boost::filesystem::path dir(s);
-    if(boost::filesystem::create_directory(dir)) {
-        std::cout << "Create server folder " << s << "\n";
+    if (!boost::filesystem::exists(dir)) {
+        if(boost::filesystem::create_directory(dir)) {
+            std::cout << "Create server folder " << s << "\n";
+        } else {
+            std::cout << "Create server folder " << s << " failed!\n";
+        }
     } else {
-        std::cout << "Create server folder " << s << " failed!\n";
+        std::cout << "Server folder " << s << " already exists!\n";
     }
     cur_pt = 0;
     server_id = s;
@@ -25,15 +29,15 @@ BigTabler::BigTabler (string s) {
  *         -1   fail
  */
 int BigTabler::put (string username, string file_name, unsigned char file_content[], string file_type, unsigned int file_size) {
-    /*
+
     cout << "User Name: " << username << "\n";
     cout << "File Name: " << file_name << "\n";
     cout << "File Size: " << file_size << "\n";
     cout << "File Type: "<< file_type << "\n";
-    cout << "Current SS Buffer Length = " << (sizeof(ss_buffer)/sizeof(*ss_buffer)) << endl;
     cout << "\n";
-    */
-    put_m.lock();
+
+
+    //printf("cur_pt: %d\n%s\n", cur_pt, file_content);
 
     // Check if there is already a file with this name
     if (big_table.find(username) == big_table.end()) {
@@ -86,12 +90,13 @@ int BigTabler::put (string username, string file_name, unsigned char file_conten
         for (int i = 0; i < file_size; i++) {
             memtable[cur_pt + i] = file_content[i];
         }
-        cur_pt += file_size;
 
         // put the file metainfo in big table
         big_table.at(username).emplace(piecewise_construct, forward_as_tuple(file_name), forward_as_tuple(cur_pt, file_size, username, file_name, file_type, to_string(file_id), false, false));
 
         memtable_file.emplace(memtable_file.end(), username+"/"+file_name);
+
+        cur_pt += file_size;
     }
 
     return 1;
@@ -130,6 +135,12 @@ int BigTabler::put (string username, string file_name, unsigned char orig_file_c
                 }
             }
 
+            // Write to log
+            ofstream primary_log(string("primary_log.txt"));
+            string log("UpdateFile:delet(" + username + ", " + file_name + ")" + ":put(" + username + ", " + file_name + ", " + file_type + ", " + to_string(file_size) + ")\n");
+            primary_log.write(log.c_str(), log.size());
+            primary_log.close();
+
             delet(username, file_name);
 
             return put(username, file_name, file_content, file_type, file_size);
@@ -156,6 +167,14 @@ FileMeta* BigTabler::getMeta (string username, string file_name) {
  *         -1   fail
  */
 int BigTabler::get (string username, string file_name, unsigned char* res, unsigned int res_size) {
+
+
+    cout << "User Name: " << username << "\n";
+    cout << "File Name: " << file_name << "\n";
+    cout << "File Size: " << res_size << "\n";
+    cout << "\n";
+
+
     if (big_table.find(username) == big_table.end() || big_table.at(username).find(file_name) == big_table.at(username).end()) {
         return -1;
     }
@@ -217,6 +236,7 @@ int BigTabler::get (string username, string file_name, unsigned char* res, unsig
         int len = min(file_meta->file_length, res_size);
         for (int i = 0; i < len; i++) {
             res[i] = memtable[file_meta->buffer_start+i];
+            //printf("hello %d, %c", file_meta->buffer_start+i, (char) res[i]);
         }
         return len;
     }
@@ -234,6 +254,7 @@ int BigTabler::delet(string username, string file_name) {
     }
 
     if (big_table.at(username).at(file_name).is_deleted) {
+        delete_m.unlock();
         return 1;
     } else {
         big_table.at(username).at(file_name).is_deleted = true;
@@ -244,6 +265,7 @@ int BigTabler::delet(string username, string file_name) {
         deleted_files.at(sstable).insert(deleted_files.at(sstable).end(), make_pair(timer, big_table.at(username).at(file_name)));
         deleted_files_mutex.at(sstable).unlock();
         big_table.at(username).erase(file_name);
+        delete_m.unlock();
         return 1;
     }
 }

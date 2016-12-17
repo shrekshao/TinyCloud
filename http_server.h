@@ -75,6 +75,8 @@ static const string HTML_404_PAGE = "404 Not Found\r\nThe requested URL was not 
 
 static const string siteRoot = "_site/";
 
+static const string downloadFromCloudStr = "fromCloud/";
+
 
 
 static const unordered_set<string> textFileExtensions ({"txt", "html", "css", "js"});
@@ -393,6 +395,61 @@ void sendFileToClient(int fd, const string & uri)
 }
 
 
+void sendFileToClientFromDrive(int fd, const string & url, const string & threadUsername)
+{
+    // url is full path name: username/path/to
+    HttpDebugLog(fd, "start download file from drive, url: %s", url.c_str());
+
+
+    // cull username
+    string fullPathURL;
+    {
+        auto p_second_slash = url.find('/', 1);
+        fullPathURL = url.substr(p_second_slash + 1); 
+    }
+
+
+
+
+    string data;
+    string extname;
+
+    if(fsClient.GetFile(threadUsername, fullPathURL, data, extname))
+    {
+        string file_cat = "application";
+        auto it = extToFileCat.find(extname);
+        if (it != extToFileCat.end())
+        {
+            file_cat = it->second;
+        }
+        string content_type = file_cat + "/" + extname;
+
+        HttpDebugLog(fd, "data length: %d", (int)data.size());
+        sendData(fd, content_type, data);
+
+
+        // // GeneralHeader header = {content_type, length};
+        // header.content_type = content_type;
+        // header.content_length = data.size();
+        // header.send(fd);
+
+        // // separate line
+        // do_write(fd, &CRLF.at(0), CRLF.size());
+
+        // // content
+
+        // do_write(fd, data.c_str(), data.size());
+    }
+    else
+    {
+        // 404
+        printDebugMessage(fd, url + " 404\n");
+        send404Page(fd);
+        // return;
+    }
+}
+
+
 
 // // --------- get request handlers --------------
 // void getFileListHandler(int fd)
@@ -682,20 +739,41 @@ void insertFolderHandler(int fd, const string & contentStr, string & threadUsern
 void uploadFileToStorage(const string & threadUsername, const string & curFolder, const string & filename, const string & data)
 {
 
-    string fullPathFolder;
+    string fullPathFolder;  // without /username
 
     if (curFolder == "/")
     {
-        fullPathFolder = "/" + threadUsername + "/" + filename;
-        // curFolder += threadUsername;
+        // fullPathFolder = "/" + threadUsername + "/" + filename;
+        
+        fullPathFolder = filename;
     }
     else
     {
-        fullPathFolder = curFolder + "/" + filename;
+        // fullPathFolder = curFolder + "/" + filename;
+
+        auto p_second_slash = curFolder.find('/', 1);
+        
+
+        fullPathFolder = curFolder.substr(p_second_slash + 1) + "/" + filename; 
     }
 
 
-    fsClient.UploadFile(threadUsername, fullPathFolder, data);
+    string extname;
+    auto p_dot = filename.find_last_of('.');
+    if (p_dot == string::npos)
+    {
+        extname = "no-type-name";
+    }
+    else
+    {
+        extname = filename.substr(p_dot + 1);
+    }
+    
+
+
+
+    HttpDebugLog( 999, "fullPathFolder: %s, filename: %s, extname: %s", fullPathFolder.c_str(), filename.c_str(), extname.c_str());
+    fsClient.UploadFile(threadUsername, fullPathFolder, data, extname);
 }
 
 
@@ -739,6 +817,8 @@ void uploadFileHandler(int fd, const string & contentStr, const string & boundar
     // TODO: where to put folder info? 
     HttpDebugLog( fd, "upload file handler");
 
+    HttpDebugLog( fd, "contentStr.size() = %d", (int)contentStr.size());
+
     // string boundary_end = boundary + "--";
     size_t boundary_size = boundary.size();
     // size_t boundary_end_size = boundary_end.size();
@@ -775,7 +855,7 @@ void uploadFileHandler(int fd, const string & contentStr, const string & boundar
     }
     while (cur_part_end != string::npos);
     
-    
+    HttpDebugLog( fd, "parts.size() = %d", (int)parts.size());
 
     const string separation_line = "\r\n\r\n"; 
     const string form_input_name = "; name=\"";
@@ -792,8 +872,10 @@ void uploadFileHandler(int fd, const string & contentStr, const string & boundar
         auto p_sep = str.find(separation_line);
 
         string headers = str.substr(0, p_sep - 0);
-        string file_bytes = str.substr(p_sep + separation_line.size());
+        file_bytes = str.substr(p_sep + separation_line.size());
 
+
+        HttpDebugLog( fd, "*******headers:\n%s", headers.c_str());
         // HttpDebugLog( fd, "*******headers:\n%s\nbytes:\n%s", headers.c_str(), file_bytes.c_str());
 
         // hardcode header part
@@ -815,7 +897,7 @@ void uploadFileHandler(int fd, const string & contentStr, const string & boundar
 
     }
 
-    HttpDebugLog( fd, "parts.size() = %d", (int)parts.size());
+    
 
     string curFolder;
     {
@@ -825,7 +907,10 @@ void uploadFileHandler(int fd, const string & contentStr, const string & boundar
         auto p_sep = str.find(separation_line);
 
         string headers = str.substr(0, p_sep - 0);
-        curFolder = str.substr(p_sep + separation_line.size());
+
+        // curFolder = str.substr(p_sep + separation_line.size());
+        istringstream iss(str.substr(p_sep + separation_line.size()));
+        getline(iss, curFolder, '\r');
 
         // hardcode header part
         auto p_name_start = headers.find(form_input_name) + form_input_name.size();
