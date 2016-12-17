@@ -817,7 +817,16 @@ void handlePostRequest(int fd, const string & uri, const string & contentStr, st
 
 void uploadFileHandler(int fd, const string & contentStr, const string & boundary, const string & threadUsername)
 {
-    // TODO: where to put folder info? 
+
+    // master rpc test
+    string fsServerAddr;
+    masterClient.GetUserAddr(threadUsername, fsServerAddr);
+    HttpDebugLog( fd, "TEST: master told us to ask for node %s", fsServerAddr.c_str());
+
+
+
+    // -------------------------------
+
     HttpDebugLog( fd, "upload file handler");
 
     HttpDebugLog( fd, "contentStr.size() = %d", (int)contentStr.size());
