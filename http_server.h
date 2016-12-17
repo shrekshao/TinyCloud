@@ -760,6 +760,8 @@ void uploadFileHandler(int fd, const string & contentStr, const string & boundar
     // TODO: where to put folder info? 
     HttpDebugLog( fd, "upload file handler");
 
+    HttpDebugLog( fd, "contentStr.size() = %d", (int)contentStr.size());
+
     // string boundary_end = boundary + "--";
     size_t boundary_size = boundary.size();
     // size_t boundary_end_size = boundary_end.size();
@@ -796,7 +798,7 @@ void uploadFileHandler(int fd, const string & contentStr, const string & boundar
     }
     while (cur_part_end != string::npos);
     
-    
+    HttpDebugLog( fd, "parts.size() = %d", (int)parts.size());
 
     const string separation_line = "\r\n\r\n"; 
     const string form_input_name = "; name=\"";
@@ -815,6 +817,8 @@ void uploadFileHandler(int fd, const string & contentStr, const string & boundar
         string headers = str.substr(0, p_sep - 0);
         string file_bytes = str.substr(p_sep + separation_line.size());
 
+
+        HttpDebugLog( fd, "*******headers:\n%s", headers.c_str());
         // HttpDebugLog( fd, "*******headers:\n%s\nbytes:\n%s", headers.c_str(), file_bytes.c_str());
 
         // hardcode header part
@@ -836,7 +840,7 @@ void uploadFileHandler(int fd, const string & contentStr, const string & boundar
 
     }
 
-    HttpDebugLog( fd, "parts.size() = %d", (int)parts.size());
+    
 
     string curFolder;
     {
