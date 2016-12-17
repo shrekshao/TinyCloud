@@ -7,3 +7,4 @@ grpc_backend/backend_server
 grpc_master/master_client
 grpc_master/MasterNode
 grpc_master/master_server
+.idea/

@@ -38,6 +38,8 @@
 // using this name space
 using namespace std;
 
+const string _log_file = "master_server_log.txt";
+
 // design a class for saving a node
 class StorageNodeInfo {
 public:
