@@ -584,7 +584,7 @@ int main(int argc, char** argv) {
 }
 
 void writeToLog(string& msg) {
-    ofstream replica_log(string("primary_log.txt"));
+    ofstream replica_log(string("primary_log.txt", ofstream::app));
     replica_log.write(msg.c_str(), msg.size());
     replica_log.close();
 }
