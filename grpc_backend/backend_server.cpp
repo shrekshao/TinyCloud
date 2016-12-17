@@ -168,29 +168,35 @@ class StorageServiceImpl final : public Storage::Service {
         pair<int, bool> file_info = indexer_service.checkIsFile(request->username()+"/"+request->filename());
 
         if (file_info.first == -1) {
+            primary_mutex.unlock();
             return Status::CANCELLED;
         }
 
         if (file_info.second) {
             int success1 = indexer_service.delet(request->username()+"/"+request->filename());
             if (success1 == -1) {
+                primary_mutex.unlock();
                 return Status::CANCELLED;
             }
             int success2 = bigtable_service.delet(request->username(), request->filename());
             if (success1 == 1 && success2 == 1) {
+                primary_mutex.unlock();
                 return Status::OK;
             } else {
+                primary_mutex.unlock();
                 return Status::CANCELLED;
             }
         } else {
             vector<string> delete_candidates;
             int success = indexer_service.findAllChildren(request->username()+"/"+request->filename(), delete_candidates);
             if (success == -1) {
+                primary_mutex.unlock();
                 return Status::CANCELLED;
             }
 
             int success1 = indexer_service.delet(request->username()+"/"+request->filename());
             if (success1 == -1) {
+                primary_mutex.unlock();
                 return Status::CANCELLED;
             }
 
@@ -201,8 +207,10 @@ class StorageServiceImpl final : public Storage::Service {
             }
 
             if (success1 == 1 && success2 == 1) {
+                primary_mutex.unlock();
                 return Status::OK;
             } else {
+
                 return Status::CANCELLED;
             }
         }
