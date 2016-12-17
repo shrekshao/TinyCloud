@@ -95,6 +95,9 @@ class MasterServiceImpl final : public Master::Service {
                 master::NodeInfo ni;
                 ni.set_user_list(s);
                 ni.set_user_number(it->second.user_number);
+                ni.set_status(it->second.crashed);
+                ni.set_buffer("[ADMIN] dummy message for testing displaying raw data");
+                ni.set_buffer_length(9999);
                 (*reply->mutable_nodeinfo())[it->first] = ni;
             }
             return Status::OK;
@@ -113,6 +116,18 @@ class MasterServiceImpl final : public Master::Service {
             return Status::CANCELLED;
         }
     }
+    // disenable a node
+    Status EnableNode(ServerContext* context, const NodeIndexRequest* request, Empty* reply) override {
+        cout << "[GRPC]:Receiving DisanleNode Call\n";
+        int node_index = (int)request->index();
+        int success = master_service.enable_node(node_index);
+        if (success == 1) {
+            return Status::OK;
+        } else {
+            return Status::CANCELLED;
+        }
+    }
+
 
 };
 
@@ -150,6 +165,11 @@ void RunServer() {
     // Finally assemble the server.
     std::unique_ptr<Server> server(builder.BuildAndStart());
     std::cout << "Server listening on " << server_address << std::endl;
+    // adding fake user
+    master_service.create_user("IS");
+    master_service.create_user("VC");
+    master_service.create_user("SC");
+    master_service.create_user("tianli");
     // checking thread
     RunFailureChecking();
     // Wait for the server to shutdown. Note that some other thread must be
@@ -160,6 +180,5 @@ void RunServer() {
 // main function to run
 int main(int argc, char** argv) {
     RunServer();
-
     return 0;
 }

@@ -477,6 +477,29 @@ class NodeInfo : public ::google::protobuf::Message /* @@protoc_insertion_point(
   ::google::protobuf::uint64 user_number() const;
   void set_user_number(::google::protobuf::uint64 value);
 
+  // optional string buffer = 3;
+  void clear_buffer();
+  static const int kBufferFieldNumber = 3;
+  const ::std::string& buffer() const;
+  void set_buffer(const ::std::string& value);
+  void set_buffer(const char* value);
+  void set_buffer(const char* value, size_t size);
+  ::std::string* mutable_buffer();
+  ::std::string* release_buffer();
+  void set_allocated_buffer(::std::string* buffer);
+
+  // optional bool status = 4;
+  void clear_status();
+  static const int kStatusFieldNumber = 4;
+  bool status() const;
+  void set_status(bool value);
+
+  // optional uint64 buffer_length = 5;
+  void clear_buffer_length();
+  static const int kBufferLengthFieldNumber = 5;
+  ::google::protobuf::uint64 buffer_length() const;
+  void set_buffer_length(::google::protobuf::uint64 value);
+
   // @@protoc_insertion_point(class_scope:master.NodeInfo)
  private:
 
@@ -484,6 +507,9 @@ class NodeInfo : public ::google::protobuf::Message /* @@protoc_insertion_point(
   bool _is_default_instance_;
   ::google::protobuf::internal::ArenaStringPtr user_list_;
   ::google::protobuf::uint64 user_number_;
+  ::google::protobuf::internal::ArenaStringPtr buffer_;
+  ::google::protobuf::uint64 buffer_length_;
+  bool status_;
   mutable int _cached_size_;
   friend void  protobuf_AddDesc_master_2eproto();
   friend void protobuf_AssignDesc_master_2eproto();
@@ -863,6 +889,78 @@ inline void NodeInfo::set_user_number(::google::protobuf::uint64 value) {
   
   user_number_ = value;
   // @@protoc_insertion_point(field_set:master.NodeInfo.user_number)
+}
+
+// optional string buffer = 3;
+inline void NodeInfo::clear_buffer() {
+  buffer_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline const ::std::string& NodeInfo::buffer() const {
+  // @@protoc_insertion_point(field_get:master.NodeInfo.buffer)
+  return buffer_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void NodeInfo::set_buffer(const ::std::string& value) {
+  
+  buffer_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:master.NodeInfo.buffer)
+}
+inline void NodeInfo::set_buffer(const char* value) {
+  
+  buffer_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:master.NodeInfo.buffer)
+}
+inline void NodeInfo::set_buffer(const char* value, size_t size) {
+  
+  buffer_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:master.NodeInfo.buffer)
+}
+inline ::std::string* NodeInfo::mutable_buffer() {
+  
+  // @@protoc_insertion_point(field_mutable:master.NodeInfo.buffer)
+  return buffer_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline ::std::string* NodeInfo::release_buffer() {
+  // @@protoc_insertion_point(field_release:master.NodeInfo.buffer)
+  
+  return buffer_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void NodeInfo::set_allocated_buffer(::std::string* buffer) {
+  if (buffer != NULL) {
+    
+  } else {
+    
+  }
+  buffer_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), buffer);
+  // @@protoc_insertion_point(field_set_allocated:master.NodeInfo.buffer)
+}
+
+// optional bool status = 4;
+inline void NodeInfo::clear_status() {
+  status_ = false;
+}
+inline bool NodeInfo::status() const {
+  // @@protoc_insertion_point(field_get:master.NodeInfo.status)
+  return status_;
+}
+inline void NodeInfo::set_status(bool value) {
+  
+  status_ = value;
+  // @@protoc_insertion_point(field_set:master.NodeInfo.status)
+}
+
+// optional uint64 buffer_length = 5;
+inline void NodeInfo::clear_buffer_length() {
+  buffer_length_ = GOOGLE_ULONGLONG(0);
+}
+inline ::google::protobuf::uint64 NodeInfo::buffer_length() const {
+  // @@protoc_insertion_point(field_get:master.NodeInfo.buffer_length)
+  return buffer_length_;
+}
+inline void NodeInfo::set_buffer_length(::google::protobuf::uint64 value) {
+  
+  buffer_length_ = value;
+  // @@protoc_insertion_point(field_set:master.NodeInfo.buffer_length)
 }
 
 // -------------------------------------------------------------------
