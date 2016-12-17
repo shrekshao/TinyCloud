@@ -106,6 +106,9 @@ class FileSystemClient {
     chunk.set_length(data.size());
     chunk.set_data(data);
 
+    cerr << "data size: " << data.size() << endl;
+    cerr << "chunk data size: " << chunk.data().size() << endl;
+
     chunk.set_orig_length(data.size());
     chunk.set_orig_data(data);
 

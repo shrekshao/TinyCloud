@@ -872,7 +872,7 @@ void uploadFileHandler(int fd, const string & contentStr, const string & boundar
         auto p_sep = str.find(separation_line);
 
         string headers = str.substr(0, p_sep - 0);
-        string file_bytes = str.substr(p_sep + separation_line.size());
+        file_bytes = str.substr(p_sep + separation_line.size());
 
 
         HttpDebugLog( fd, "*******headers:\n%s", headers.c_str());
