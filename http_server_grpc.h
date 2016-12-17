@@ -169,6 +169,29 @@ class FileSystemClient {
     }
   }
 
+
+  // User system service call
+  // shouldn't be in the storage service
+  // but let's save some time
+  void RegisterUser(const string &username, const string &password)
+  {
+
+  }
+
+
+  bool LoginUser(const string &username, const string &password)
+  {
+    
+    // if(response)
+    return true;
+  }
+
+
+
+
+
+
  private:
   std::unique_ptr<Storage::Stub> stub_;
 };
+
