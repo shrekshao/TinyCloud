@@ -39,7 +39,6 @@ int BigTabler::put (string username, string file_name, unsigned char file_conten
     */
 
     //printf("cur_pt: %d\n%s\n", cur_pt, file_content);
-    put_m.lock();
 
     // Check if there is already a file with this name
     if (big_table.find(username) == big_table.end()) {
@@ -100,7 +99,7 @@ int BigTabler::put (string username, string file_name, unsigned char file_conten
 
         cur_pt += file_size;
     }
-    put_m.unlock();
+
     return 1;
 }
 
