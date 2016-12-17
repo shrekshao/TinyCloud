@@ -92,8 +92,8 @@ int MasterNode::get_info(map<string, StorageNodeInfo> &info) {
 // Disenable One Node For Testing
 int MasterNode::disenable_node(int index) {
     cout << "[MASTER]:Receiving DISENABLE Call\n";
-    if (crash_mapping[index]) {
-        crash_mapping[index] = false;
+    if (!crash_mapping[index]) {
+        crash_mapping[index] = true;
         return 1;
     } else {
         return 0;

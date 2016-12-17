@@ -66,6 +66,7 @@ class MasterServiceImpl final : public Master::Service {
     }
     // getting a map indicating the status of all the nodes
     Status GetNodesStatus(ServerContext* context, const Empty* request, NodesStatusReply* reply) override {
+        cout << "[GRPC]:Receiving GET STATUS Call\n";
         map<string, bool> res;
         int success = master_service.get_status(res);
         if (success == 1) {
@@ -80,6 +81,7 @@ class MasterServiceImpl final : public Master::Service {
     }
     // getting a info map indicating the raw data of all the nodes
     Status GetNodesInfo(ServerContext* context, const Empty* request, NodesInfoReply* reply) override {
+        cout << "[GRPC]:Receiving GET INFO Call\n";
         map<string, StorageNodeInfo> res;
         int success = master_service.get_info(res);
         if (success == 1) {
@@ -102,6 +104,7 @@ class MasterServiceImpl final : public Master::Service {
     }
     // disenable a node
     Status DisableNode(ServerContext* context, const NodeIndexRequest* request, Empty* reply) override {
+        cout << "[GRPC]:Receiving DisanleNode Call\n";
         int node_index = (int)request->index();
         int success = master_service.disenable_node(node_index);
         if (success == 1) {

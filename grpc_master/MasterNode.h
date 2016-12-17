@@ -80,7 +80,7 @@ public:
     int hash_user2node(string username) {
         hash<string> hash_fn;
         unsigned int num = (unsigned int) hash_fn(username) % (max_node_number - 1);
-        std::cout << "User: " << username << " is assigned to Node: #"<< num << '\n';
+        std::cout << "[Code]User: " << username << " is assigned to Node: #"<< num << '\n';
         // put the new user to the mapping
         return num;
     }
