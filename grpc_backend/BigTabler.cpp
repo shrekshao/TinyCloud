@@ -8,10 +8,14 @@
 // constructor
 BigTabler::BigTabler (string s) {
     boost::filesystem::path dir(s);
-    if(boost::filesystem::create_directory(dir)) {
-        std::cout << "Create server folder " << s << "\n";
+    if (!boost::filesystem::exists(dir)) {
+        if(boost::filesystem::create_directory(dir)) {
+            std::cout << "Create server folder " << s << "\n";
+        } else {
+            std::cout << "Create server folder " << s << " failed!\n";
+        }
     } else {
-        std::cout << "Create server folder " << s << " failed!\n";
+        std::cout << "Server folder " << s << " already exists!\n";
     }
     cur_pt = 0;
     server_id = s;
@@ -93,7 +97,7 @@ int BigTabler::put (string username, string file_name, unsigned char file_conten
 
         memtable_file.emplace(memtable_file.end(), username+"/"+file_name);
     }
-
+    put_m.unlock();
     return 1;
 }
 
@@ -234,6 +238,7 @@ int BigTabler::delet(string username, string file_name) {
     }
 
     if (big_table.at(username).at(file_name).is_deleted) {
+        delete_m.unlock();
         return 1;
     } else {
         big_table.at(username).at(file_name).is_deleted = true;
@@ -244,6 +249,7 @@ int BigTabler::delet(string username, string file_name) {
         deleted_files.at(sstable).insert(deleted_files.at(sstable).end(), make_pair(timer, big_table.at(username).at(file_name)));
         deleted_files_mutex.at(sstable).unlock();
         big_table.at(username).erase(file_name);
+        delete_m.unlock();
         return 1;
     }
 }
