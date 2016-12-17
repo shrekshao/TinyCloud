@@ -27,6 +27,10 @@ using master::Master;
 using master::UserNameRequest;
 using master::AddressReply;
 // using master::Empty;
+using master::NodesStatusReply;
+using master::NodesInfoReply;
+using master::NodeIndexRequest;
+using master::NodeInfo;
 
 class MasterClient {
 public:
@@ -75,7 +79,7 @@ public:
 
         // The actual RPC.
         Status status = stub_->CreateUser(&context, request, &reply);
-
+        //cout << "[MASTER] Usered Created Successfully!\n";
         // Act upon its status.
         if (status.ok()) {
             return true;
@@ -86,7 +90,80 @@ public:
         }
     }
 
+    // return a map of node status
+    bool GetNodesStatus(std::map<string, bool> & res) {
+        // data that are sending to the master
+        master::Empty request;
 
+        // container for the reply message
+        NodesStatusReply reply;
+
+        // Context for the client. It could be used to convey extra information to
+        // the server and/or tweak certain RPC behaviors.
+        ClientContext context;
+
+        // The actual RPC.
+        Status status = stub_->GetNodesStatus(&context, request, &reply);
+
+        if (status.ok()) {
+            res = std::map<string, bool>(reply.nodesstatus().begin(), reply.nodesstatus().end());
+            return true;
+        } else {
+            std::cerr << status.error_code() << ": " << status.error_message()
+                      << std::endl;
+            return false;
+        }
+    }
+
+    // disenable a node
+    bool DisableNode(const int index) {
+        // data that are sending to the master
+        NodeIndexRequest request;
+        request.set_index(index);
+
+        // container for the reply message
+        master::Empty reply;
+
+        // Context for the client. It could be used to convey extra information to
+        // the server and/or tweak certain RPC behaviors.
+        ClientContext context;
+
+        // The actual RPC.
+        Status status = stub_->DisableNode(&context, request, &reply);
+
+        if (status.ok()) {
+            return true;
+        } else {
+            std::cerr << status.error_code() << ": " << status.error_message()
+                      << std::endl;
+            return false;
+        }
+    }
+
+    // return a map of node info
+    bool GetNodesInfo(map<string, NodeInfo> &res) {
+        // data that are sending to the master
+        master::Empty request;
+
+        // container for the reply message
+        NodesInfoReply reply;
+
+        // Context for the client. It could be used to convey extra information to
+        // the server and/or tweak certain RPC behaviors.
+        ClientContext context;
+
+        // The actual RPC.
+        Status status = stub_->GetNodesInfo(&context, request, &reply);
+
+        if (status.ok()) {
+            res = std::map<string, NodeInfo>(reply.nodeinfo().begin(), reply.nodeinfo().end());
+            return true;
+        } else {
+            std::cerr << status.error_code() << ": " << status.error_message()
+                      << std::endl;
+            return false;
+        }
+    }
 
 private:
     std::unique_ptr<Master::Stub> stub_;

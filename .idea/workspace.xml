@@ -14,19 +14,11 @@
   <component name="ChangeListManager">
     <list default="true" id="3ea8be24-81d5-4b07-9999-442d3051c571" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/grpc_master/MasterNode" afterPath="$PROJECT_DIR$/grpc_master/MasterNode" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/grpc_master/master_client" afterPath="$PROJECT_DIR$/grpc_master/master_client" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/grpc_master/master_server" afterPath="$PROJECT_DIR$/grpc_master/master_server" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/grpc_master/Makefile" afterPath="$PROJECT_DIR$/grpc_master/Makefile" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/grpc_master/MasterNode.cpp" afterPath="$PROJECT_DIR$/grpc_master/MasterNode.cpp" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/grpc_master/MasterNode.h" afterPath="$PROJECT_DIR$/grpc_master/MasterNode.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/grpc_master/master.grpc.pb.cc" afterPath="$PROJECT_DIR$/grpc_master/master.grpc.pb.cc" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/grpc_master/master.grpc.pb.h" afterPath="$PROJECT_DIR$/grpc_master/master.grpc.pb.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/grpc_master/master.pb.cc" afterPath="$PROJECT_DIR$/grpc_master/master.pb.cc" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/grpc_master/master.pb.h" afterPath="$PROJECT_DIR$/grpc_master/master.pb.h" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/grpc_master/master_client.cpp" afterPath="$PROJECT_DIR$/grpc_master/master_client.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/grpc_master/master_client.h" afterPath="$PROJECT_DIR$/grpc_master/master_client.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/grpc_master/master_server.cpp" afterPath="$PROJECT_DIR$/grpc_master/master_server.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/grpc_master/protos/master.proto" afterPath="$PROJECT_DIR$/grpc_master/protos/master.proto" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -38,67 +30,89 @@
   <component name="CreatePatchCommitExecutor">
     <option name="PATCH_PATH" value="" />
   </component>
-  <component name="DockManager">
-    <window id="4">
-      <content type="file-editors">
-        <state>
-          <leaf>
-            <file leaf-file-name="MasterNode.h" pinned="false" current-in-tab="false">
-              <entry file="file://$PROJECT_DIR$/grpc_master/MasterNode.h">
-                <provider selected="true" editor-type-id="text-editor">
-                  <state relative-caret-position="568">
-                    <caret line="45" column="28" lean-forward="false" selection-start-line="45" selection-start-column="19" selection-end-line="45" selection-end-column="28" />
-                    <folding />
-                  </state>
-                </provider>
-              </entry>
-            </file>
-            <file leaf-file-name="MasterNode.cpp" pinned="false" current-in-tab="false">
-              <entry file="file://$PROJECT_DIR$/grpc_master/MasterNode.cpp">
-                <provider selected="true" editor-type-id="text-editor">
-                  <state relative-caret-position="1140">
-                    <caret line="76" column="0" lean-forward="true" selection-start-line="76" selection-start-column="0" selection-end-line="76" selection-end-column="0" />
-                    <folding />
-                  </state>
-                </provider>
-              </entry>
-            </file>
-            <file leaf-file-name="master.proto" pinned="false" current-in-tab="true">
-              <entry file="file://$PROJECT_DIR$/grpc_master/protos/master.proto">
-                <provider selected="true" editor-type-id="text-editor">
-                  <state relative-caret-position="613">
-                    <caret line="66" column="20" lean-forward="true" selection-start-line="66" selection-start-column="20" selection-end-line="66" selection-end-column="20" />
-                    <folding />
-                  </state>
-                </provider>
-              </entry>
-            </file>
-          </leaf>
-        </state>
-      </content>
-    </window>
-  </component>
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FavoritesManager">
     <favorites_list name="TinyCloud" />
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="master_server.cpp" pinned="false" current-in-tab="true">
+      <file leaf-file-name="master_server.cpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/grpc_master/master_server.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="285">
-              <caret line="81" column="23" lean-forward="false" selection-start-line="81" selection-start-column="11" selection-end-line="81" selection-end-column="23" />
+            <state relative-caret-position="510">
+              <caret line="83" column="51" lean-forward="true" selection-start-line="83" selection-start-column="51" selection-end-line="83" selection-end-column="51" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="master_config.txt" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/grpc_master/master_config.txt">
+      <file leaf-file-name="master_client.cpp" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/grpc_master/master_client.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="60">
-              <caret line="4" column="29" lean-forward="true" selection-start-line="4" selection-start-column="29" selection-end-line="4" selection-end-column="29" />
+            <state relative-caret-position="585">
+              <caret line="39" column="16" lean-forward="false" selection-start-line="39" selection-start-column="16" selection-end-line="39" selection-end-column="16" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="master_client.h" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/grpc_master/master_client.h">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="495">
+              <caret line="143" column="22" lean-forward="true" selection-start-line="143" selection-start-column="22" selection-end-line="143" selection-end-column="48" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="http_server_grpc.h" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/http_server_grpc.h">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="255">
+              <caret line="31" column="40" lean-forward="false" selection-start-line="31" selection-start-column="32" selection-end-line="31" selection-end-column="40" />
+              <folding>
+                <element signature="e#14#33#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="http_server.cpp" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/http_server.cpp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="180">
+              <caret line="12" column="6" lean-forward="false" selection-start-line="12" selection-start-column="5" selection-end-line="12" selection-end-column="6" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="MasterNode.cpp" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/grpc_master/MasterNode.cpp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="705">
+              <caret line="78" column="52" lean-forward="false" selection-start-line="78" selection-start-column="37" selection-end-line="78" selection-end-column="52" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="MasterNode.h" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/grpc_master/MasterNode.h">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="780">
+              <caret line="67" column="35" lean-forward="true" selection-start-line="67" selection-start-column="35" selection-end-line="67" selection-end-column="35" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="master.proto" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/grpc_master/protos/master.proto">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="795">
+              <caret line="78" column="20" lean-forward="false" selection-start-line="78" selection-start-column="11" selection-end-line="78" selection-end-column="20" />
               <folding />
             </state>
           </provider>
@@ -159,12 +173,12 @@
         <option value="$PROJECT_DIR$/grpc_backend/Makefile" />
         <option value="$PROJECT_DIR$/Makefile" />
         <option value="$PROJECT_DIR$/grpc_master/Makefile" />
-        <option value="$PROJECT_DIR$/grpc_master/master_client.cpp" />
-        <option value="$PROJECT_DIR$/grpc_master/master_client.h" />
-        <option value="$PROJECT_DIR$/grpc_master/MasterNode.cpp" />
-        <option value="$PROJECT_DIR$/grpc_master/MasterNode.h" />
         <option value="$PROJECT_DIR$/grpc_master/protos/master.proto" />
         <option value="$PROJECT_DIR$/grpc_master/master_server.cpp" />
+        <option value="$PROJECT_DIR$/grpc_master/MasterNode.cpp" />
+        <option value="$PROJECT_DIR$/grpc_master/master_client.h" />
+        <option value="$PROJECT_DIR$/grpc_master/MasterNode.h" />
+        <option value="$PROJECT_DIR$/grpc_master/master_client.cpp" />
       </list>
     </option>
   </component>
@@ -177,7 +191,7 @@
   <component name="ProjectFrameBounds">
     <option name="x" value="8" />
     <option name="y" value="23" />
-    <option name="width" value="1200" />
+    <option name="width" value="1582" />
     <option name="height" value="1132" />
   </component>
   <component name="ProjectView">
@@ -467,12 +481,12 @@
       <workItem from="1481117584658" duration="23321000" />
       <workItem from="1481202330644" duration="10173000" />
       <workItem from="1481294265050" duration="10738000" />
-      <workItem from="1481934397392" duration="24712000" />
+      <workItem from="1481934397392" duration="29919000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="111005000" />
+    <option name="totallyTimeSpent" value="116212000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -484,10 +498,10 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="8" y="23" width="1200" height="1132" extended-state="0" />
+    <frame x="8" y="23" width="1582" height="1132" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2775" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.21049304" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="CMake" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32943925" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="true" content_ui="tabs" />
@@ -769,14 +783,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/http_server.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="348">
-          <caret line="478" column="5" lean-forward="true" selection-start-line="478" selection-start-column="5" selection-end-line="478" selection-end-column="5" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Makefile">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="105">
@@ -806,34 +812,6 @@
         <state relative-caret-position="-45">
           <caret line="54" column="0" lean-forward="true" selection-start-line="54" selection-start-column="0" selection-end-line="54" selection-end-column="0" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/http_server_grpc.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="898">
-          <caret line="109" column="0" lean-forward="true" selection-start-line="109" selection-start-column="0" selection-end-line="109" selection-end-column="0" />
-          <folding>
-            <element signature="e#14#33#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/grpc_master/master_client.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="375">
-          <caret line="25" column="5" lean-forward="true" selection-start-line="25" selection-start-column="5" selection-end-line="25" selection-end-column="5" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/grpc_master/master_client.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="465">
-          <caret line="59" column="9" lean-forward="true" selection-start-line="59" selection-start-column="9" selection-end-line="59" selection-end-column="9" />
-          <folding>
-            <marker date="1481952911000" expanded="true" signature="1547:2263" ph="{...}" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -877,19 +855,13 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/grpc_master/MasterNode.cpp">
+    <entry file="file://$PROJECT_DIR$/grpc_backend/backend_server.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1140">
-          <caret line="76" column="0" lean-forward="true" selection-start-line="76" selection-start-column="0" selection-end-line="76" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/grpc_master/MasterNode.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="568">
-          <caret line="45" column="28" lean-forward="false" selection-start-line="45" selection-start-column="19" selection-end-line="45" selection-end-column="28" />
-          <folding />
+        <state relative-caret-position="270">
+          <caret line="156" column="49" lean-forward="false" selection-start-line="156" selection-start-column="49" selection-end-line="156" selection-end-column="49" />
+          <folding>
+            <element signature="e#40#59#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -901,28 +873,68 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/grpc_backend/backend_server.cpp">
+    <entry file="file://$PROJECT_DIR$/http_server.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="270">
-          <caret line="156" column="49" lean-forward="false" selection-start-line="156" selection-start-column="49" selection-end-line="156" selection-end-column="49" />
-          <folding>
-            <element signature="e#40#59#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="180">
+          <caret line="12" column="6" lean-forward="false" selection-start-line="12" selection-start-column="5" selection-end-line="12" selection-end-column="6" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/grpc_master/master_server.cpp">
+    <entry file="file://$PROJECT_DIR$/grpc_master/master_client.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="285">
-          <caret line="81" column="23" lean-forward="false" selection-start-line="81" selection-start-column="11" selection-end-line="81" selection-end-column="23" />
+        <state relative-caret-position="495">
+          <caret line="143" column="22" lean-forward="true" selection-start-line="143" selection-start-column="22" selection-end-line="143" selection-end-column="48" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/http_server_grpc.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="31" column="40" lean-forward="false" selection-start-line="31" selection-start-column="32" selection-end-line="31" selection-end-column="40" />
+          <folding>
+            <element signature="e#14#33#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/grpc_master/protos/master.proto">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="613">
-          <caret line="66" column="20" lean-forward="true" selection-start-line="66" selection-start-column="20" selection-end-line="66" selection-end-column="20" />
+        <state relative-caret-position="795">
+          <caret line="78" column="20" lean-forward="false" selection-start-line="78" selection-start-column="11" selection-end-line="78" selection-end-column="20" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/grpc_master/MasterNode.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="780">
+          <caret line="67" column="35" lean-forward="true" selection-start-line="67" selection-start-column="35" selection-end-line="67" selection-end-column="35" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/grpc_master/MasterNode.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="705">
+          <caret line="78" column="52" lean-forward="false" selection-start-line="78" selection-start-column="37" selection-end-line="78" selection-end-column="52" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/grpc_master/master_server.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="510">
+          <caret line="83" column="51" lean-forward="true" selection-start-line="83" selection-start-column="51" selection-end-line="83" selection-end-column="51" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/grpc_master/master_client.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="585">
+          <caret line="39" column="16" lean-forward="false" selection-start-line="39" selection-start-column="16" selection-end-line="39" selection-end-column="16" />
           <folding />
         </state>
       </provider>
