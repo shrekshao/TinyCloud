@@ -393,10 +393,43 @@ void sendFileToClient(int fd, const string & uri)
 }
 
 
-void sendFileToClientFromDrive(int fd, const string & url)
+void sendFileToClientFromDrive(int fd, const string & url, const string & threadUsername)
 {
-    // url is full path name: /username/path/to
-    HttpDebugLog(fd, "download file from drive, url: %s", url.c_str());
+    // url is full path name: username/path/to
+    HttpDebugLog(fd, "start download file from drive, url: %s", url.c_str());
+
+
+    string data;
+    string extname;
+
+    if(fsClient.GetFile(threadUsername, url, data, extname))
+    {
+        string file_cat = "application";
+        auto it = extToFileCat.find(extname);
+        if (it != extToFileCat.end())
+        {
+            file_cat = it->second;
+        }
+        string content_type = file_cat + "/" + extname;
+        // GeneralHeader header = {content_type, length};
+        header.content_type = content_type;
+        header.content_length = data.size();
+        header.send(fd);
+
+        // separate line
+        do_write(fd, &CRLF.at(0), CRLF.size());
+
+        // content
+
+        do_write(fd, data.c_str(), data.size());
+    }
+    else
+    {
+        // 404
+        printDebugMessage(fd, url + " 404\n");
+        send404Page(fd);
+        // return;
+    }
 }
 
 

@@ -139,7 +139,7 @@ class FileSystemClient {
     }
   }
 
-  bool GetFile(const string & username, const string & url, string & data)
+  bool GetFile(const string & username, const string & url, string & data, string & extname)
   {
     ClientContext context;
 
@@ -154,6 +154,7 @@ class FileSystemClient {
       cerr << "rpc: get file ok\n";
 
       data = response.data();
+      extname = response.filetype();
 
       return true;
     } else {

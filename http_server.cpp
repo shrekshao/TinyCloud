@@ -400,7 +400,7 @@ void* httpClientThread(void* params)
                     // download file from cloud drive
                     uri = uri.substr(p_question_mark + 1);
 
-                    sendFileToClientFromDrive(comm_fd, uri);
+                    sendFileToClientFromDrive(comm_fd, uri, threadUsername);
                 }
                 else
                 {
