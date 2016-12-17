@@ -159,6 +159,9 @@ class FileSystemClient {
       data = response.data();
       extname = response.filetype();
 
+      cerr << "data size: " << data.size() << endl;
+      cerr << "response data size: " << response.data().size() << endl;
+
       return true;
     } else {
       cerr << "rpc: get file failed!\n";
