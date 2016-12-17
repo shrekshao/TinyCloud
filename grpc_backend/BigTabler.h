@@ -78,7 +78,6 @@ class BigTabler {
     map<string, vector<pair<time_t, FileMeta>>> deleted_files; // Record deleted files, gc will handle the rest of work and update this vector
     map<string, vector<string>> sstable_indexer; // Record files in each sstable, used for gc update
 
-    mutex put_m, delete_m; // mutex for put() and delet()
     map<string, boost::shared_mutex> sstable_mutex; // mutexs for sstable files on disk
     map<string, mutex> deleted_files_mutex; // mutexs for deleted_files of each sstable
 

@@ -21,6 +21,8 @@ BigTabler::BigTabler (string s) {
     server_id = s;
     file_id = 1;
     deleted_files_mutex.emplace(piecewise_construct, forward_as_tuple(to_string(file_id)), forward_as_tuple());
+    // Add new delete vector for this sstable
+    deleted_files.emplace(piecewise_construct, forward_as_tuple(to_string(file_id)), forward_as_tuple());
 }
 
 /*
@@ -63,8 +65,6 @@ int BigTabler::put (string username, string file_name, unsigned char file_conten
 
         // Add new mutex for this sstable
         sstable_mutex.emplace(piecewise_construct, forward_as_tuple(to_string(file_id)), forward_as_tuple());
-        // Add new vector for this sstable
-        deleted_files.emplace(piecewise_construct, forward_as_tuple(to_string(file_id)), forward_as_tuple());
 
         // put the file metainfo in big table
         big_table.at(username).emplace(piecewise_construct, forward_as_tuple(file_name), forward_as_tuple(cur_pt, file_size, username, file_name, file_type, to_string(file_id), true, false));
@@ -85,6 +85,7 @@ int BigTabler::put (string username, string file_name, unsigned char file_conten
 
         file_id++;
         deleted_files_mutex.emplace(piecewise_construct, forward_as_tuple(to_string(file_id)), forward_as_tuple());
+        deleted_files.emplace(piecewise_construct, forward_as_tuple(to_string(file_id)), forward_as_tuple());
     } else {
         // write the the new file to the buffer
         for (int i = 0; i < file_size; i++) {
@@ -242,24 +243,23 @@ int BigTabler::get (string username, string file_name, unsigned char* res, unsig
  *         -1   fail
  */
 int BigTabler::delet(string username, string file_name) {
-    delete_m.lock();
+    cout << "username: " << username << endl;
+    cout << "file_name: " << file_name << endl;
     if (big_table.find(username) == big_table.end() || big_table.at(username).find(file_name) == big_table.at(username).end()) {
         return -1;
     }
 
     if (big_table.at(username).at(file_name).is_deleted) {
-        delete_m.unlock();
         return 1;
     } else {
         big_table.at(username).at(file_name).is_deleted = true;
         string sstable = big_table.at(username).at(file_name).sstable_name;
         time_t timer;
         time(&timer);
-        deleted_files_mutex.at(sstable).lock();
         deleted_files.at(sstable).insert(deleted_files.at(sstable).end(), make_pair(timer, big_table.at(username).at(file_name)));
         deleted_files_mutex.at(sstable).unlock();
         big_table.at(username).erase(file_name);
-        delete_m.unlock();
+
         return 1;
     }
 }

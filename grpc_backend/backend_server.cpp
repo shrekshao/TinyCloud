@@ -496,6 +496,11 @@ int main(int argc, char** argv) {
     printf("%s\n", pChars3);
     //*/
 
+    cout << indexer_service.delet("tianli/file2") << endl;
+    cout << bigtable_service.delet("tianli", "file2") << endl;
+    cout << indexer_service.delet("tianli/folder2") << endl;
+
+
     RunServer();
 
     return 0;
