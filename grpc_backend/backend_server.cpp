@@ -31,7 +31,7 @@ using backend::FileChunk;
 using backend::FileChunkRequest;
 using backend::Storage;
 using backend::UserAccount;
-using backend::UserAccountRequest;
+using backend::UserAccountReply;
 
 const char*  primary_server_ip = "0.0.0.0:50051";
 const char*  replica_server_ip = "0.0.0.0:50052";
@@ -223,7 +223,7 @@ class StorageServiceImpl final : public Storage::Service {
         }
     }
 
-    Status GetPassword(ServerContext* context, const UserAccountRequest* request, UserAccount* reply) override {
+    Status CheckPassword(ServerContext* context, const UserAccount* request, UserAccountReply* reply) override {
 
         // Lock primary
         primary_mutex.lock();
@@ -232,15 +232,16 @@ class StorageServiceImpl final : public Storage::Service {
         int success = bigtable_service.getpassword(request->username(), res);
         //fprintf(stderr, "success: %d\n", success);
         if (success == 1) {
-            reply->set_username(request->username());
-            reply->set_password(res);
-
-            primary_mutex.unlock();
-            return Status::OK;
-        } else {
-            primary_mutex.unlock();
-            return Status::CANCELLED;
+            if (res.compare(request->password()) == 0) {
+                reply->set_correct(true);
+                primary_mutex.unlock();
+                return Status::OK;
+            }
         }
+
+        reply->set_correct(false);
+        primary_mutex.unlock();
+        return Status::OK;
     }
 
     Status GetFileList(ServerContext* context, const FileListRequest* request, FileListReply* reply) override {

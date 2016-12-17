@@ -68,9 +68,9 @@ class Storage GRPC_FINAL {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::backend::Empty>>(AsyncCreateUserRaw(context, request, cq));
     }
     // Get password
-    virtual ::grpc::Status GetPassword(::grpc::ClientContext* context, const ::backend::UserAccountRequest& request, ::backend::UserAccount* response) = 0;
-    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::backend::UserAccount>> AsyncGetPassword(::grpc::ClientContext* context, const ::backend::UserAccountRequest& request, ::grpc::CompletionQueue* cq) {
-      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::backend::UserAccount>>(AsyncGetPasswordRaw(context, request, cq));
+    virtual ::grpc::Status CheckPassword(::grpc::ClientContext* context, const ::backend::UserAccount& request, ::backend::UserAccountReply* response) = 0;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::backend::UserAccountReply>> AsyncCheckPassword(::grpc::ClientContext* context, const ::backend::UserAccount& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::backend::UserAccountReply>>(AsyncCheckPasswordRaw(context, request, cq));
     }
     // Get file list
     virtual ::grpc::Status GetFileList(::grpc::ClientContext* context, const ::backend::FileListRequest& request, ::backend::FileListReply* response) = 0;
@@ -104,7 +104,7 @@ class Storage GRPC_FINAL {
     }
   private:
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::backend::Empty>* AsyncCreateUserRaw(::grpc::ClientContext* context, const ::backend::UserAccount& request, ::grpc::CompletionQueue* cq) = 0;
-    virtual ::grpc::ClientAsyncResponseReaderInterface< ::backend::UserAccount>* AsyncGetPasswordRaw(::grpc::ClientContext* context, const ::backend::UserAccountRequest& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::backend::UserAccountReply>* AsyncCheckPasswordRaw(::grpc::ClientContext* context, const ::backend::UserAccount& request, ::grpc::CompletionQueue* cq) = 0;
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::backend::FileListReply>* AsyncGetFileListRaw(::grpc::ClientContext* context, const ::backend::FileListRequest& request, ::grpc::CompletionQueue* cq) = 0;
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::backend::Empty>* AsyncInsertFileListRaw(::grpc::ClientContext* context, const ::backend::FileListRequest& request, ::grpc::CompletionQueue* cq) = 0;
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::backend::Empty>* AsyncPutFileRaw(::grpc::ClientContext* context, const ::backend::FileChunk& request, ::grpc::CompletionQueue* cq) = 0;
@@ -119,9 +119,9 @@ class Storage GRPC_FINAL {
     std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::backend::Empty>> AsyncCreateUser(::grpc::ClientContext* context, const ::backend::UserAccount& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::backend::Empty>>(AsyncCreateUserRaw(context, request, cq));
     }
-    ::grpc::Status GetPassword(::grpc::ClientContext* context, const ::backend::UserAccountRequest& request, ::backend::UserAccount* response) GRPC_OVERRIDE;
-    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::backend::UserAccount>> AsyncGetPassword(::grpc::ClientContext* context, const ::backend::UserAccountRequest& request, ::grpc::CompletionQueue* cq) {
-      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::backend::UserAccount>>(AsyncGetPasswordRaw(context, request, cq));
+    ::grpc::Status CheckPassword(::grpc::ClientContext* context, const ::backend::UserAccount& request, ::backend::UserAccountReply* response) GRPC_OVERRIDE;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::backend::UserAccountReply>> AsyncCheckPassword(::grpc::ClientContext* context, const ::backend::UserAccount& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::backend::UserAccountReply>>(AsyncCheckPasswordRaw(context, request, cq));
     }
     ::grpc::Status GetFileList(::grpc::ClientContext* context, const ::backend::FileListRequest& request, ::backend::FileListReply* response) GRPC_OVERRIDE;
     std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::backend::FileListReply>> AsyncGetFileList(::grpc::ClientContext* context, const ::backend::FileListRequest& request, ::grpc::CompletionQueue* cq) {
@@ -151,7 +151,7 @@ class Storage GRPC_FINAL {
    private:
     std::shared_ptr< ::grpc::ChannelInterface> channel_;
     ::grpc::ClientAsyncResponseReader< ::backend::Empty>* AsyncCreateUserRaw(::grpc::ClientContext* context, const ::backend::UserAccount& request, ::grpc::CompletionQueue* cq) GRPC_OVERRIDE;
-    ::grpc::ClientAsyncResponseReader< ::backend::UserAccount>* AsyncGetPasswordRaw(::grpc::ClientContext* context, const ::backend::UserAccountRequest& request, ::grpc::CompletionQueue* cq) GRPC_OVERRIDE;
+    ::grpc::ClientAsyncResponseReader< ::backend::UserAccountReply>* AsyncCheckPasswordRaw(::grpc::ClientContext* context, const ::backend::UserAccount& request, ::grpc::CompletionQueue* cq) GRPC_OVERRIDE;
     ::grpc::ClientAsyncResponseReader< ::backend::FileListReply>* AsyncGetFileListRaw(::grpc::ClientContext* context, const ::backend::FileListRequest& request, ::grpc::CompletionQueue* cq) GRPC_OVERRIDE;
     ::grpc::ClientAsyncResponseReader< ::backend::Empty>* AsyncInsertFileListRaw(::grpc::ClientContext* context, const ::backend::FileListRequest& request, ::grpc::CompletionQueue* cq) GRPC_OVERRIDE;
     ::grpc::ClientAsyncResponseReader< ::backend::Empty>* AsyncPutFileRaw(::grpc::ClientContext* context, const ::backend::FileChunk& request, ::grpc::CompletionQueue* cq) GRPC_OVERRIDE;
@@ -159,7 +159,7 @@ class Storage GRPC_FINAL {
     ::grpc::ClientAsyncResponseReader< ::backend::FileChunk>* AsyncGetFileRaw(::grpc::ClientContext* context, const ::backend::FileChunkRequest& request, ::grpc::CompletionQueue* cq) GRPC_OVERRIDE;
     ::grpc::ClientAsyncResponseReader< ::backend::Empty>* AsyncDeleteFileRaw(::grpc::ClientContext* context, const ::backend::FileChunkRequest& request, ::grpc::CompletionQueue* cq) GRPC_OVERRIDE;
     const ::grpc::RpcMethod rpcmethod_CreateUser_;
-    const ::grpc::RpcMethod rpcmethod_GetPassword_;
+    const ::grpc::RpcMethod rpcmethod_CheckPassword_;
     const ::grpc::RpcMethod rpcmethod_GetFileList_;
     const ::grpc::RpcMethod rpcmethod_InsertFileList_;
     const ::grpc::RpcMethod rpcmethod_PutFile_;
@@ -177,7 +177,7 @@ class Storage GRPC_FINAL {
     // Create new user
     virtual ::grpc::Status CreateUser(::grpc::ServerContext* context, const ::backend::UserAccount* request, ::backend::Empty* response);
     // Get password
-    virtual ::grpc::Status GetPassword(::grpc::ServerContext* context, const ::backend::UserAccountRequest* request, ::backend::UserAccount* response);
+    virtual ::grpc::Status CheckPassword(::grpc::ServerContext* context, const ::backend::UserAccount* request, ::backend::UserAccountReply* response);
     // Get file list
     virtual ::grpc::Status GetFileList(::grpc::ServerContext* context, const ::backend::FileListRequest* request, ::backend::FileListReply* response);
     // Insert a directory
@@ -212,22 +212,22 @@ class Storage GRPC_FINAL {
     }
   };
   template <class BaseClass>
-  class WithAsyncMethod_GetPassword : public BaseClass {
+  class WithAsyncMethod_CheckPassword : public BaseClass {
    private:
     void BaseClassMustBeDerivedFromService(const Service *service) {}
    public:
-    WithAsyncMethod_GetPassword() {
+    WithAsyncMethod_CheckPassword() {
       ::grpc::Service::MarkMethodAsync(1);
     }
-    ~WithAsyncMethod_GetPassword() GRPC_OVERRIDE {
+    ~WithAsyncMethod_CheckPassword() GRPC_OVERRIDE {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status GetPassword(::grpc::ServerContext* context, const ::backend::UserAccountRequest* request, ::backend::UserAccount* response) GRPC_FINAL GRPC_OVERRIDE {
+    ::grpc::Status CheckPassword(::grpc::ServerContext* context, const ::backend::UserAccount* request, ::backend::UserAccountReply* response) GRPC_FINAL GRPC_OVERRIDE {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
-    void RequestGetPassword(::grpc::ServerContext* context, ::backend::UserAccountRequest* request, ::grpc::ServerAsyncResponseWriter< ::backend::UserAccount>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+    void RequestCheckPassword(::grpc::ServerContext* context, ::backend::UserAccount* request, ::grpc::ServerAsyncResponseWriter< ::backend::UserAccountReply>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
       ::grpc::Service::RequestAsyncUnary(1, context, request, response, new_call_cq, notification_cq, tag);
     }
   };
@@ -351,7 +351,7 @@ class Storage GRPC_FINAL {
       ::grpc::Service::RequestAsyncUnary(7, context, request, response, new_call_cq, notification_cq, tag);
     }
   };
-  typedef WithAsyncMethod_CreateUser<WithAsyncMethod_GetPassword<WithAsyncMethod_GetFileList<WithAsyncMethod_InsertFileList<WithAsyncMethod_PutFile<WithAsyncMethod_UpdateFile<WithAsyncMethod_GetFile<WithAsyncMethod_DeleteFile<Service > > > > > > > > AsyncService;
+  typedef WithAsyncMethod_CreateUser<WithAsyncMethod_CheckPassword<WithAsyncMethod_GetFileList<WithAsyncMethod_InsertFileList<WithAsyncMethod_PutFile<WithAsyncMethod_UpdateFile<WithAsyncMethod_GetFile<WithAsyncMethod_DeleteFile<Service > > > > > > > > AsyncService;
   template <class BaseClass>
   class WithGenericMethod_CreateUser : public BaseClass {
    private:
@@ -370,18 +370,18 @@ class Storage GRPC_FINAL {
     }
   };
   template <class BaseClass>
-  class WithGenericMethod_GetPassword : public BaseClass {
+  class WithGenericMethod_CheckPassword : public BaseClass {
    private:
     void BaseClassMustBeDerivedFromService(const Service *service) {}
    public:
-    WithGenericMethod_GetPassword() {
+    WithGenericMethod_CheckPassword() {
       ::grpc::Service::MarkMethodGeneric(1);
     }
-    ~WithGenericMethod_GetPassword() GRPC_OVERRIDE {
+    ~WithGenericMethod_CheckPassword() GRPC_OVERRIDE {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status GetPassword(::grpc::ServerContext* context, const ::backend::UserAccountRequest* request, ::backend::UserAccount* response) GRPC_FINAL GRPC_OVERRIDE {
+    ::grpc::Status CheckPassword(::grpc::ServerContext* context, const ::backend::UserAccount* request, ::backend::UserAccountReply* response) GRPC_FINAL GRPC_OVERRIDE {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }

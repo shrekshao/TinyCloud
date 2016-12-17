@@ -42,7 +42,7 @@ service Storage {
   // Create new user
   rpc CreateUser (UserAccount) returns (Empty) {}
   // Get password
-  rpc GetPassword (UserAccountRequest) returns (UserAccount) {}
+  rpc CheckPassword (UserAccount) returns (UserAccountReply) {}
   // Get file list
   rpc GetFileList (FileListRequest) returns (FileListReply) {}
   // Insert a directory
@@ -78,8 +78,8 @@ message UserAccount {
     string password = 2;
 }
 
-message UserAccountRequest {
-    string username = 1;
+message UserAccountReply {
+    bool correct = 1;
 }
 
 message FileChunkRequest {
