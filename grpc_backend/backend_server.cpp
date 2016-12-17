@@ -49,6 +49,7 @@ class StorageServiceImpl final : public Storage::Service {
     Status GetFileList(ServerContext* context, const FileListRequest* request, FileListReply* reply) override {
         map<string, Node> res;
         int success = indexer_service.display(request->foldername(), res);
+        fprintf(stderr, "success: %d\n", success);
         if (success == 1) {
             for (map<string, Node>::iterator it = res.begin(); it != res.end(); ++it) {
                 backend::FileInfo fi;
