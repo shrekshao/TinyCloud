@@ -32,9 +32,9 @@ using master::NodesInfoReply;
 using master::NodeIndexRequest;
 using master::NodeInfo;
 
-class master_client {
+class MasterClient {
 public:
-    master_client(std::shared_ptr<Channel> channel)
+    MasterClient(std::shared_ptr<Channel> channel)
     : stub_(Master::NewStub(channel)) {}
 
     // return true if success
