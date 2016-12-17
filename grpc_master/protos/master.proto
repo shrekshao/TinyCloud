@@ -45,6 +45,18 @@ service Master {
     // Return Type: Empty
     // Create A New User, Assign Node Internally
     rpc CreateUser (UserNameRequest) returns (Empty) {}
+
+    // Return Type: Map<string, string>
+    // Return The Status Of Each Node
+    rpc GetNodesStatus (Empty) returns (NodesStatusReply) {}
+
+    // Return Type: Map<string, string>
+    // Return The Users List For Each Node
+    rpc GetNodesInfo (Empty) returns (NodesInfoReply) {}
+
+    // Return Type: Empty
+    // Disable One Node As Requested
+    rpc DisableNode (NodeIndexRequest) returns (Empty) {}
 }
 
 message UserNameRequest {
@@ -53,6 +65,23 @@ message UserNameRequest {
 
 message AddressReply {
     string addr = 1;
+}
+
+message NodesStatusReply {
+    map<string, bool> nodesstatus = 1;
+}
+
+message NodeIndexRequest {
+    uint64 index = 1;
+}
+
+message NodeInfo {
+    string user_list = 1;
+    uint64 user_number = 2;
+}
+
+message NodesInfoReply {
+    map<string, NodeInfo> nodeinfo = 1;
 }
 
 message Empty {

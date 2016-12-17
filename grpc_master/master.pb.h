@@ -26,6 +26,8 @@
 #include <google/protobuf/message.h>
 #include <google/protobuf/repeated_field.h>
 #include <google/protobuf/extension_set.h>
+#include <google/protobuf/map.h>
+#include <google/protobuf/map_field_inl.h>
 #include <google/protobuf/unknown_field_set.h>
 // @@protoc_insertion_point(includes)
 
@@ -38,6 +40,10 @@ void protobuf_ShutdownFile_master_2eproto();
 
 class AddressReply;
 class Empty;
+class NodeIndexRequest;
+class NodeInfo;
+class NodesInfoReply;
+class NodesStatusReply;
 class UserNameRequest;
 
 // ===================================================================
@@ -216,6 +222,374 @@ class AddressReply : public ::google::protobuf::Message /* @@protoc_insertion_po
 };
 // -------------------------------------------------------------------
 
+class NodesStatusReply : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:master.NodesStatusReply) */ {
+ public:
+  NodesStatusReply();
+  virtual ~NodesStatusReply();
+
+  NodesStatusReply(const NodesStatusReply& from);
+
+  inline NodesStatusReply& operator=(const NodesStatusReply& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const NodesStatusReply& default_instance();
+
+  void Swap(NodesStatusReply* other);
+
+  // implements Message ----------------------------------------------
+
+  inline NodesStatusReply* New() const { return New(NULL); }
+
+  NodesStatusReply* New(::google::protobuf::Arena* arena) const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const NodesStatusReply& from);
+  void MergeFrom(const NodesStatusReply& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
+      bool deterministic, ::google::protobuf::uint8* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const {
+    return InternalSerializeWithCachedSizesToArray(false, output);
+  }
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(NodesStatusReply* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return _internal_metadata_.arena();
+  }
+  inline void* MaybeArenaPtr() const {
+    return _internal_metadata_.raw_arena_ptr();
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+
+  // accessors -------------------------------------------------------
+
+  // map<string, bool> nodesstatus = 1;
+  int nodesstatus_size() const;
+  void clear_nodesstatus();
+  static const int kNodesstatusFieldNumber = 1;
+  const ::google::protobuf::Map< ::std::string, bool >&
+      nodesstatus() const;
+  ::google::protobuf::Map< ::std::string, bool >*
+      mutable_nodesstatus();
+
+  // @@protoc_insertion_point(class_scope:master.NodesStatusReply)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  bool _is_default_instance_;
+  typedef ::google::protobuf::internal::MapEntryLite<
+      ::std::string, bool,
+      ::google::protobuf::internal::WireFormatLite::TYPE_STRING,
+      ::google::protobuf::internal::WireFormatLite::TYPE_BOOL,
+      0 >
+      NodesStatusReply_NodesstatusEntry;
+  ::google::protobuf::internal::MapField<
+      ::std::string, bool,
+      ::google::protobuf::internal::WireFormatLite::TYPE_STRING,
+      ::google::protobuf::internal::WireFormatLite::TYPE_BOOL,
+      0 > nodesstatus_;
+  mutable int _cached_size_;
+  friend void  protobuf_AddDesc_master_2eproto();
+  friend void protobuf_AssignDesc_master_2eproto();
+  friend void protobuf_ShutdownFile_master_2eproto();
+
+  void InitAsDefaultInstance();
+  static NodesStatusReply* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class NodeIndexRequest : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:master.NodeIndexRequest) */ {
+ public:
+  NodeIndexRequest();
+  virtual ~NodeIndexRequest();
+
+  NodeIndexRequest(const NodeIndexRequest& from);
+
+  inline NodeIndexRequest& operator=(const NodeIndexRequest& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const NodeIndexRequest& default_instance();
+
+  void Swap(NodeIndexRequest* other);
+
+  // implements Message ----------------------------------------------
+
+  inline NodeIndexRequest* New() const { return New(NULL); }
+
+  NodeIndexRequest* New(::google::protobuf::Arena* arena) const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const NodeIndexRequest& from);
+  void MergeFrom(const NodeIndexRequest& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
+      bool deterministic, ::google::protobuf::uint8* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const {
+    return InternalSerializeWithCachedSizesToArray(false, output);
+  }
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(NodeIndexRequest* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return _internal_metadata_.arena();
+  }
+  inline void* MaybeArenaPtr() const {
+    return _internal_metadata_.raw_arena_ptr();
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // optional uint64 index = 1;
+  void clear_index();
+  static const int kIndexFieldNumber = 1;
+  ::google::protobuf::uint64 index() const;
+  void set_index(::google::protobuf::uint64 value);
+
+  // @@protoc_insertion_point(class_scope:master.NodeIndexRequest)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  bool _is_default_instance_;
+  ::google::protobuf::uint64 index_;
+  mutable int _cached_size_;
+  friend void  protobuf_AddDesc_master_2eproto();
+  friend void protobuf_AssignDesc_master_2eproto();
+  friend void protobuf_ShutdownFile_master_2eproto();
+
+  void InitAsDefaultInstance();
+  static NodeIndexRequest* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class NodeInfo : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:master.NodeInfo) */ {
+ public:
+  NodeInfo();
+  virtual ~NodeInfo();
+
+  NodeInfo(const NodeInfo& from);
+
+  inline NodeInfo& operator=(const NodeInfo& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const NodeInfo& default_instance();
+
+  void Swap(NodeInfo* other);
+
+  // implements Message ----------------------------------------------
+
+  inline NodeInfo* New() const { return New(NULL); }
+
+  NodeInfo* New(::google::protobuf::Arena* arena) const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const NodeInfo& from);
+  void MergeFrom(const NodeInfo& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
+      bool deterministic, ::google::protobuf::uint8* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const {
+    return InternalSerializeWithCachedSizesToArray(false, output);
+  }
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(NodeInfo* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return _internal_metadata_.arena();
+  }
+  inline void* MaybeArenaPtr() const {
+    return _internal_metadata_.raw_arena_ptr();
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // optional string user_list = 1;
+  void clear_user_list();
+  static const int kUserListFieldNumber = 1;
+  const ::std::string& user_list() const;
+  void set_user_list(const ::std::string& value);
+  void set_user_list(const char* value);
+  void set_user_list(const char* value, size_t size);
+  ::std::string* mutable_user_list();
+  ::std::string* release_user_list();
+  void set_allocated_user_list(::std::string* user_list);
+
+  // optional uint64 user_number = 2;
+  void clear_user_number();
+  static const int kUserNumberFieldNumber = 2;
+  ::google::protobuf::uint64 user_number() const;
+  void set_user_number(::google::protobuf::uint64 value);
+
+  // @@protoc_insertion_point(class_scope:master.NodeInfo)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  bool _is_default_instance_;
+  ::google::protobuf::internal::ArenaStringPtr user_list_;
+  ::google::protobuf::uint64 user_number_;
+  mutable int _cached_size_;
+  friend void  protobuf_AddDesc_master_2eproto();
+  friend void protobuf_AssignDesc_master_2eproto();
+  friend void protobuf_ShutdownFile_master_2eproto();
+
+  void InitAsDefaultInstance();
+  static NodeInfo* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class NodesInfoReply : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:master.NodesInfoReply) */ {
+ public:
+  NodesInfoReply();
+  virtual ~NodesInfoReply();
+
+  NodesInfoReply(const NodesInfoReply& from);
+
+  inline NodesInfoReply& operator=(const NodesInfoReply& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const NodesInfoReply& default_instance();
+
+  void Swap(NodesInfoReply* other);
+
+  // implements Message ----------------------------------------------
+
+  inline NodesInfoReply* New() const { return New(NULL); }
+
+  NodesInfoReply* New(::google::protobuf::Arena* arena) const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const NodesInfoReply& from);
+  void MergeFrom(const NodesInfoReply& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
+      bool deterministic, ::google::protobuf::uint8* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const {
+    return InternalSerializeWithCachedSizesToArray(false, output);
+  }
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(NodesInfoReply* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return _internal_metadata_.arena();
+  }
+  inline void* MaybeArenaPtr() const {
+    return _internal_metadata_.raw_arena_ptr();
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+
+  // accessors -------------------------------------------------------
+
+  // map<string, .master.NodeInfo> nodeinfo = 1;
+  int nodeinfo_size() const;
+  void clear_nodeinfo();
+  static const int kNodeinfoFieldNumber = 1;
+  const ::google::protobuf::Map< ::std::string, ::master::NodeInfo >&
+      nodeinfo() const;
+  ::google::protobuf::Map< ::std::string, ::master::NodeInfo >*
+      mutable_nodeinfo();
+
+  // @@protoc_insertion_point(class_scope:master.NodesInfoReply)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  bool _is_default_instance_;
+  typedef ::google::protobuf::internal::MapEntryLite<
+      ::std::string, ::master::NodeInfo,
+      ::google::protobuf::internal::WireFormatLite::TYPE_STRING,
+      ::google::protobuf::internal::WireFormatLite::TYPE_MESSAGE,
+      0 >
+      NodesInfoReply_NodeinfoEntry;
+  ::google::protobuf::internal::MapField<
+      ::std::string, ::master::NodeInfo,
+      ::google::protobuf::internal::WireFormatLite::TYPE_STRING,
+      ::google::protobuf::internal::WireFormatLite::TYPE_MESSAGE,
+      0 > nodeinfo_;
+  mutable int _cached_size_;
+  friend void  protobuf_AddDesc_master_2eproto();
+  friend void protobuf_AssignDesc_master_2eproto();
+  friend void protobuf_ShutdownFile_master_2eproto();
+
+  void InitAsDefaultInstance();
+  static NodesInfoReply* default_instance_;
+};
+// -------------------------------------------------------------------
+
 class Empty : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:master.Empty) */ {
  public:
   Empty();
@@ -391,9 +765,141 @@ inline void AddressReply::set_allocated_addr(::std::string* addr) {
 
 // -------------------------------------------------------------------
 
+// NodesStatusReply
+
+// map<string, bool> nodesstatus = 1;
+inline int NodesStatusReply::nodesstatus_size() const {
+  return nodesstatus_.size();
+}
+inline void NodesStatusReply::clear_nodesstatus() {
+  nodesstatus_.Clear();
+}
+inline const ::google::protobuf::Map< ::std::string, bool >&
+NodesStatusReply::nodesstatus() const {
+  // @@protoc_insertion_point(field_map:master.NodesStatusReply.nodesstatus)
+  return nodesstatus_.GetMap();
+}
+inline ::google::protobuf::Map< ::std::string, bool >*
+NodesStatusReply::mutable_nodesstatus() {
+  // @@protoc_insertion_point(field_mutable_map:master.NodesStatusReply.nodesstatus)
+  return nodesstatus_.MutableMap();
+}
+
+// -------------------------------------------------------------------
+
+// NodeIndexRequest
+
+// optional uint64 index = 1;
+inline void NodeIndexRequest::clear_index() {
+  index_ = GOOGLE_ULONGLONG(0);
+}
+inline ::google::protobuf::uint64 NodeIndexRequest::index() const {
+  // @@protoc_insertion_point(field_get:master.NodeIndexRequest.index)
+  return index_;
+}
+inline void NodeIndexRequest::set_index(::google::protobuf::uint64 value) {
+  
+  index_ = value;
+  // @@protoc_insertion_point(field_set:master.NodeIndexRequest.index)
+}
+
+// -------------------------------------------------------------------
+
+// NodeInfo
+
+// optional string user_list = 1;
+inline void NodeInfo::clear_user_list() {
+  user_list_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline const ::std::string& NodeInfo::user_list() const {
+  // @@protoc_insertion_point(field_get:master.NodeInfo.user_list)
+  return user_list_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void NodeInfo::set_user_list(const ::std::string& value) {
+  
+  user_list_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:master.NodeInfo.user_list)
+}
+inline void NodeInfo::set_user_list(const char* value) {
+  
+  user_list_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:master.NodeInfo.user_list)
+}
+inline void NodeInfo::set_user_list(const char* value, size_t size) {
+  
+  user_list_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:master.NodeInfo.user_list)
+}
+inline ::std::string* NodeInfo::mutable_user_list() {
+  
+  // @@protoc_insertion_point(field_mutable:master.NodeInfo.user_list)
+  return user_list_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline ::std::string* NodeInfo::release_user_list() {
+  // @@protoc_insertion_point(field_release:master.NodeInfo.user_list)
+  
+  return user_list_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void NodeInfo::set_allocated_user_list(::std::string* user_list) {
+  if (user_list != NULL) {
+    
+  } else {
+    
+  }
+  user_list_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), user_list);
+  // @@protoc_insertion_point(field_set_allocated:master.NodeInfo.user_list)
+}
+
+// optional uint64 user_number = 2;
+inline void NodeInfo::clear_user_number() {
+  user_number_ = GOOGLE_ULONGLONG(0);
+}
+inline ::google::protobuf::uint64 NodeInfo::user_number() const {
+  // @@protoc_insertion_point(field_get:master.NodeInfo.user_number)
+  return user_number_;
+}
+inline void NodeInfo::set_user_number(::google::protobuf::uint64 value) {
+  
+  user_number_ = value;
+  // @@protoc_insertion_point(field_set:master.NodeInfo.user_number)
+}
+
+// -------------------------------------------------------------------
+
+// NodesInfoReply
+
+// map<string, .master.NodeInfo> nodeinfo = 1;
+inline int NodesInfoReply::nodeinfo_size() const {
+  return nodeinfo_.size();
+}
+inline void NodesInfoReply::clear_nodeinfo() {
+  nodeinfo_.Clear();
+}
+inline const ::google::protobuf::Map< ::std::string, ::master::NodeInfo >&
+NodesInfoReply::nodeinfo() const {
+  // @@protoc_insertion_point(field_map:master.NodesInfoReply.nodeinfo)
+  return nodeinfo_.GetMap();
+}
+inline ::google::protobuf::Map< ::std::string, ::master::NodeInfo >*
+NodesInfoReply::mutable_nodeinfo() {
+  // @@protoc_insertion_point(field_mutable_map:master.NodesInfoReply.nodeinfo)
+  return nodeinfo_.MutableMap();
+}
+
+// -------------------------------------------------------------------
+
 // Empty
 
 #endif  // !PROTOBUF_INLINE_NOT_IN_HEADERS
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

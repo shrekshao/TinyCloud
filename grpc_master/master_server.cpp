@@ -9,6 +9,8 @@
 #include <string>
 #include <string.h>
 #include <pthread.h>
+#include <sstream>
+#include <algorithm>
 
 #include <grpc++/grpc++.h>
 
@@ -26,6 +28,9 @@ using master::Master;
 using master::UserNameRequest;
 using master::AddressReply;
 using master::Empty;
+using master::NodesStatusReply;
+using master::NodesInfoReply;
+using master::NodeIndexRequest;
 
 // master server IP:Port
 const char*  server_ip = "0.0.0.0:52013";
@@ -39,6 +44,7 @@ string ERR = "ERR";
 class MasterServiceImpl final : public Master::Service {
     // getting the user address
     Status GetUserAddr(ServerContext* context, const UserNameRequest* request, AddressReply* reply) override {
+        cout << "[GRPC]:Receiving GET USER Call\n";
         string addr = master_service.get_user_node(request->username());
         // check if it is an error
         if(addr.substr(0, ERR.size()) == ERR) {
@@ -50,6 +56,7 @@ class MasterServiceImpl final : public Master::Service {
     }
     // create a master
     Status CreateUser(ServerContext* context, const UserNameRequest* request, Empty* reply) override {
+        cout << "[GRPC]:Receiving CREATE USER Call\n";
         int success = master_service.create_user(request->username());
         if (success >= 0) {
             return Status::OK;
@@ -57,6 +64,53 @@ class MasterServiceImpl final : public Master::Service {
             return Status::CANCELLED;
         }
     }
+    // getting a map indicating the status of all the nodes
+    Status GetNodesStatus(ServerContext* context, const Empty* request, NodesStatusReply* reply) override {
+        map<string, bool> res;
+        int success = master_service.get_status(res);
+        if (success == 1) {
+            // writing to the reply map
+            for (map<string, bool>::iterator it = res.begin(); it != res.end(); ++it) {
+                (*reply->mutable_nodesstatus())[it->first] = it->second;
+            }
+            return Status::OK;
+        } else {
+            return Status::CANCELLED;
+        }
+    }
+    // getting a info map indicating the raw data of all the nodes
+    Status GetNodesInfo(ServerContext* context, const Empty* request, NodesInfoReply* reply) override {
+        map<string, StorageNodeInfo> res;
+        int success = master_service.get_info(res);
+        if (success == 1) {
+            // writing to the reply map
+            for (map<string, StorageNodeInfo>::iterator it = res.begin(); it != res.end(); ++it) {
+                // convert the list to a printable string
+                stringstream ss;
+                copy( it->second.user_list.begin(), it->second.user_list.end(), ostream_iterator<string>(ss, " "));
+                string s = ss.str();
+                s = s.substr(0, s.length()-1);  // get rid of the trailing space
+                master::NodeInfo ni;
+                ni.set_user_list(s);
+                ni.set_user_number(it->second.user_number);
+                (*reply->mutable_nodeinfo())[it->first] = ni;
+            }
+            return Status::OK;
+        } else {
+            return Status::CANCELLED;
+        }
+    }
+    // disenable a node
+    Status DisableNode(ServerContext* context, const NodeIndexRequest* request, Empty* reply) override {
+        int node_index = (int)request->index();
+        int success = master_service.disenable_node(node_index);
+        if (success == 1) {
+            return Status::OK;
+        } else {
+            return Status::CANCELLED;
+        }
+    }
+
 };
 
 // function for background thread

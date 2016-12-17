@@ -18,6 +18,9 @@ namespace master {
 static const char* Master_method_names[] = {
   "/master.Master/GetUserAddr",
   "/master.Master/CreateUser",
+  "/master.Master/GetNodesStatus",
+  "/master.Master/GetNodesInfo",
+  "/master.Master/DisableNode",
 };
 
 std::unique_ptr< Master::Stub> Master::NewStub(const std::shared_ptr< ::grpc::ChannelInterface>& channel, const ::grpc::StubOptions& options) {
@@ -28,6 +31,9 @@ std::unique_ptr< Master::Stub> Master::NewStub(const std::shared_ptr< ::grpc::Ch
 Master::Stub::Stub(const std::shared_ptr< ::grpc::ChannelInterface>& channel)
   : channel_(channel), rpcmethod_GetUserAddr_(Master_method_names[0], ::grpc::RpcMethod::NORMAL_RPC, channel)
   , rpcmethod_CreateUser_(Master_method_names[1], ::grpc::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_GetNodesStatus_(Master_method_names[2], ::grpc::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_GetNodesInfo_(Master_method_names[3], ::grpc::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_DisableNode_(Master_method_names[4], ::grpc::RpcMethod::NORMAL_RPC, channel)
   {}
 
 ::grpc::Status Master::Stub::GetUserAddr(::grpc::ClientContext* context, const ::master::UserNameRequest& request, ::master::AddressReply* response) {
@@ -46,6 +52,30 @@ Master::Stub::Stub(const std::shared_ptr< ::grpc::ChannelInterface>& channel)
   return new ::grpc::ClientAsyncResponseReader< ::master::Empty>(channel_.get(), cq, rpcmethod_CreateUser_, context, request);
 }
 
+::grpc::Status Master::Stub::GetNodesStatus(::grpc::ClientContext* context, const ::master::Empty& request, ::master::NodesStatusReply* response) {
+  return ::grpc::BlockingUnaryCall(channel_.get(), rpcmethod_GetNodesStatus_, context, request, response);
+}
+
+::grpc::ClientAsyncResponseReader< ::master::NodesStatusReply>* Master::Stub::AsyncGetNodesStatusRaw(::grpc::ClientContext* context, const ::master::Empty& request, ::grpc::CompletionQueue* cq) {
+  return new ::grpc::ClientAsyncResponseReader< ::master::NodesStatusReply>(channel_.get(), cq, rpcmethod_GetNodesStatus_, context, request);
+}
+
+::grpc::Status Master::Stub::GetNodesInfo(::grpc::ClientContext* context, const ::master::Empty& request, ::master::NodesInfoReply* response) {
+  return ::grpc::BlockingUnaryCall(channel_.get(), rpcmethod_GetNodesInfo_, context, request, response);
+}
+
+::grpc::ClientAsyncResponseReader< ::master::NodesInfoReply>* Master::Stub::AsyncGetNodesInfoRaw(::grpc::ClientContext* context, const ::master::Empty& request, ::grpc::CompletionQueue* cq) {
+  return new ::grpc::ClientAsyncResponseReader< ::master::NodesInfoReply>(channel_.get(), cq, rpcmethod_GetNodesInfo_, context, request);
+}
+
+::grpc::Status Master::Stub::DisableNode(::grpc::ClientContext* context, const ::master::NodeIndexRequest& request, ::master::Empty* response) {
+  return ::grpc::BlockingUnaryCall(channel_.get(), rpcmethod_DisableNode_, context, request, response);
+}
+
+::grpc::ClientAsyncResponseReader< ::master::Empty>* Master::Stub::AsyncDisableNodeRaw(::grpc::ClientContext* context, const ::master::NodeIndexRequest& request, ::grpc::CompletionQueue* cq) {
+  return new ::grpc::ClientAsyncResponseReader< ::master::Empty>(channel_.get(), cq, rpcmethod_DisableNode_, context, request);
+}
+
 Master::Service::Service() {
   (void)Master_method_names;
   AddMethod(new ::grpc::RpcServiceMethod(
@@ -58,6 +88,21 @@ Master::Service::Service() {
       ::grpc::RpcMethod::NORMAL_RPC,
       new ::grpc::RpcMethodHandler< Master::Service, ::master::UserNameRequest, ::master::Empty>(
           std::mem_fn(&Master::Service::CreateUser), this)));
+  AddMethod(new ::grpc::RpcServiceMethod(
+      Master_method_names[2],
+      ::grpc::RpcMethod::NORMAL_RPC,
+      new ::grpc::RpcMethodHandler< Master::Service, ::master::Empty, ::master::NodesStatusReply>(
+          std::mem_fn(&Master::Service::GetNodesStatus), this)));
+  AddMethod(new ::grpc::RpcServiceMethod(
+      Master_method_names[3],
+      ::grpc::RpcMethod::NORMAL_RPC,
+      new ::grpc::RpcMethodHandler< Master::Service, ::master::Empty, ::master::NodesInfoReply>(
+          std::mem_fn(&Master::Service::GetNodesInfo), this)));
+  AddMethod(new ::grpc::RpcServiceMethod(
+      Master_method_names[4],
+      ::grpc::RpcMethod::NORMAL_RPC,
+      new ::grpc::RpcMethodHandler< Master::Service, ::master::NodeIndexRequest, ::master::Empty>(
+          std::mem_fn(&Master::Service::DisableNode), this)));
 }
 
 Master::Service::~Service() {
@@ -71,6 +116,27 @@ Master::Service::~Service() {
 }
 
 ::grpc::Status Master::Service::CreateUser(::grpc::ServerContext* context, const ::master::UserNameRequest* request, ::master::Empty* response) {
+  (void) context;
+  (void) request;
+  (void) response;
+  return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+}
+
+::grpc::Status Master::Service::GetNodesStatus(::grpc::ServerContext* context, const ::master::Empty* request, ::master::NodesStatusReply* response) {
+  (void) context;
+  (void) request;
+  (void) response;
+  return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+}
+
+::grpc::Status Master::Service::GetNodesInfo(::grpc::ServerContext* context, const ::master::Empty* request, ::master::NodesInfoReply* response) {
+  (void) context;
+  (void) request;
+  (void) response;
+  return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+}
+
+::grpc::Status Master::Service::DisableNode(::grpc::ServerContext* context, const ::master::NodeIndexRequest* request, ::master::Empty* response) {
   (void) context;
   (void) request;
   (void) response;

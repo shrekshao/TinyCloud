@@ -50,7 +50,7 @@ MasterNode: master.pb.o master.grpc.pb.o master_server.o MasterNode.o
 	$(CXX) $^ $(LDFLAGS) -o $@
 master_server: master.pb.o master.grpc.pb.o master_server.o MasterNode.o
 	$(CXX) $^ $(LDFLAGS) -o $@
-master_client: master.pb.o master.grpc.pb.o master_client.o master_server.o MasterNode.o
+master_client: master.pb.o master.grpc.pb.o master_client.o
 	$(CXX) $^ $(LDFLAGS) -o $@
 
 

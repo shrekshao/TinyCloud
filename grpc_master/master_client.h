@@ -28,7 +28,6 @@ using master::UserNameRequest;
 using master::AddressReply;
 using master::Empty;
 
-
 class master_client {
 public:
     master_client(std::shared_ptr<Channel> channel)
@@ -87,6 +86,10 @@ public:
         }
     }
 
+
+
+private:
+    std::unique_ptr<Master::Stub> stub_;
 };
 
 

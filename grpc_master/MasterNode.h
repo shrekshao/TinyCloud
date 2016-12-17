@@ -38,6 +38,16 @@
 // using this name space
 using namespace std;
 
+// design a class for saving a node
+class StorageNodeInfo {
+public:
+    int user_number;
+    int storage_size;
+    vector<string> user_list;
+    StorageNodeInfo() {
+    }
+};
+
 class MasterNode {
     // storage number from the txt config file
     int max_node_number;
@@ -60,6 +70,12 @@ public:
     int create_user(string username);
     // checking if a storage node is down
     int failure_checking();
+    // getting a map indicating the status of all the nodes
+    int get_status(map<string, bool> &status);
+    // getting a map indicating the user distribution accross the nodes
+    int get_info(map<string, StorageNodeInfo> &info);
+    // disenable a node from master
+    int disenable_node(int index);
     // suppliment function
     int hash_user2node(string username) {
         hash<string> hash_fn;
