@@ -37,6 +37,7 @@ using backend::UserAccount;
 using backend::UserAccountReply;
 using backend::Log;
 using backend::Buffer;
+using backend::MemTableInfo;
 
 const char*  primary_server_ip = "0.0.0.0:50051";
 const char*  replica_server_ip = "0.0.0.0:50052";
@@ -359,6 +360,12 @@ class StorageServiceImpl final : public Storage::Service {
 
         return Status::OK;
     }
+
+    Status GetMemTableInfo (ServerContext* context, const Empty* request, MemTableInfo* reply) override {
+        reply->set_buffer_length(bigtable_service.getCur_pt());
+
+        return Status::OK;
+    }
 };
 
 void RunServer() {
@@ -378,7 +385,7 @@ void RunServer() {
     std::cout << "Server primary listening on " << primary_server_address << std::endl;
     */
 
-    ofstream of(log_file, ostream::app);
+    ofstream of(log_file, ostream::out | ostream::app);
     of.close();
 
     // Replica port
