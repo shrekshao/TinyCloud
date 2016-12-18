@@ -62,6 +62,16 @@ service Master {
     // Disable One Node As Requested
     rpc EnableNode (NodeIndexRequest) returns (Empty) {}
 
+    // As Server
+    // Return Type: BufferLength
+    // Request Buffer Raw Meta From Storage Node
+    rpc SendMemTableInfo (Empty) returns (MemTableInfoReply) {}
+
+    // As Client
+    // Return Type: BufferLength
+    // Request Buffer Raw Meta From Storage Node
+    rpc GetMemTableInfo (Empty) returns (MemTableInfo) {}
+
 }
 
 message UserNameRequest {
@@ -70,6 +80,14 @@ message UserNameRequest {
 
 message AddressReply {
     string addr = 1;
+}
+
+message MemTableInfo {
+    uint64 buffer_length = 1;
+}
+
+message MemTableInfoReply {
+    map<string, MemTableInfo> nodememinfo = 1;
 }
 
 message NodesStatusReply {

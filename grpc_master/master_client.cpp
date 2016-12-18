@@ -30,15 +30,6 @@ int main(int argc, char *argv[])
 
     cout << "-------------------------------------\n";
 
-    string username_3 = "ganxiaoqing";
-    if (msClient.CreateUser(username_3)) {
-        cout << "User: " << username_3 << " is created!\n";
-    } else {
-        cout << "User: " << username_3 << " is failed to create!\n";
-    }
-
-    cout << "-------------------------------------\n";
-
     string addr;
     if (msClient.GetUserAddr(username, addr)) {
         cout << "Retrived Info Successfully!\n";
@@ -67,10 +58,20 @@ int main(int argc, char *argv[])
     cout << "-------------------------------------\n";
 
     // trigger one node to be offline
-    if (msClient.DisableNode(2)) {
+    if (msClient.DisableNode(0)) {
         cout << "Disable Node Successfully!\n";
     } else {
         cout << "Disable Node Failed!\n";
+    }
+
+    cout << "-------------------------------------\n";
+
+    string addr_2;
+    if (msClient.GetUserAddr(username, addr_2)) {
+        cout << "Retrived Info Successfully!\n";
+        cout << "User: " << username << " is re-directed to Node: " << addr_2 << "\n";
+    } else {
+        cout << "Retrived Info Failed!\n";
     }
 
     cout << "-------------------------------------\n";
