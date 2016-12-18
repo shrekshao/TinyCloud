@@ -9,3 +9,5 @@ grpc_master/master_client
 grpc_master/MasterNode
 grpc_master/master_server
 .idea/
+grpc_backend/primary_log.txt
+grpc_backend/replica_log.txt

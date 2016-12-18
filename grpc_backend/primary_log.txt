@@ -1,1 +1,0 @@
-DeleteFile:put(tianli, folder1/gmail.png)
