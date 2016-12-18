@@ -55,9 +55,12 @@ service Storage {
   rpc GetFile (FileChunkRequest) returns (FileChunk) {}
   // Delete a file
   rpc DeleteFile (FileChunkRequest) returns (Empty) {}
+  // Return memtable info to master
+  rpc GetMemTableInfo (Empty) returns (MemTableInfo) {}
 
   // Backend Communication
   rpc GetLog (Empty) returns (Log) {}
+  rpc GetBuffer (Empty) returns (Buffer) {}
 }
 
 // The request message containing the user/folder's name.
@@ -101,9 +104,19 @@ message FileChunk {
 }
 
 message Log {
-    bytes data = 1;
+    int64 size = 1;
+    bytes data = 2;
+}
+
+message Buffer {
+    int64 size = 1;
+    bytes data = 2;
 }
 
 message Empty {
 
+}
+
+message MemTableInfo {
+    uint64 buffer_length = 1;
 }

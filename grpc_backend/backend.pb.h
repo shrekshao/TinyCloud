@@ -38,6 +38,7 @@ void protobuf_AddDesc_backend_2eproto();
 void protobuf_AssignDesc_backend_2eproto();
 void protobuf_ShutdownFile_backend_2eproto();
 
+class Buffer;
 class Empty;
 class FileChunk;
 class FileChunkRequest;
@@ -45,6 +46,7 @@ class FileInfo;
 class FileListReply;
 class FileListRequest;
 class Log;
+class MemTableInfo;
 class UserAccount;
 class UserAccountReply;
 
@@ -828,9 +830,15 @@ class Log : public ::google::protobuf::Message /* @@protoc_insertion_point(class
 
   // accessors -------------------------------------------------------
 
-  // optional bytes data = 1;
+  // optional int64 size = 1;
+  void clear_size();
+  static const int kSizeFieldNumber = 1;
+  ::google::protobuf::int64 size() const;
+  void set_size(::google::protobuf::int64 value);
+
+  // optional bytes data = 2;
   void clear_data();
-  static const int kDataFieldNumber = 1;
+  static const int kDataFieldNumber = 2;
   const ::std::string& data() const;
   void set_data(const ::std::string& value);
   void set_data(const char* value);
@@ -844,6 +852,7 @@ class Log : public ::google::protobuf::Message /* @@protoc_insertion_point(class
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   bool _is_default_instance_;
+  ::google::protobuf::int64 size_;
   ::google::protobuf::internal::ArenaStringPtr data_;
   mutable int _cached_size_;
   friend void  protobuf_AddDesc_backend_2eproto();
@@ -852,6 +861,100 @@ class Log : public ::google::protobuf::Message /* @@protoc_insertion_point(class
 
   void InitAsDefaultInstance();
   static Log* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class Buffer : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:backend.Buffer) */ {
+ public:
+  Buffer();
+  virtual ~Buffer();
+
+  Buffer(const Buffer& from);
+
+  inline Buffer& operator=(const Buffer& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const Buffer& default_instance();
+
+  void Swap(Buffer* other);
+
+  // implements Message ----------------------------------------------
+
+  inline Buffer* New() const { return New(NULL); }
+
+  Buffer* New(::google::protobuf::Arena* arena) const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const Buffer& from);
+  void MergeFrom(const Buffer& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
+      bool deterministic, ::google::protobuf::uint8* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const {
+    return InternalSerializeWithCachedSizesToArray(false, output);
+  }
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(Buffer* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return _internal_metadata_.arena();
+  }
+  inline void* MaybeArenaPtr() const {
+    return _internal_metadata_.raw_arena_ptr();
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // optional int64 size = 1;
+  void clear_size();
+  static const int kSizeFieldNumber = 1;
+  ::google::protobuf::int64 size() const;
+  void set_size(::google::protobuf::int64 value);
+
+  // optional bytes data = 2;
+  void clear_data();
+  static const int kDataFieldNumber = 2;
+  const ::std::string& data() const;
+  void set_data(const ::std::string& value);
+  void set_data(const char* value);
+  void set_data(const void* value, size_t size);
+  ::std::string* mutable_data();
+  ::std::string* release_data();
+  void set_allocated_data(::std::string* data);
+
+  // @@protoc_insertion_point(class_scope:backend.Buffer)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  bool _is_default_instance_;
+  ::google::protobuf::int64 size_;
+  ::google::protobuf::internal::ArenaStringPtr data_;
+  mutable int _cached_size_;
+  friend void  protobuf_AddDesc_backend_2eproto();
+  friend void protobuf_AssignDesc_backend_2eproto();
+  friend void protobuf_ShutdownFile_backend_2eproto();
+
+  void InitAsDefaultInstance();
+  static Buffer* default_instance_;
 };
 // -------------------------------------------------------------------
 
@@ -927,6 +1030,88 @@ class Empty : public ::google::protobuf::Message /* @@protoc_insertion_point(cla
 
   void InitAsDefaultInstance();
   static Empty* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class MemTableInfo : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:backend.MemTableInfo) */ {
+ public:
+  MemTableInfo();
+  virtual ~MemTableInfo();
+
+  MemTableInfo(const MemTableInfo& from);
+
+  inline MemTableInfo& operator=(const MemTableInfo& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const MemTableInfo& default_instance();
+
+  void Swap(MemTableInfo* other);
+
+  // implements Message ----------------------------------------------
+
+  inline MemTableInfo* New() const { return New(NULL); }
+
+  MemTableInfo* New(::google::protobuf::Arena* arena) const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const MemTableInfo& from);
+  void MergeFrom(const MemTableInfo& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
+      bool deterministic, ::google::protobuf::uint8* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const {
+    return InternalSerializeWithCachedSizesToArray(false, output);
+  }
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(MemTableInfo* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return _internal_metadata_.arena();
+  }
+  inline void* MaybeArenaPtr() const {
+    return _internal_metadata_.raw_arena_ptr();
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // optional uint64 buffer_length = 1;
+  void clear_buffer_length();
+  static const int kBufferLengthFieldNumber = 1;
+  ::google::protobuf::uint64 buffer_length() const;
+  void set_buffer_length(::google::protobuf::uint64 value);
+
+  // @@protoc_insertion_point(class_scope:backend.MemTableInfo)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  bool _is_default_instance_;
+  ::google::protobuf::uint64 buffer_length_;
+  mutable int _cached_size_;
+  friend void  protobuf_AddDesc_backend_2eproto();
+  friend void protobuf_AssignDesc_backend_2eproto();
+  friend void protobuf_ShutdownFile_backend_2eproto();
+
+  void InitAsDefaultInstance();
+  static MemTableInfo* default_instance_;
 };
 // ===================================================================
 
@@ -1566,7 +1751,21 @@ inline void FileChunk::set_allocated_orig_data(::std::string* orig_data) {
 
 // Log
 
-// optional bytes data = 1;
+// optional int64 size = 1;
+inline void Log::clear_size() {
+  size_ = GOOGLE_LONGLONG(0);
+}
+inline ::google::protobuf::int64 Log::size() const {
+  // @@protoc_insertion_point(field_get:backend.Log.size)
+  return size_;
+}
+inline void Log::set_size(::google::protobuf::int64 value) {
+  
+  size_ = value;
+  // @@protoc_insertion_point(field_set:backend.Log.size)
+}
+
+// optional bytes data = 2;
 inline void Log::clear_data() {
   data_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -1612,9 +1811,93 @@ inline void Log::set_allocated_data(::std::string* data) {
 
 // -------------------------------------------------------------------
 
+// Buffer
+
+// optional int64 size = 1;
+inline void Buffer::clear_size() {
+  size_ = GOOGLE_LONGLONG(0);
+}
+inline ::google::protobuf::int64 Buffer::size() const {
+  // @@protoc_insertion_point(field_get:backend.Buffer.size)
+  return size_;
+}
+inline void Buffer::set_size(::google::protobuf::int64 value) {
+  
+  size_ = value;
+  // @@protoc_insertion_point(field_set:backend.Buffer.size)
+}
+
+// optional bytes data = 2;
+inline void Buffer::clear_data() {
+  data_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline const ::std::string& Buffer::data() const {
+  // @@protoc_insertion_point(field_get:backend.Buffer.data)
+  return data_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void Buffer::set_data(const ::std::string& value) {
+  
+  data_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:backend.Buffer.data)
+}
+inline void Buffer::set_data(const char* value) {
+  
+  data_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:backend.Buffer.data)
+}
+inline void Buffer::set_data(const void* value, size_t size) {
+  
+  data_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:backend.Buffer.data)
+}
+inline ::std::string* Buffer::mutable_data() {
+  
+  // @@protoc_insertion_point(field_mutable:backend.Buffer.data)
+  return data_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline ::std::string* Buffer::release_data() {
+  // @@protoc_insertion_point(field_release:backend.Buffer.data)
+  
+  return data_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void Buffer::set_allocated_data(::std::string* data) {
+  if (data != NULL) {
+    
+  } else {
+    
+  }
+  data_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), data);
+  // @@protoc_insertion_point(field_set_allocated:backend.Buffer.data)
+}
+
+// -------------------------------------------------------------------
+
 // Empty
 
+// -------------------------------------------------------------------
+
+// MemTableInfo
+
+// optional uint64 buffer_length = 1;
+inline void MemTableInfo::clear_buffer_length() {
+  buffer_length_ = GOOGLE_ULONGLONG(0);
+}
+inline ::google::protobuf::uint64 MemTableInfo::buffer_length() const {
+  // @@protoc_insertion_point(field_get:backend.MemTableInfo.buffer_length)
+  return buffer_length_;
+}
+inline void MemTableInfo::set_buffer_length(::google::protobuf::uint64 value) {
+  
+  buffer_length_ = value;
+  // @@protoc_insertion_point(field_set:backend.MemTableInfo.buffer_length)
+}
+
 #endif  // !PROTOBUF_INLINE_NOT_IN_HEADERS
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------
