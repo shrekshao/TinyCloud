@@ -383,6 +383,7 @@ int MasterNode::checking_node_data() {
             MasterClient msClient(grpc::CreateChannel(
                     replica_mapping[ip_mapping[i]], grpc::InsecureChannelCredentials()));
             backend::MemTableInfo res;
+            cout << "Primary Failed! Redirected ->" << replica_mapping[ip_mapping[i]] << "\n";
             if (msClient.GetMemTableInfo(res)) {
                 cout << "Storage Metadata Retrived Success!\n";
                 cout << "Buffer Size: " << res.buffer_length() << "\n";
