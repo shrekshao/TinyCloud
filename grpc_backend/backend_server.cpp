@@ -600,6 +600,7 @@ void RunRestart() {
     string buffer;
     if (replicar.GetLog_Backup(buffer) == -1) {
         fprintf(stderr, "Restart fail!");
+        return;
     }
 
     ofstream outfile("primary_log_tmp.txt");

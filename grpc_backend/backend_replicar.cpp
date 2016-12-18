@@ -421,6 +421,7 @@ void RunRestart() {
     string buffer;
     if (primarior.GetLog_Backup(buffer) == -1) {
         fprintf(stderr, "Restart fail!");
+        return;
     }
 
     ofstream outfile("replica_log_tmp.txt");
