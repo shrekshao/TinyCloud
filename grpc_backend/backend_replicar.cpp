@@ -45,6 +45,9 @@ BigTabler bigtable_service(replica_server_ip);
 // Log mutex
 mutex replica_mutex;
 
+// Log file
+string log_file = "replica_log.txt";
+
 // Logic and data behind the server's behavior.
 class StorageServiceImpl final : public Storage::Service {
 
@@ -327,7 +330,7 @@ void* gcHelper(void*) {
     int res = 1;
     while (res == 1) {
         sleep(DELETE_BUFFER_TIME);
-        res = bigtable_service.gc();
+        res = bigtable_service.gc(log_file);
     }
     pthread_exit(NULL);
 }
@@ -396,8 +399,10 @@ int main(int argc, char** argv) {
 }
 
 void writeToLog(string& msg) {
-    ofstream replica_log(string("replica_log.txt", ofstream::app));
+    bigtable_service.log_mutex.lock();
+    ofstream replica_log(string(log_file, ofstream::app));
     replica_log.write(msg.c_str(), msg.size());
     replica_log.close();
+    bigtable_service.log_mutex.unlock();
 }
 

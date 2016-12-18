@@ -45,6 +45,9 @@ BigTabler bigtable_service(primary_server_ip);
 // Log mutex
 mutex primary_mutex;
 
+// Log file
+string log_file = "primary_log.txt";
+
 /*
  * Client Class to call replica server
  */
@@ -208,13 +211,16 @@ class StorageServiceImpl final : public Storage::Service {
         writeToLog(log);
 
         int success1 = indexer_service.insert(request->username(), false);
+
         if (success1 == -1) {
             primary_mutex.unlock();
             return Status::CANCELLED;
         }
 
+        fprintf(stdout, "Insert into indexer successfully\n");
         int success2 = bigtable_service.createuser(request->username(), request->password());
         if (success2 == 1) {
+            fprintf(stdout, "Insert into bigtabler successfully\n");
             primary_mutex.unlock();
             return Status::OK;
         } else {
@@ -510,7 +516,7 @@ void* gcHelper(void*) {
     int res = 1;
     while (res == 1) {
         sleep(DELETE_BUFFER_TIME);
-        res = bigtable_service.gc();
+        res = bigtable_service.gc(log_file);
     }
     pthread_exit(NULL);
 }
@@ -584,7 +590,9 @@ int main(int argc, char** argv) {
 }
 
 void writeToLog(string& msg) {
-    ofstream replica_log(string("primary_log.txt", ofstream::app));
+    bigtable_service.log_mutex.lock();
+    ofstream replica_log(string(log_file, ofstream::app));
     replica_log.write(msg.c_str(), msg.size());
     replica_log.close();
+    bigtable_service.log_mutex.unlock();
 }
