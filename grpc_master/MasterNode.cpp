@@ -356,6 +356,10 @@ int MasterNode::failure_checking() {
             printf("Error connecting %s:%s\n", vec[0].c_str(), vec[1].c_str());
             // mark this node as unavaliable
             crash_mapping[i] = true;
+        } else {
+            printf("Successfully connected %s:%s\n", vec[0].c_str(), vec[1].c_str());
+            // mark this node as unavaliable
+            crash_mapping[i] = false;
         }
     }
     return 1;

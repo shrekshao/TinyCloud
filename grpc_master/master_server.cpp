@@ -153,7 +153,7 @@ void* failureCheckingHelper(void*) {
     int res = 1;
     while (res == 1) {
         // this garbage collector will run every 100s
-        cout << "Node Failure Scanning..." <<endl;
+        //cout << "Node Failure Scanning..." <<endl;
         this_thread::sleep_for (chrono::seconds(1));
         res = master_service.failure_checking();
     }
