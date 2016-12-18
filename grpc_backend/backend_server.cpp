@@ -777,9 +777,12 @@ void primaryLogParser(string line, ofstream& outfile) {
         string size;
         getline(ss, size, ',');
         int length = stoi(size);
-        string temp[length];
+        //string temp[length];
+        vector<string> temp;
+        string str;
         for (int i = 0; i < length; i++) {
-            getline(ss, temp[i], ',');
+            getline(ss, str, ',');
+            temp.push_back(str);
         }
         bigtable_service.gcLog(sstable, temp, length);
     }

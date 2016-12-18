@@ -497,7 +497,7 @@ int BigTabler::clearSSTable(map<string, vector<pair<time_t, FileMeta>>>::iterato
     return 1;
 }
 
-void BigTabler::gcLog(string sstable, string temp[], int length) {
+void BigTabler::gcLog(string sstable, vector<string> temp, int length) {
     int pt = 0;
     int i = 0;
     vector<string>::iterator iter = sstable_indexer.at(sstable).begin();

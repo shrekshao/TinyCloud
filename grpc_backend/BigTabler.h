@@ -106,7 +106,7 @@ public:
     int getMemtable(unsigned char* result);
     int put (string username, string file_name, string file_type, unsigned int file_size);
     void setMemtable(string& temp);
-    void gcLog(string sstable, string temp[], int length);
+    void gcLog(string sstable, vector<string> temp, int length);
     //void writeToLog(string& msg);
 };
 
