@@ -378,6 +378,9 @@ void RunServer() {
     std::cout << "Server primary listening on " << primary_server_address << std::endl;
     */
 
+    ofstream of(log_file, ostream::app);
+    of.close();
+
     // Replica port
     std::string replica_server_address(replica_server_ip);
     StorageServiceImpl replica_service;
