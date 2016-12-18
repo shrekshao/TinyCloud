@@ -52,6 +52,9 @@ const ::google::protobuf::internal::GeneratedMessageReflection*
 const ::google::protobuf::Descriptor* Empty_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   Empty_reflection_ = NULL;
+const ::google::protobuf::Descriptor* MemTableInfo_descriptor_ = NULL;
+const ::google::protobuf::internal::GeneratedMessageReflection*
+  MemTableInfo_reflection_ = NULL;
 
 }  // namespace
 
@@ -225,6 +228,21 @@ void protobuf_AssignDesc_backend_2eproto() {
       sizeof(Empty),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Empty, _internal_metadata_),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Empty, _is_default_instance_));
+  MemTableInfo_descriptor_ = file->message_type(10);
+  static const int MemTableInfo_offsets_[1] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MemTableInfo, buffer_length_),
+  };
+  MemTableInfo_reflection_ =
+    ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
+      MemTableInfo_descriptor_,
+      MemTableInfo::default_instance_,
+      MemTableInfo_offsets_,
+      -1,
+      -1,
+      -1,
+      sizeof(MemTableInfo),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MemTableInfo, _internal_metadata_),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MemTableInfo, _is_default_instance_));
 }
 
 namespace {
@@ -267,6 +285,8 @@ void protobuf_RegisterTypes(const ::std::string&) {
       Buffer_descriptor_, &Buffer::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
       Empty_descriptor_, &Empty::default_instance());
+  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
+      MemTableInfo_descriptor_, &MemTableInfo::default_instance());
 }
 
 }  // namespace
@@ -292,6 +312,8 @@ void protobuf_ShutdownFile_backend_2eproto() {
   delete Buffer_reflection_;
   delete Empty::default_instance_;
   delete Empty_reflection_;
+  delete MemTableInfo::default_instance_;
+  delete MemTableInfo_reflection_;
 }
 
 void protobuf_AddDesc_backend_2eproto() GOOGLE_ATTRIBUTE_COLD;
@@ -317,22 +339,24 @@ void protobuf_AddDesc_backend_2eproto() {
     "\010filetype\030\004 \001(\t\022\014\n\004data\030\005 \001(\014\022\023\n\013orig_le"
     "ngth\030\006 \001(\004\022\021\n\torig_data\030\007 \001(\014\"!\n\003Log\022\014\n\004"
     "size\030\001 \001(\003\022\014\n\004data\030\002 \001(\014\"$\n\006Buffer\022\014\n\004si"
-    "ze\030\001 \001(\003\022\014\n\004data\030\002 \001(\014\"\007\n\005Empty2\272\004\n\007Stor"
-    "age\0224\n\nCreateUser\022\024.backend.UserAccount\032"
-    "\016.backend.Empty\"\000\022B\n\rCheckPassword\022\024.bac"
-    "kend.UserAccount\032\031.backend.UserAccountRe"
-    "ply\"\000\022A\n\013GetFileList\022\030.backend.FileListR"
-    "equest\032\026.backend.FileListReply\"\000\022<\n\016Inse"
-    "rtFileList\022\030.backend.FileListRequest\032\016.b"
-    "ackend.Empty\"\000\022/\n\007PutFile\022\022.backend.File"
-    "Chunk\032\016.backend.Empty\"\000\0222\n\nUpdateFile\022\022."
-    "backend.FileChunk\032\016.backend.Empty\"\000\022:\n\007G"
-    "etFile\022\031.backend.FileChunkRequest\032\022.back"
-    "end.FileChunk\"\000\0229\n\nDeleteFile\022\031.backend."
-    "FileChunkRequest\032\016.backend.Empty\"\000\022(\n\006Ge"
-    "tLog\022\016.backend.Empty\032\014.backend.Log\"\000\022.\n\t"
-    "GetBuffer\022\016.backend.Empty\032\017.backend.Buff"
-    "er\"\000B\006\242\002\003HLWb\006proto3", 1220);
+    "ze\030\001 \001(\003\022\014\n\004data\030\002 \001(\014\"\007\n\005Empty\"%\n\014MemTa"
+    "bleInfo\022\025\n\rbuffer_length\030\001 \001(\0042\366\004\n\007Stora"
+    "ge\0224\n\nCreateUser\022\024.backend.UserAccount\032\016"
+    ".backend.Empty\"\000\022B\n\rCheckPassword\022\024.back"
+    "end.UserAccount\032\031.backend.UserAccountRep"
+    "ly\"\000\022A\n\013GetFileList\022\030.backend.FileListRe"
+    "quest\032\026.backend.FileListReply\"\000\022<\n\016Inser"
+    "tFileList\022\030.backend.FileListRequest\032\016.ba"
+    "ckend.Empty\"\000\022/\n\007PutFile\022\022.backend.FileC"
+    "hunk\032\016.backend.Empty\"\000\0222\n\nUpdateFile\022\022.b"
+    "ackend.FileChunk\032\016.backend.Empty\"\000\022:\n\007Ge"
+    "tFile\022\031.backend.FileChunkRequest\032\022.backe"
+    "nd.FileChunk\"\000\0229\n\nDeleteFile\022\031.backend.F"
+    "ileChunkRequest\032\016.backend.Empty\"\000\022:\n\017Get"
+    "MemTableInfo\022\016.backend.Empty\032\025.backend.M"
+    "emTableInfo\"\000\022(\n\006GetLog\022\016.backend.Empty\032"
+    "\014.backend.Log\"\000\022.\n\tGetBuffer\022\016.backend.E"
+    "mpty\032\017.backend.Buffer\"\000B\006\242\002\003HLWb\006proto3", 1319);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "backend.proto", &protobuf_RegisterTypes);
   FileListRequest::default_instance_ = new FileListRequest();
@@ -345,6 +369,7 @@ void protobuf_AddDesc_backend_2eproto() {
   Log::default_instance_ = new Log();
   Buffer::default_instance_ = new Buffer();
   Empty::default_instance_ = new Empty();
+  MemTableInfo::default_instance_ = new MemTableInfo();
   FileListRequest::default_instance_->InitAsDefaultInstance();
   FileListReply::default_instance_->InitAsDefaultInstance();
   FileInfo::default_instance_->InitAsDefaultInstance();
@@ -355,6 +380,7 @@ void protobuf_AddDesc_backend_2eproto() {
   Log::default_instance_->InitAsDefaultInstance();
   Buffer::default_instance_->InitAsDefaultInstance();
   Empty::default_instance_->InitAsDefaultInstance();
+  MemTableInfo::default_instance_->InitAsDefaultInstance();
   ::google::protobuf::internal::OnShutdown(&protobuf_ShutdownFile_backend_2eproto);
 }
 
@@ -4022,6 +4048,244 @@ void Empty::InternalSwap(Empty* other) {
 
 #if PROTOBUF_INLINE_NOT_IN_HEADERS
 // Empty
+
+#endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
+
+// ===================================================================
+
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+const int MemTableInfo::kBufferLengthFieldNumber;
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+
+MemTableInfo::MemTableInfo()
+  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:backend.MemTableInfo)
+}
+
+void MemTableInfo::InitAsDefaultInstance() {
+  _is_default_instance_ = true;
+}
+
+MemTableInfo::MemTableInfo(const MemTableInfo& from)
+  : ::google::protobuf::Message(),
+    _internal_metadata_(NULL) {
+  SharedCtor();
+  MergeFrom(from);
+  // @@protoc_insertion_point(copy_constructor:backend.MemTableInfo)
+}
+
+void MemTableInfo::SharedCtor() {
+    _is_default_instance_ = false;
+  _cached_size_ = 0;
+  buffer_length_ = GOOGLE_ULONGLONG(0);
+}
+
+MemTableInfo::~MemTableInfo() {
+  // @@protoc_insertion_point(destructor:backend.MemTableInfo)
+  SharedDtor();
+}
+
+void MemTableInfo::SharedDtor() {
+  if (this != default_instance_) {
+  }
+}
+
+void MemTableInfo::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* MemTableInfo::descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return MemTableInfo_descriptor_;
+}
+
+const MemTableInfo& MemTableInfo::default_instance() {
+  if (default_instance_ == NULL) protobuf_AddDesc_backend_2eproto();
+  return *default_instance_;
+}
+
+MemTableInfo* MemTableInfo::default_instance_ = NULL;
+
+MemTableInfo* MemTableInfo::New(::google::protobuf::Arena* arena) const {
+  MemTableInfo* n = new MemTableInfo;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
+
+void MemTableInfo::Clear() {
+// @@protoc_insertion_point(message_clear_start:backend.MemTableInfo)
+  buffer_length_ = GOOGLE_ULONGLONG(0);
+}
+
+bool MemTableInfo::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:backend.MemTableInfo)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // optional uint64 buffer_length = 1;
+      case 1: {
+        if (tag == 8) {
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint64, ::google::protobuf::internal::WireFormatLite::TYPE_UINT64>(
+                 input, &buffer_length_)));
+
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectAtEnd()) goto success;
+        break;
+      }
+
+      default: {
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          goto success;
+        }
+        DO_(::google::protobuf::internal::WireFormatLite::SkipField(input, tag));
+        break;
+      }
+    }
+  }
+success:
+  // @@protoc_insertion_point(parse_success:backend.MemTableInfo)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:backend.MemTableInfo)
+  return false;
+#undef DO_
+}
+
+void MemTableInfo::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:backend.MemTableInfo)
+  // optional uint64 buffer_length = 1;
+  if (this->buffer_length() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt64(1, this->buffer_length(), output);
+  }
+
+  // @@protoc_insertion_point(serialize_end:backend.MemTableInfo)
+}
+
+::google::protobuf::uint8* MemTableInfo::InternalSerializeWithCachedSizesToArray(
+    bool deterministic, ::google::protobuf::uint8* target) const {
+  // @@protoc_insertion_point(serialize_to_array_start:backend.MemTableInfo)
+  // optional uint64 buffer_length = 1;
+  if (this->buffer_length() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt64ToArray(1, this->buffer_length(), target);
+  }
+
+  // @@protoc_insertion_point(serialize_to_array_end:backend.MemTableInfo)
+  return target;
+}
+
+int MemTableInfo::ByteSize() const {
+// @@protoc_insertion_point(message_byte_size_start:backend.MemTableInfo)
+  int total_size = 0;
+
+  // optional uint64 buffer_length = 1;
+  if (this->buffer_length() != 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::UInt64Size(
+        this->buffer_length());
+  }
+
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = total_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void MemTableInfo::MergeFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:backend.MemTableInfo)
+  if (GOOGLE_PREDICT_FALSE(&from == this)) {
+    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
+  }
+  const MemTableInfo* source = 
+      ::google::protobuf::internal::DynamicCastToGenerated<const MemTableInfo>(
+          &from);
+  if (source == NULL) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:backend.MemTableInfo)
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:backend.MemTableInfo)
+    MergeFrom(*source);
+  }
+}
+
+void MemTableInfo::MergeFrom(const MemTableInfo& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:backend.MemTableInfo)
+  if (GOOGLE_PREDICT_FALSE(&from == this)) {
+    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
+  }
+  if (from.buffer_length() != 0) {
+    set_buffer_length(from.buffer_length());
+  }
+}
+
+void MemTableInfo::CopyFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:backend.MemTableInfo)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void MemTableInfo::CopyFrom(const MemTableInfo& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:backend.MemTableInfo)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool MemTableInfo::IsInitialized() const {
+
+  return true;
+}
+
+void MemTableInfo::Swap(MemTableInfo* other) {
+  if (other == this) return;
+  InternalSwap(other);
+}
+void MemTableInfo::InternalSwap(MemTableInfo* other) {
+  std::swap(buffer_length_, other->buffer_length_);
+  _internal_metadata_.Swap(&other->_internal_metadata_);
+  std::swap(_cached_size_, other->_cached_size_);
+}
+
+::google::protobuf::Metadata MemTableInfo::GetMetadata() const {
+  protobuf_AssignDescriptorsOnce();
+  ::google::protobuf::Metadata metadata;
+  metadata.descriptor = MemTableInfo_descriptor_;
+  metadata.reflection = MemTableInfo_reflection_;
+  return metadata;
+}
+
+#if PROTOBUF_INLINE_NOT_IN_HEADERS
+// MemTableInfo
+
+// optional uint64 buffer_length = 1;
+void MemTableInfo::clear_buffer_length() {
+  buffer_length_ = GOOGLE_ULONGLONG(0);
+}
+ ::google::protobuf::uint64 MemTableInfo::buffer_length() const {
+  // @@protoc_insertion_point(field_get:backend.MemTableInfo.buffer_length)
+  return buffer_length_;
+}
+ void MemTableInfo::set_buffer_length(::google::protobuf::uint64 value) {
+  
+  buffer_length_ = value;
+  // @@protoc_insertion_point(field_set:backend.MemTableInfo.buffer_length)
+}
 
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
 

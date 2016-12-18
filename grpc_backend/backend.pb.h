@@ -46,6 +46,7 @@ class FileInfo;
 class FileListReply;
 class FileListRequest;
 class Log;
+class MemTableInfo;
 class UserAccount;
 class UserAccountReply;
 
@@ -1030,6 +1031,88 @@ class Empty : public ::google::protobuf::Message /* @@protoc_insertion_point(cla
   void InitAsDefaultInstance();
   static Empty* default_instance_;
 };
+// -------------------------------------------------------------------
+
+class MemTableInfo : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:backend.MemTableInfo) */ {
+ public:
+  MemTableInfo();
+  virtual ~MemTableInfo();
+
+  MemTableInfo(const MemTableInfo& from);
+
+  inline MemTableInfo& operator=(const MemTableInfo& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const MemTableInfo& default_instance();
+
+  void Swap(MemTableInfo* other);
+
+  // implements Message ----------------------------------------------
+
+  inline MemTableInfo* New() const { return New(NULL); }
+
+  MemTableInfo* New(::google::protobuf::Arena* arena) const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const MemTableInfo& from);
+  void MergeFrom(const MemTableInfo& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
+      bool deterministic, ::google::protobuf::uint8* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const {
+    return InternalSerializeWithCachedSizesToArray(false, output);
+  }
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(MemTableInfo* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return _internal_metadata_.arena();
+  }
+  inline void* MaybeArenaPtr() const {
+    return _internal_metadata_.raw_arena_ptr();
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // optional uint64 buffer_length = 1;
+  void clear_buffer_length();
+  static const int kBufferLengthFieldNumber = 1;
+  ::google::protobuf::uint64 buffer_length() const;
+  void set_buffer_length(::google::protobuf::uint64 value);
+
+  // @@protoc_insertion_point(class_scope:backend.MemTableInfo)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  bool _is_default_instance_;
+  ::google::protobuf::uint64 buffer_length_;
+  mutable int _cached_size_;
+  friend void  protobuf_AddDesc_backend_2eproto();
+  friend void protobuf_AssignDesc_backend_2eproto();
+  friend void protobuf_ShutdownFile_backend_2eproto();
+
+  void InitAsDefaultInstance();
+  static MemTableInfo* default_instance_;
+};
 // ===================================================================
 
 
@@ -1792,7 +1875,27 @@ inline void Buffer::set_allocated_data(::std::string* data) {
 
 // Empty
 
+// -------------------------------------------------------------------
+
+// MemTableInfo
+
+// optional uint64 buffer_length = 1;
+inline void MemTableInfo::clear_buffer_length() {
+  buffer_length_ = GOOGLE_ULONGLONG(0);
+}
+inline ::google::protobuf::uint64 MemTableInfo::buffer_length() const {
+  // @@protoc_insertion_point(field_get:backend.MemTableInfo.buffer_length)
+  return buffer_length_;
+}
+inline void MemTableInfo::set_buffer_length(::google::protobuf::uint64 value) {
+  
+  buffer_length_ = value;
+  // @@protoc_insertion_point(field_set:backend.MemTableInfo.buffer_length)
+}
+
 #endif  // !PROTOBUF_INLINE_NOT_IN_HEADERS
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

@@ -37,6 +37,7 @@ using backend::UserAccount;
 using backend::UserAccountReply;
 using backend::Log;
 using backend::Buffer;
+using backend::MemTableInfo;
 
 const char*  primary_server_ip = "0.0.0.0:50051";
 const char*  replica_server_ip = "0.0.0.0:50052";
@@ -529,6 +530,10 @@ class StorageServiceImpl final : public Storage::Service {
 
         reply->set_size(bigtable_service.getCur_pt());
         reply->set_data(&result[0], bigtable_service.getCur_pt());
+    }
+
+    Status GetMemTableInfo (ServerContext* context, const Empty* request, MemTableInfo* reply) override {
+        reply->set_buffer_length(bigtable_service.getCur_pt());
     }
 };
 
