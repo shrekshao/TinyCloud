@@ -616,8 +616,9 @@ void RunRestart() {
 
     ofstream outfile("primary_log_tmp.txt");
 
+    stringstream ss(buffer);
     string line;
-    while (getline(stringstream(buffer), line)) {
+    while (getline(ss, line)) {
         replicaLogParser(line, outfile);
     }
 
@@ -716,7 +717,7 @@ void replicaLogParser(string line, ofstream& outfile) {
     getline(ss, group, ':');
     if (strcmp(group.c_str(), "CreateUser") == 0) {
         fprintf(stderr, "CreateUser handler\n");
-        outfile.write(line.c_str(), strlen(line.c_str()));
+        outfile.write((line+"\n").c_str(), strlen((line+"\n").c_str()));
         string username;
         getline(ss, username, '(');
         getline(ss, username, ',');
@@ -729,7 +730,7 @@ void replicaLogParser(string line, ofstream& outfile) {
 
     } else if (strcmp(group.c_str(), "InsertFileList") == 0) {
         fprintf(stderr, "InsertFileList handler\n");
-        outfile.write(line.c_str(), strlen(line.c_str()));
+        outfile.write((line+"\n").c_str(), strlen((line+"\n").c_str()));
         string username;
         getline(ss, username, '(');
         getline(ss, username, ',');
@@ -737,7 +738,7 @@ void replicaLogParser(string line, ofstream& outfile) {
 
     } else if (strcmp(group.c_str(), "PutFile") == 0) {
         fprintf(stderr, "PutFile handler\n");
-        outfile.write(line.c_str(), strlen(line.c_str()));
+        outfile.write((line+"\n").c_str(), strlen((line+"\n").c_str()));
         string username, filename, filetype, filelength;
         getline(ss, username, ',');
         getline(ss, filename, ',');
@@ -749,7 +750,7 @@ void replicaLogParser(string line, ofstream& outfile) {
 
     } else if (strcmp(group.c_str(), "UpdateFile") == 0) {
         fprintf(stderr, "UpdateFile handler\n");
-        outfile.write(line.c_str(), strlen(line.c_str()));
+        outfile.write((line+"\n").c_str(), strlen((line+"\n").c_str()));
         string username, filename, filetype, filelength;
         getline(ss, username, ',');
         getline(ss, filename, ')');
@@ -762,7 +763,7 @@ void replicaLogParser(string line, ofstream& outfile) {
 
     } else if (strcmp(group.c_str(), "DeleteFile") == 0) {
         fprintf(stderr, "DeleteFile handler\n");
-        outfile.write(line.c_str(), strlen(line.c_str()));
+        outfile.write((line+"\n").c_str(), strlen((line+"\n").c_str()));
         string username, filename, filetype, filelength;
         getline(ss, username, ',');
         getline(ss, filename, ')');
@@ -780,7 +781,7 @@ void primaryLogParser(string line, ofstream& outfile) {
     getline(ss, group, ':');
     if (strcmp(group.c_str(), "GC") == 0) {
         fprintf(stderr, "GC handler\n");
-        outfile.write(line.c_str(), strlen(line.c_str()));
+        outfile.write((line+"\n").c_str(), strlen((line+"\n").c_str()));
         string sstable;
         getline(ss, sstable, ',');
 

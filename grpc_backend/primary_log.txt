@@ -1,0 +1,5 @@
+CreateUser:insert(shrekshao,false):createuser(shrekshao,123)
+PutFile:put(shrekshao,gmail.png,png,19079):insert(shrekshao/gmail.png,true)
+InsertFileList:insert(/shrekshao/aa,false)
+PutFile:put(shrekshao,Di-new-avatar.png,png,138017):insert(shrekshao/Di-new-avatar.png,true)
+DeleteFile:delet(shrekshao, Di-new-avatar.png)
