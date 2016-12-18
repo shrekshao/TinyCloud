@@ -201,10 +201,9 @@ public:
         ClientContext context;
         Status status = stub_->GetLog(&context, request, &reply);
 
-        buffer = reply.data();
-
         // Act upon its status.
         if (status.ok()) {
+            buffer = reply.data();
             return 1;
         } else {
             std::cout << status.error_code() << ": " << status.error_message() << std::endl;
@@ -218,10 +217,9 @@ public:
         ClientContext context;
         Status status = stub_->GetBuffer(&context, request, &reply);
 
-        buffer = reply.data();
-
         // Act upon its status.
         if (status.ok()) {
+            buffer = reply.data();
             return 1;
         } else {
             std::cout << status.error_code() << ": " << status.error_message() << std::endl;
@@ -512,16 +510,18 @@ class StorageServiceImpl final : public Storage::Service {
     }
 
     Status GetLog(ServerContext* context, const Empty* request, Log* reply) override {
-        ifstream ifs(log_file, ios::binary|ios::ate);
-        ifstream::pos_type pos = ifs.tellg();
 
-        std::vector<char>  result(pos);
+        ifstream ifs(log_file, ios::binary|ios::ate);
+        int pos = ifs.tellg();
+
+        char result[pos];
 
         ifs.seekg(0, ios::beg);
-        ifs.read(&result[0], pos);
+        ifs.read(result, pos);
 
         reply->set_size(pos);
-        reply->set_data(&result[0], pos);
+        reply->set_data(result, pos);
+        return Status::OK;
     }
 
     Status GetBuffer(ServerContext* context, const Empty* request, Buffer* reply) override {
@@ -530,14 +530,19 @@ class StorageServiceImpl final : public Storage::Service {
 
         reply->set_size(bigtable_service.getCur_pt());
         reply->set_data(&result[0], bigtable_service.getCur_pt());
+
+        return Status::OK;
     }
 
     Status GetMemTableInfo (ServerContext* context, const Empty* request, MemTableInfo* reply) override {
         reply->set_buffer_length(bigtable_service.getCur_pt());
+
+        return Status::OK;
     }
 };
 
 void RunServer() {
+
     // Primary port
     std::string primary_server_address(primary_server_ip);
     StorageServiceImpl primary_service;
@@ -575,6 +580,7 @@ void RunServer() {
     // Wait for the server to shutdown. Note that some other thread must be
     // responsible for shutting down the server for this call to ever return.
 
+
     primary_server->Wait();
 }
 
@@ -592,16 +598,17 @@ void RunGC() {
     pthread_t gcthread;
 
     pthread_create(&gcthread, NULL, &gcHelper, NULL);
-    rc = pthread_join(gcthread, NULL);
 }
 
 void RunRestart() {
 
     string buffer;
     if (replicar.GetLog_Backup(buffer) == -1) {
-        fprintf(stderr, "Restart fail!");
+        fprintf(stderr, "GetLog_Backup fail!\n");
         return;
     }
+
+    fprintf(stderr, "Get log successfully! Log size: %zu\n", strlen(buffer.c_str()));
 
     ofstream outfile("primary_log_tmp.txt");
 
@@ -619,7 +626,12 @@ void RunRestart() {
     }
 
     string memtable;
-    replicar.GetBuffer_Backup(memtable);
+    if (replicar.GetBuffer_Backup(memtable) == -1) {
+        fprintf(stderr, "GetBuffer_Backup fail!\n");
+    }
+
+    fprintf(stderr, "Get buffer successfully! Buffersize: %zu\n", strlen(memtable.c_str()));
+
     bigtable_service.setMemtable(memtable);
 
     outfile.close();
@@ -628,7 +640,7 @@ void RunRestart() {
 }
 
 int main(int argc, char** argv) {
-    ///* Indexer test
+    /* Indexer test
     cout << indexer_service.insert("/tianli", false) << endl;
     cout << indexer_service.insert("/tianli/folder1", false) << endl;
     cout << indexer_service.insert("/tianli/folder2", false) << endl;
@@ -640,9 +652,9 @@ int main(int argc, char** argv) {
     for (map<string, Node>::iterator it = res.begin(); it != res.end(); ++it) {
         cout << it->first << " " << it->second.is_file << endl;
     }
-    //*/
+    */
 
-    ///* File storage test
+    /* File storage test
     ifstream ifs1("file1.txt", ios::binary|ios::ate);
     ifstream::pos_type pos1 = ifs1.tellg();
 
@@ -679,7 +691,7 @@ int main(int argc, char** argv) {
     cout << indexer_service.delet("tianli/file2") << endl;
     cout << bigtable_service.delet("tianli", "file2") << endl;
     cout << indexer_service.delet("tianli/folder2") << endl;
-    //*/
+    */
 
     RunServer();
 

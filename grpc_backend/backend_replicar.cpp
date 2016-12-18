@@ -66,10 +66,9 @@ public:
         ClientContext context;
         Status status = stub_->GetLog(&context, request, &reply);
 
-        buffer = reply.data();
-
         // Act upon its status.
         if (status.ok()) {
+            buffer = reply.data();
             return 1;
         } else {
             std::cout << status.error_code() << ": " << status.error_message() << std::endl;
@@ -83,10 +82,9 @@ public:
         ClientContext context;
         Status status = stub_->GetBuffer(&context, request, &reply);
 
-        buffer = reply.data();
-
         // Act upon its status.
         if (status.ok()) {
+            buffer = reply.data();
             return 1;
         } else {
             std::cout << status.error_code() << ": " << status.error_message() << std::endl;
@@ -338,15 +336,17 @@ class StorageServiceImpl final : public Storage::Service {
 
     Status GetLog(ServerContext* context, const Empty* request, Log* reply) override {
         ifstream ifs(log_file, ios::binary|ios::ate);
-        ifstream::pos_type pos = ifs.tellg();
-
-        std::vector<char>  result(pos);
+        int pos = ifs.tellg();
+        fprintf(stdout, "pos: %d", pos);
+        char result[pos];
 
         ifs.seekg(0, ios::beg);
-        ifs.read(&result[0], pos);
+        ifs.read(result, pos);
 
         reply->set_size(pos);
-        reply->set_data(&result[0], pos);
+        reply->set_data(result, pos);
+
+        return Status::OK;
     }
 
     Status GetBuffer(ServerContext* context, const Empty* request, Buffer* reply) override {
@@ -355,10 +355,13 @@ class StorageServiceImpl final : public Storage::Service {
 
         reply->set_size(bigtable_service.getCur_pt());
         reply->set_data(&result[0], bigtable_service.getCur_pt());
+
+        return Status::OK;
     }
 };
 
 void RunServer() {
+
     /*// Primary port
     std::string primary_server_address(primary_server_ip);
     StorageServiceImpl primary_service;
@@ -413,34 +416,40 @@ void RunGC() {
     pthread_t gcthread;
 
     pthread_create(&gcthread, NULL, &gcHelper, NULL);
-    rc = pthread_join(gcthread, NULL);
 }
 
 void RunRestart() {
 
     string buffer;
     if (primarior.GetLog_Backup(buffer) == -1) {
-        fprintf(stderr, "Restart fail!");
+        fprintf(stderr, "GetLog_Backup fail!\n");
         return;
     }
 
-    ofstream outfile("replica_log_tmp.txt");
+    fprintf(stderr, "Get log successfully! Log size: %zu\n", strlen(buffer.c_str()));
+
+    ofstream outfile("primary_log_tmp.txt");
 
     string line;
     while (getline(stringstream(buffer), line)) {
-        primaryLogParser(line, outfile);
+        replicaLogParser(line, outfile);
     }
 
     ifstream myfile(log_file);
     if (myfile) {
         while (getline(myfile, line)) {
-            replicaLogParser(line, outfile);
+            primaryLogParser(line, outfile);
         }
         myfile.close();
     }
 
     string memtable;
-    primarior.GetBuffer_Backup(memtable);
+    if (primarior.GetBuffer_Backup(memtable) == -1) {
+        fprintf(stderr, "GetBuffer_Backup fail!\n");
+    }
+
+    fprintf(stderr, "Get buffer successfully! Buffersize: %zu\n", strlen(memtable.c_str()));
+
     bigtable_service.setMemtable(memtable);
 
     outfile.close();
