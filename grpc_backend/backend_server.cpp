@@ -611,6 +611,10 @@ void RunRestart() {
         myfile.close();
     }
 
+    string memtable;
+    replicar.GetBuffer_Backup(memtable);
+    bigtable_service.setMemtable(memtable);
+
 }
 
 int main(int argc, char** argv) {

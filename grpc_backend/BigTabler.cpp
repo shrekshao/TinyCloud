@@ -177,6 +177,8 @@ int BigTabler::put (string username, string file_name, string file_type, unsigne
 
         memtable_file.clear();
 
+        cur_pt = 0;
+
         file_id++;
         deleted_files_mutex.emplace(piecewise_construct, forward_as_tuple(to_string(file_id)), forward_as_tuple());
         deleted_files.emplace(piecewise_construct, forward_as_tuple(to_string(file_id)), forward_as_tuple());
@@ -185,6 +187,10 @@ int BigTabler::put (string username, string file_name, string file_type, unsigne
 
         // put the file metainfo in big table
         big_table.at(username).emplace(piecewise_construct, forward_as_tuple(file_name), forward_as_tuple(cur_pt, file_size, username, file_name, file_type, to_string(file_id), false, false));
+
+        memtable_file.emplace(memtable_file.end(), username+"/"+file_name);
+
+        cur_pt += file_size;
     }
 
     return 1;
@@ -365,25 +371,27 @@ int BigTabler::gc(string& log_file) {
                 boost::upgrade_lock<boost::shared_mutex> lock(sstable_mutex.at(it->first));
                 boost::upgrade_to_unique_lock<boost::shared_mutex> uniqueLock(lock);
 
-                deleted_files_mutex.at(it->first).lock();
-                vector<pair<time_t, FileMeta>>::iterator ite = remove_if(it->second.begin(), it->second.end(), predicate());
-                if (clearSSTable(it, ite) == -1) {
-                    continue;
-                }
-
                 log_mutex.lock();
                 ofstream replica_log(log_file, ofstream::app);
                 string msg("GC:"+it->first+",");
                 replica_log.write(msg.c_str(), msg.size());
-                for (vector<pair<time_t, FileMeta>>::iterator myiter = ite; myiter != it->second.end(); ++myiter) {
-                    string msg("(" + myiter->second.username + "," + myiter->second.file_name + ")");
-                    replica_log.write(msg.c_str(), msg.size());
+
+                deleted_files_mutex.at(it->first).lock();
+                vector<pair<time_t, FileMeta>>::iterator ite = remove_if(it->second.begin(), it->second.end(), predicate());
+                if (clearSSTable(it, ite, replica_log) == -1) {
+                    string msg2("\n");
+                    replica_log.write(msg2.c_str(), msg2.size());
+                    replica_log.close();
+                    log_mutex.unlock();
+                    continue;
                 }
+
                 string msg2("\n");
                 replica_log.write(msg2.c_str(), msg2.size());
                 replica_log.close();
                 log_mutex.unlock();
 
+                // Update deleted_files
                 it->second.erase(ite, it->second.end());
                 deleted_files_mutex.at(it->first).unlock();
             }
@@ -400,6 +408,10 @@ int BigTabler::getMemtable(unsigned char* result) {
     strcpy((char *) result, (char *) memtable);
 
     return 1;
+}
+
+void BigTabler::setMemtable(string& temp) {
+    strcpy((char *) memtable, temp.c_str());
 }
 
 // Helper functions************************************************************************************************************
@@ -423,7 +435,7 @@ bool BigTabler::needClear(vector<pair<time_t, FileMeta>> &vec) {
  * return: 1    success
  *         -1   fail
  */
-int BigTabler::clearSSTable(map<string, vector<pair<time_t, FileMeta>>>::iterator it, vector<pair<time_t, FileMeta>>::iterator ite) {
+int BigTabler::clearSSTable(map<string, vector<pair<time_t, FileMeta>>>::iterator it, vector<pair<time_t, FileMeta>>::iterator ite, ofstream& replica_log) {
     priority_queue<pair<unsigned int, string>, vector<pair<unsigned int, string>>, Compare> minHeap;
     for (vector<pair<time_t, FileMeta>>::iterator myite = ite; myite != it->second.end(); ++myite) {
         minHeap.push(make_pair(myite->second.buffer_start, myite->second.username + "/" + myite->second.file_name));
@@ -457,6 +469,11 @@ int BigTabler::clearSSTable(map<string, vector<pair<time_t, FileMeta>>>::iterato
     for ( ; iter != sstable_indexer.at(it->first).end(); ) {
         if ((*iter).compare(minHeap.top().second) == 0) {
             minHeap.pop();
+
+            string msg("," + *iter);
+            replica_log.write(msg.c_str(), msg.size());
+
+            // Update sstable_indexer
             iter = sstable_indexer.at(it->first).erase(iter);
         } else {
             string username = (*iter).substr(0, (*iter).find("/"));
