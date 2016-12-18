@@ -340,13 +340,13 @@ class StorageServiceImpl final : public Storage::Service {
         fprintf(stderr, "pos: %d", pos);
 
         char result[pos];
-        /*
+
         ifs.seekg(0, ios::beg);
         ifs.read(result, pos);
 
         reply->set_size(pos);
         reply->set_data(result, pos);
-*/
+
         return Status::OK;
     }
 

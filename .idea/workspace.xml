@@ -13,8 +13,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3ea8be24-81d5-4b07-9999-442d3051c571" name="Default" comment="">
+      <change type="DELETED" beforePath="$PROJECT_DIR$/grpc_master/crash_checkpoint.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/grpc_master/user_checkpoint.txt" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/grpc_backend/Makefile" afterPath="$PROJECT_DIR$/grpc_backend/Makefile" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/grpc_backend/backend_replicar.cpp" afterPath="$PROJECT_DIR$/grpc_backend/backend_replicar.cpp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/grpc_master/Makefile" afterPath="$PROJECT_DIR$/grpc_master/Makefile" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -45,7 +48,7 @@
       <file leaf-file-name="MasterNode.cpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/grpc_master/MasterNode.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="644">
+            <state relative-caret-position="5850">
               <caret line="390" column="13" lean-forward="false" selection-start-line="390" selection-start-column="13" selection-end-line="390" selection-end-column="13" />
               <folding />
             </state>
@@ -55,7 +58,7 @@
       <file leaf-file-name="master_client.cpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/grpc_master/master_client.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="329">
+            <state relative-caret-position="1065">
               <caret line="71" column="77" lean-forward="false" selection-start-line="71" selection-start-column="77" selection-end-line="71" selection-end-column="77" />
               <folding />
             </state>
@@ -65,7 +68,7 @@
       <file leaf-file-name="MasterNode.h" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/grpc_master/MasterNode.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="119">
+            <state relative-caret-position="1350">
               <caret line="90" column="39" lean-forward="false" selection-start-line="90" selection-start-column="24" selection-end-line="90" selection-end-column="39" />
               <folding />
             </state>
@@ -85,18 +88,28 @@
       <file leaf-file-name="Makefile" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/grpc_master/Makefile">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="479">
-              <caret line="33" column="22" lean-forward="false" selection-start-line="33" selection-start-column="22" selection-end-line="33" selection-end-column="22" />
+            <state relative-caret-position="224">
+              <caret line="16" column="24" lean-forward="false" selection-start-line="16" selection-start-column="24" selection-end-line="16" selection-end-column="24" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="backend_server.cpp" pinned="false" current-in-tab="true">
+      <file leaf-file-name="backend_server.cpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/grpc_backend/backend_server.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="509">
-              <caret line="759" column="51" lean-forward="true" selection-start-line="759" selection-start-column="51" selection-end-line="759" selection-end-column="51" />
+            <state relative-caret-position="8759">
+              <caret line="762" column="26" lean-forward="false" selection-start-line="762" selection-start-column="26" selection-end-line="762" selection-end-column="26" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="backend_replicar.cpp" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/grpc_backend/backend_replicar.cpp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="30">
+              <caret line="338" column="30" lean-forward="true" selection-start-line="338" selection-start-column="30" selection-end-line="338" selection-end-column="30" />
               <folding />
             </state>
           </provider>
@@ -105,8 +118,8 @@
       <file leaf-file-name="Makefile" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/grpc_backend/Makefile">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="420">
-              <caret line="38" column="15" lean-forward="true" selection-start-line="38" selection-start-column="15" selection-end-line="38" selection-end-column="15" />
+            <state relative-caret-position="450">
+              <caret line="38" column="15" lean-forward="false" selection-start-line="38" selection-start-column="15" selection-end-line="38" selection-end-column="15" />
               <folding />
             </state>
           </provider>
@@ -175,9 +188,10 @@
         <option value="$PROJECT_DIR$/grpc_master/master_client.h" />
         <option value="$PROJECT_DIR$/grpc_master/master_server.cpp" />
         <option value="$PROJECT_DIR$/grpc_master/MasterNode.cpp" />
-        <option value="$PROJECT_DIR$/grpc_master/Makefile" />
         <option value="$PROJECT_DIR$/grpc_backend/Makefile" />
         <option value="$PROJECT_DIR$/grpc_backend/backend_server.cpp" />
+        <option value="$PROJECT_DIR$/grpc_master/Makefile" />
+        <option value="$PROJECT_DIR$/grpc_backend/backend_replicar.cpp" />
       </list>
     </option>
   </component>
@@ -479,12 +493,13 @@
       <workItem from="1481934397392" duration="34220000" />
       <workItem from="1482043254365" duration="3381000" />
       <workItem from="1482047134351" duration="9484000" />
-      <workItem from="1482089490667" duration="882000" />
+      <workItem from="1482089490667" duration="954000" />
+      <workItem from="1482090672930" duration="542000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="134260000" />
+    <option name="totallyTimeSpent" value="134874000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -531,13 +546,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/grpc_backend/Makefile">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="882">
-          <caret line="49" column="68" lean-forward="false" selection-start-line="49" selection-start-column="68" selection-end-line="49" selection-end-column="68" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/grpc_backend/backend.grpc.pb.cc">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -826,31 +834,15 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/grpc_master/MasterNode.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="644">
+        <state relative-caret-position="5850">
           <caret line="390" column="13" lean-forward="false" selection-start-line="390" selection-start-column="13" selection-end-line="390" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/grpc_master/Makefile">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="479">
-          <caret line="33" column="22" lean-forward="false" selection-start-line="33" selection-start-column="22" selection-end-line="33" selection-end-column="22" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/grpc_backend/Makefile">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="420">
-          <caret line="38" column="15" lean-forward="true" selection-start-line="38" selection-start-column="15" selection-end-line="38" selection-end-column="15" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/grpc_master/master_client.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="329">
+        <state relative-caret-position="1065">
           <caret line="71" column="77" lean-forward="false" selection-start-line="71" selection-start-column="77" selection-end-line="71" selection-end-column="77" />
           <folding />
         </state>
@@ -858,16 +850,40 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/grpc_master/MasterNode.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="119">
+        <state relative-caret-position="1350">
           <caret line="90" column="39" lean-forward="false" selection-start-line="90" selection-start-column="24" selection-end-line="90" selection-end-column="39" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/grpc_backend/Makefile">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="450">
+          <caret line="38" column="15" lean-forward="false" selection-start-line="38" selection-start-column="15" selection-end-line="38" selection-end-column="15" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/grpc_master/Makefile">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="224">
+          <caret line="16" column="24" lean-forward="false" selection-start-line="16" selection-start-column="24" selection-end-line="16" selection-end-column="24" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/grpc_backend/backend_server.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="509">
-          <caret line="759" column="51" lean-forward="true" selection-start-line="759" selection-start-column="51" selection-end-line="759" selection-end-column="51" />
+        <state relative-caret-position="8759">
+          <caret line="762" column="26" lean-forward="false" selection-start-line="762" selection-start-column="26" selection-end-line="762" selection-end-column="26" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/grpc_backend/backend_replicar.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="30">
+          <caret line="338" column="30" lean-forward="true" selection-start-line="338" selection-start-column="30" selection-end-line="338" selection-end-column="30" />
           <folding />
         </state>
       </provider>
