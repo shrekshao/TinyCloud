@@ -441,6 +441,9 @@ int BigTabler::clearSSTable(map<string, vector<pair<time_t, FileMeta>>>::iterato
         minHeap.push(make_pair(myite->second.buffer_start, myite->second.username + "/" + myite->second.file_name));
     }
 
+    string msg("," + minHeap.size());
+    replica_log.write(msg.c_str(), msg.size());
+
     string file_path = server_id + "/" + it->first;
     ifstream infile(file_path, ifstream::binary);
     if (!infile.is_open()) {
@@ -492,6 +495,42 @@ int BigTabler::clearSSTable(map<string, vector<pair<time_t, FileMeta>>>::iterato
     rename((file_path+"_tmp").c_str(), file_path.c_str());
 
     return 1;
+}
+
+void BigTabler::gcLog(string sstable, string temp[], int length) {
+    int pt = 0;
+    int i = 0;
+    vector<string>::iterator iter = sstable_indexer.at(sstable).begin();
+    for ( ; iter != sstable_indexer.at(sstable).end(), i < length; ) {
+        if ((*iter).compare(temp[i]) == 0) {
+            i++;
+
+            // Update sstable_indexer
+            iter = sstable_indexer.at(sstable).erase(iter);
+        } else {
+            string username = (*iter).substr(0, (*iter).find("/"));
+            string file_name = (*iter).substr((*iter).find("/")+1, (*iter).length()-(*iter).find("/")-1);
+            big_table.at(username).at(file_name).buffer_start = pt;
+            pt += big_table.at(username).at(file_name).file_length;
+            ++iter;
+        }
+    }
+
+    vector<pair<time_t, FileMeta>>::iterator myite = deleted_files.at(sstable).begin();
+    for ( ; myite != deleted_files.at(sstable).end(); ) {
+        int flag = 0;
+        for (int i = 0; i < length; i++) {
+            if (temp[i].compare(myite->second.username+"/"+myite->second.file_name) == 0) {
+                myite = deleted_files.at(sstable).erase(myite);
+                flag = 1;
+                break;
+            }
+        }
+
+        if (flag == 0) {
+            ++myite;
+        }
+    }
 }
 
 /*

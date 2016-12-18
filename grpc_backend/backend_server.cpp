@@ -748,6 +748,16 @@ void primaryLogParser(string line) {
     string group;
     getline(ss, group, ':');
     if (strcmp(group.c_str(), "GC") == 0) {
+        string sstable;
+        getline(ss, sstable, ',');
 
+        string size;
+        getline(ss, size, ',');
+        int length = stoi(size);
+        string temp[length];
+        for (int i = 0; i < length; i++) {
+            getline(ss, temp[i], ',');
+        }
+        bigtable_service.gcLog(sstable, temp, length);
     }
 }
