@@ -56,7 +56,7 @@ class StorageServiceImpl final : public Storage::Service {
         replica_mutex.lock();
 
         // Write to primary log
-        string log("CreateUser:insert(" + request->username() + ", false):crateuser(" + request->username() + ", " + request->password() + ")\n");
+        string log("CreateUser:insert(" + request->username() + ",false):crateuser(" + request->username() + "," + request->password() + ")\n");
         writeToLog(log);
 
         int success1 = indexer_service.insert(request->username(), false);
@@ -125,7 +125,7 @@ class StorageServiceImpl final : public Storage::Service {
 
         // Write to log, lock primary
         replica_mutex.lock();
-        string log("InsertFileList:insert(" + request->foldername() + ", false)\n");
+        string log("InsertFileList:insert(" + request->foldername() + ",false)\n");
         writeToLog(log);
 
         int success = indexer_service.insert(request->foldername(), false);
@@ -142,7 +142,7 @@ class StorageServiceImpl final : public Storage::Service {
 
         // Write to log, lock primary
         replica_mutex.lock();
-        string log("PutFile:put(" + request->username() + request->filename() + ", " +  request->filetype() + ", " + to_string(request->length()) + "):insert(" + request->username() + "/" + request->filename() + ", true)\n");
+        string log("PutFile:put(" + request->username() + request->filename() + "," +  request->filetype() + "," + to_string(request->length()) + "):insert(" + request->username() + "/" + request->filename() + ",true)\n");
         writeToLog(log);
 
         int success1 = bigtable_service.put(request->username(), request->filename(), (unsigned char *) request->data().c_str(), request->filetype(), request->length());
@@ -171,7 +171,7 @@ class StorageServiceImpl final : public Storage::Service {
         if (success == 1) {
 
             // Write to log
-            string log("UpdateFile:delet(" + request->username() + ", " + request->filename() + ")" + ":put(" + request->username() + ", " + request->filename() + ", " + request->filetype() + ", " + to_string(request->length()) + ")\n");
+            string log("UpdateFile:delet(" + request->username() + "," + request->filename() + ")" + ":put(" + request->username() + "," + request->filename() + "," + request->filetype() + "," + to_string(request->length()) + ")\n");
             writeToLog(log);
 
             int success1 = bigtable_service.delet(request->username(), request->filename());
@@ -230,7 +230,7 @@ class StorageServiceImpl final : public Storage::Service {
 
         // Write to log, lock primary
         replica_mutex.lock();
-        string log("DeleteFile:put(" + request->username() + ", " + request->filename() + ")\n");
+        string log("DeleteFile:put(" + request->username() + "," + request->filename() + ")\n");
         writeToLog(log);
 
         pair<int, bool> file_info = indexer_service.checkIsFile(request->username()+"/"+request->filename());
@@ -400,7 +400,7 @@ int main(int argc, char** argv) {
 
 void writeToLog(string& msg) {
     bigtable_service.log_mutex.lock();
-    ofstream replica_log(string(log_file, ofstream::app));
+    ofstream replica_log(log_file, ofstream::app);
     replica_log.write(msg.c_str(), msg.size());
     replica_log.close();
     bigtable_service.log_mutex.unlock();

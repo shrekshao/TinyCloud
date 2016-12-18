@@ -207,7 +207,7 @@ class StorageServiceImpl final : public Storage::Service {
         }
 
         // Write to primary log
-        string log("CreateUser:insert(" + request->username() + ", false):crateuser(" + request->username() + ", " + request->password() + ")\n");
+        string log("CreateUser:insert(" + request->username() + ",false):crateuser(" + request->username() + "," + request->password() + ")\n");
         writeToLog(log);
 
         int success1 = indexer_service.insert(request->username(), false);
@@ -286,7 +286,7 @@ class StorageServiceImpl final : public Storage::Service {
         }
 
         // Write to primary log
-        string log("InsertFileList:insert(" + request->foldername() + ", false)\n");
+        string log("InsertFileList:insert(" + request->foldername() + ",false)\n");
         writeToLog(log);
 
         int success = indexer_service.insert(request->foldername(), false);
@@ -314,7 +314,7 @@ class StorageServiceImpl final : public Storage::Service {
         }
 
         // Write to log
-        string log("PutFile:put(" + request->username() + request->filename() + ", " +  request->filetype() + ", " + to_string(request->length()) + "):insert(" + request->username() + "/" + request->filename() + ", true)\n");
+        string log("PutFile:put(" + request->username() + request->filename() + "," +  request->filetype() + "," + to_string(request->length()) + "):insert(" + request->username() + "/" + request->filename() + ",true)\n");
         writeToLog(log);
 
         int success1 = bigtable_service.put(request->username(), request->filename(), data_temp, request->filetype(), request->length());
@@ -350,7 +350,7 @@ class StorageServiceImpl final : public Storage::Service {
         if (success == 1) {
 
             // Write to log
-            string log("UpdateFile:delet(" + request->username() + ", " + request->filename() + ")" + ":put(" + request->username() + ", " + request->filename() + ", " + request->filetype() + ", " + to_string(request->length()) + ")\n");
+            string log("UpdateFile:delet(" + request->username() + "," + request->filename() + ")" + ":put(" + request->username() + "," + request->filename() + "," + request->filetype() + "," + to_string(request->length()) + ")\n");
             writeToLog(log);
 
             int success1 = bigtable_service.delet(request->username(), request->filename());
@@ -529,8 +529,12 @@ void RunGC() {
     rc = pthread_join(gcthread, NULL);
 }
 
+void RunRestart() {
+
+}
+
 int main(int argc, char** argv) {
-    ///* Indexer test
+    /* Indexer test
     cout << indexer_service.insert("/tianli", false) << endl;
     cout << indexer_service.insert("/tianli/folder1", false) << endl;
     cout << indexer_service.insert("/tianli/folder2", false) << endl;
@@ -542,9 +546,9 @@ int main(int argc, char** argv) {
     for (map<string, Node>::iterator it = res.begin(); it != res.end(); ++it) {
         cout << it->first << " " << it->second.is_file << endl;
     }
-    //*/
+    */
 
-    ///* File storage test
+    /* File storage test
     ifstream ifs1("file1.txt", ios::binary|ios::ate);
     ifstream::pos_type pos1 = ifs1.tellg();
 
@@ -577,12 +581,11 @@ int main(int argc, char** argv) {
     cout << bigtable_service.get("tianli", "file2", (unsigned char *) pChars3, length2) << endl;
 
     printf("%s\n", pChars3);
-    //*/
 
     cout << indexer_service.delet("tianli/file2") << endl;
     cout << bigtable_service.delet("tianli", "file2") << endl;
     cout << indexer_service.delet("tianli/folder2") << endl;
-
+    */
 
     RunServer();
 
@@ -591,7 +594,7 @@ int main(int argc, char** argv) {
 
 void writeToLog(string& msg) {
     bigtable_service.log_mutex.lock();
-    ofstream replica_log(string(log_file, ofstream::app));
+    ofstream replica_log(log_file, ofstream::app);
     replica_log.write(msg.c_str(), msg.size());
     replica_log.close();
     bigtable_service.log_mutex.unlock();

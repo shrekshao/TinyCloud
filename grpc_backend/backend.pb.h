@@ -44,6 +44,7 @@ class FileChunkRequest;
 class FileInfo;
 class FileListReply;
 class FileListRequest;
+class Log;
 class UserAccount;
 class UserAccountReply;
 
@@ -767,6 +768,93 @@ class FileChunk : public ::google::protobuf::Message /* @@protoc_insertion_point
 };
 // -------------------------------------------------------------------
 
+class Log : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:backend.Log) */ {
+ public:
+  Log();
+  virtual ~Log();
+
+  Log(const Log& from);
+
+  inline Log& operator=(const Log& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const Log& default_instance();
+
+  void Swap(Log* other);
+
+  // implements Message ----------------------------------------------
+
+  inline Log* New() const { return New(NULL); }
+
+  Log* New(::google::protobuf::Arena* arena) const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const Log& from);
+  void MergeFrom(const Log& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
+      bool deterministic, ::google::protobuf::uint8* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const {
+    return InternalSerializeWithCachedSizesToArray(false, output);
+  }
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(Log* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return _internal_metadata_.arena();
+  }
+  inline void* MaybeArenaPtr() const {
+    return _internal_metadata_.raw_arena_ptr();
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // optional bytes data = 1;
+  void clear_data();
+  static const int kDataFieldNumber = 1;
+  const ::std::string& data() const;
+  void set_data(const ::std::string& value);
+  void set_data(const char* value);
+  void set_data(const void* value, size_t size);
+  ::std::string* mutable_data();
+  ::std::string* release_data();
+  void set_allocated_data(::std::string* data);
+
+  // @@protoc_insertion_point(class_scope:backend.Log)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  bool _is_default_instance_;
+  ::google::protobuf::internal::ArenaStringPtr data_;
+  mutable int _cached_size_;
+  friend void  protobuf_AddDesc_backend_2eproto();
+  friend void protobuf_AssignDesc_backend_2eproto();
+  friend void protobuf_ShutdownFile_backend_2eproto();
+
+  void InitAsDefaultInstance();
+  static Log* default_instance_;
+};
+// -------------------------------------------------------------------
+
 class Empty : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:backend.Empty) */ {
  public:
   Empty();
@@ -1476,9 +1564,59 @@ inline void FileChunk::set_allocated_orig_data(::std::string* orig_data) {
 
 // -------------------------------------------------------------------
 
+// Log
+
+// optional bytes data = 1;
+inline void Log::clear_data() {
+  data_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline const ::std::string& Log::data() const {
+  // @@protoc_insertion_point(field_get:backend.Log.data)
+  return data_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void Log::set_data(const ::std::string& value) {
+  
+  data_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:backend.Log.data)
+}
+inline void Log::set_data(const char* value) {
+  
+  data_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:backend.Log.data)
+}
+inline void Log::set_data(const void* value, size_t size) {
+  
+  data_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:backend.Log.data)
+}
+inline ::std::string* Log::mutable_data() {
+  
+  // @@protoc_insertion_point(field_mutable:backend.Log.data)
+  return data_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline ::std::string* Log::release_data() {
+  // @@protoc_insertion_point(field_release:backend.Log.data)
+  
+  return data_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void Log::set_allocated_data(::std::string* data) {
+  if (data != NULL) {
+    
+  } else {
+    
+  }
+  data_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), data);
+  // @@protoc_insertion_point(field_set_allocated:backend.Log.data)
+}
+
+// -------------------------------------------------------------------
+
 // Empty
 
 #endif  // !PROTOBUF_INLINE_NOT_IN_HEADERS
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------
