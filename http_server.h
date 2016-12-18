@@ -75,6 +75,7 @@ static const string HTTP_HEADER_SERVER = "Server: tinycloud\r\n";
 static const string HTML_400_PAGE = "400 Bad Request\r\nWrong request URL\r\n";
 static const string HTML_404_PAGE = "404 Not Found\r\nThe requested URL was not found on this server.\r\n";
 
+static const string REGISTER_SUCCESS_MSG = "200 ok\r\nRegister user success\r\n";
 
 static const string siteRoot = "_site/";
 
@@ -258,6 +259,19 @@ void send400Page(int fd)
 
     do_write(fd, &HTML_400_PAGE.at(0), HTML_400_PAGE.size());
 }
+
+// void sendRegisterSuccess(int fd)
+// {
+//     do_write(fd, &HTTP_OK.at(0), (int)HTTP_OK.size());
+//     GeneralHeader header200;
+//     header200.content_type = "text/html";
+//     header200.content_length = REGISTER_SUCCESS_MSG.size();
+//     header200.send(fd);
+//     // separate line
+//     do_write(fd, &CRLF.at(0), CRLF.size());
+
+//     do_write(fd, &REGISTER_SUCCESS_MSG.at(0), REGISTER_SUCCESS_MSG.size());
+// }
 
 void sendData(int fd, const string & dataType, const string & data)
 {
@@ -492,9 +506,12 @@ bool verifyUsernameAndPassword(const string & username, const string & password)
 {
     // temp test
     // TODO: communicate with big table
-    return 
-        (username == "ss") && (password == "123")
-        || (username == "tianli") && (password == "123");
+
+    // return 
+    //     (username == "ss") && (password == "123")
+    //     || (username == "tianli") && (password == "123");
+
+    return fsClient.LoginUser(username, password);
 }
 
 
@@ -560,8 +577,11 @@ void registerHandler(int fd, const string & contentStr, string & threadUsername)
 
     HttpDebugLog( fd, "Register New User: %s, %s", username.c_str(), password.c_str());
 
+    fsClient.RegisterUser(username, password);
+
     header.clear();
     sendFileToClient(fd, "/");
+    // sendRegisterSuccess(fd);
 }
 
 

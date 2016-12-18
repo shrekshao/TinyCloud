@@ -175,15 +175,46 @@ class FileSystemClient {
   // but let's save some time
   void RegisterUser(const string &username, const string &password)
   {
+    ClientContext context;
 
+    backend::UserAccount request;
+    backend::Empty response;
+
+    request.set_username(username);
+    request.set_password(password);
+
+    Status status = stub_->CreateUser(&context, request, &response);
+    if (status.ok()) {
+      cerr << "rpc: register user ok\n";
+      // return true;
+    } else {
+      cerr << "rpc: register user failed!\n";
+      // return false;
+    }
   }
 
 
   bool LoginUser(const string &username, const string &password)
   {
     
-    // if(response)
-    return true;
+    ClientContext context;
+
+    backend::UserAccount request;
+    backend::UserAccountReply response;
+
+    request.set_username(username);
+    request.set_password(password);
+
+    Status status = stub_->CheckPassword(&context, request, &response);
+    if (status.ok()) {
+      cerr << "rpc: login user ok\n";
+
+      return response.correct();
+      // return true;
+    } else {
+      cerr << "rpc: login user failed!\n";
+      // return false;
+    }
   }
 
 
