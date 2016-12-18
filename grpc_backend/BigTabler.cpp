@@ -318,7 +318,18 @@ int BigTabler::gc(string& log_file) {
                     continue;
                 }
 
-
+                log_mutex.lock();
+                ofstream replica_log(log_file, ofstream::app);
+                string msg("GC:");
+                replica_log.write(msg.c_str(), msg.size());
+                for (vector<pair<time_t, FileMeta>>::iterator myiter = ite; myiter != it->second.end(); ++myiter) {
+                    string msg("(" + myiter->second.username + "," + myiter->second.file_name + ")");
+                    replica_log.write(msg.c_str(), msg.size());
+                }
+                string msg2("\n");
+                replica_log.write(msg2.c_str(), msg2.size());
+                replica_log.close();
+                log_mutex.unlock();
 
                 it->second.erase(ite, it->second.end());
                 deleted_files_mutex.at(it->first).unlock();

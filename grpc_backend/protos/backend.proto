@@ -55,6 +55,9 @@ service Storage {
   rpc GetFile (FileChunkRequest) returns (FileChunk) {}
   // Delete a file
   rpc DeleteFile (FileChunkRequest) returns (Empty) {}
+
+  // Backend Communication
+  rpc GetLog (Empty) returns (Log) {}
 }
 
 // The request message containing the user/folder's name.
@@ -95,6 +98,10 @@ message FileChunk {
     bytes data = 5;
     uint64 orig_length = 6;
     bytes orig_data = 7;
+}
+
+message Log {
+    bytes data = 1;
 }
 
 message Empty {
