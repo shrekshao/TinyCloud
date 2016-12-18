@@ -34,9 +34,43 @@
 #include <pthread.h>
 #include <signal.h>
 #include <boost/thread.hpp>
+#include <mutex>
 
-// using this name space
+#include <iostream>
+#include <memory>
+#include <map>
+#include <unistd.h>
+#include <string>
+#include <string.h>
+#include <pthread.h>
+
+#include <cstdio>
+
+#include <grpc++/grpc++.h>
+
+#include "master.grpc.pb.h"
+
 using namespace std;
+
+using grpc::Channel;
+using grpc::ClientContext;
+using grpc::Status;
+
+using master::Master;
+using master::UserNameRequest;
+using master::AddressReply;
+//using master::Empty;
+using master::NodesStatusReply;
+using master::NodesInfoReply;
+using master::NodeIndexRequest;
+using master::NodeInfo;
+using master::MemTableInfo;
+
+typedef boost::shared_mutex Lock;
+typedef boost::unique_lock< Lock > WriteLock;
+typedef boost::shared_lock< Lock > ReadLock;
+
+Lock myLock;
 
 // design a class for saving a node
 class StorageNodeInfo {
@@ -65,15 +99,17 @@ class MasterNode {
     map<int, bool> crash_mapping;
     // user mapping to the storage node - username: #
     map<string, int> user_mapping;
+    // meta-info about all the storage node - IP:Port, Struct
+    map<string, MemTableInfo> mem_info_mapping;
 public:
     // constructor
     MasterNode(string config_file);
+
+    // methods
     // get user address
     string get_user_node(string username);
     // create a new user
     int create_user(string username);
-    // checking if a storage node is down
-    int failure_checking();
     // getting a map indicating the status of all the nodes
     int get_status(map<string, bool> &status);
     // getting a map indicating the user distribution accross the nodes
@@ -90,7 +126,24 @@ public:
         // put the new user to the mapping
         return num;
     }
-};
+    // send stored storage node meta info to front server
+    int send_node_date(map<string, MemTableInfo> &res);
 
+    // background thread
+    // for replaying the logs
+    int replay();
+    // for adding checkpoint, it essentially checking all the
+    // in memory data strcuture to the disk, in different files
+    int checking_to_disk();
+    // for reaching the check point file
+    int checking_out_disk();
+    // checking if a storage node is down
+    int failure_checking();
+    // supp function
+    int construct_crash_map();
+    int construct_user_map();
+    // for getting meta info from storage node
+    int checking_node_data();
+};
 
 #endif //TINYCLOUD_MASTER_H
