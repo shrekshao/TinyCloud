@@ -31,7 +31,7 @@ using master::Empty;
 using master::NodesStatusReply;
 using master::NodesInfoReply;
 using master::NodeIndexRequest;
-using master::MemTableInfo;
+using backend::MemTableInfo;
 using master::MemTableInfoReply;
 
 // master server IP:Port

@@ -48,7 +48,7 @@
 
 #include <grpc++/grpc++.h>
 
-#include "master.grpc.pb.h"
+#include "../grpc_backend/backend.grpc.pb.h"
 
 using namespace std;
 
@@ -56,15 +56,8 @@ using grpc::Channel;
 using grpc::ClientContext;
 using grpc::Status;
 
-using master::Master;
-using master::UserNameRequest;
-using master::AddressReply;
-//using master::Empty;
-using master::NodesStatusReply;
-using master::NodesInfoReply;
-using master::NodeIndexRequest;
-using master::NodeInfo;
-using master::MemTableInfo;
+using backend::Storage;
+using backend::MemTableInfo;
 
 // design a class for saving a node
 class StorageNodeInfo {

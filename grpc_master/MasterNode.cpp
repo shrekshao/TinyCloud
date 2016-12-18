@@ -382,9 +382,10 @@ int MasterNode::checking_node_data() {
             // go to replica IP for fetching meta data
             MasterClient msClient(grpc::CreateChannel(
                     replica_mapping[ip_mapping[i]], grpc::InsecureChannelCredentials()));
-            MemTableInfo res;
+            backend::MemTableInfo res;
             if (msClient.GetMemTableInfo(res)) {
                 cout << "Storage Metadata Retrived Success!\n";
+                cout << "Buffer Size: " << res.buffer_length() << "\n";
                 mem_info_mapping[replica_mapping[ip_mapping[i]]] = res;
             } else {
                 cout << "Storage Metadata Retrived Failed!\n";
@@ -393,9 +394,10 @@ int MasterNode::checking_node_data() {
             // go to primary to get data
             MasterClient msClient(grpc::CreateChannel(
                     ip_mapping[i], grpc::InsecureChannelCredentials()));
-            MemTableInfo res;
+            backend::MemTableInfo res;
             if (msClient.GetMemTableInfo(res)) {
                 cout << "Storage Metadata Retrived Success!\n";
+                cout << "Buffer Size: " << res.buffer_length() << "\n";
                 mem_info_mapping[ip_mapping[i]] = res;
             } else {
                 cout << "Storage Metadata Retrived Failed!\n";
