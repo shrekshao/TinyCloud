@@ -1,6 +1,37 @@
 #include "http_server.h"
 
 
+
+FileSystemClient & getFSClient(const string & username)
+{
+    string fsServerAddr;
+    if(masterClient.GetUserAddr(username, fsServerAddr))
+    {
+        HttpDebugLog( 999, "MASTER NODE TEST: master told us to ask for node %s", fsServerAddr.c_str());
+
+
+        auto it = addr2FileSystemClient.find(fsServerAddr);
+        if (it != addr2FileSystemClient.end())
+        {
+            return (it->second);
+        }
+        else
+        {
+            HttpDebugLog( 999, "MASTER NODE TEST: addr error %s", fsServerAddr.c_str());
+            return fsClient0;
+        }
+    }
+    else
+    {
+        // should not enter this branch when calling getFSClient
+        HttpDebugLog( 999, "ERR: user not found: %s", username.c_str());
+        return fsClient0;
+    }
+}
+
+
+
+
 void* httpClientThread(void* params)
 {
   // int comm_fd = *((int *)params);
@@ -514,12 +545,6 @@ const int NUM_CLIENT_THREADS = 10;
 int main(int argc, char *argv[])
 {
 
-//   // test rpc fsclient
-//   fsClient.InsertFolder("ss", "", false);
-//   fsClient.InsertFolder("ss", "/folder1", false);
-//   fsClient.InsertFolder("ss", "/folder1/folder1.1", false);
-//   fsClient.InsertFolder("ss", "/folder2", false);
-//   fsClient.InsertFolder("ss", "/folder3", false);
 
 
   // parse cmd line arguments

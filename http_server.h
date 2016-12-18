@@ -25,13 +25,24 @@
 using namespace std;
 
 
-static FileSystemClient fsClient(grpc::CreateChannel(
-      "localhost:50051", grpc::InsecureChannelCredentials()));
+static FileSystemClient fsClient0(grpc::CreateChannel(
+      "127.0.0.1:50051", grpc::InsecureChannelCredentials()));
+static FileSystemClient fsClient0r(grpc::CreateChannel(
+      "127.0.0.1:50052", grpc::InsecureChannelCredentials()));
+
+// static nodes
+// FSC no copy function, work around
+static unordered_map<string, FileSystemClient&> addr2FileSystemClient({
+    {"127.0.0.1:50051", fsClient0}
+    , {"127.0.0.1:50052", fsClient0r}
+
+
+});
 
 static MasterClient masterClient(grpc::CreateChannel(
       "localhost:52013", grpc::InsecureChannelCredentials()));
 
-
+FileSystemClient & getFSClient(const string & username);
 
 
 
@@ -431,7 +442,7 @@ void sendFileToClientFromDrive(int fd, const string & url, const string & thread
     string data;
     string extname;
 
-    if(fsClient.GetFile(threadUsername, fullPathURL, data, extname))
+    if(getFSClient(threadUsername).GetFile(threadUsername, fullPathURL, data, extname))
     {
         string file_cat = "application";
         auto it = extToFileCat.find(extname);
@@ -510,8 +521,19 @@ bool verifyUsernameAndPassword(const string & username, const string & password)
     // return 
     //     (username == "ss") && (password == "123")
     //     || (username == "tianli") && (password == "123");
+    string fsServerAddr;
+    if(masterClient.GetUserAddr(username, fsServerAddr))
+    {
+        // user exists
+        // try to login
+        return getFSClient(username).LoginUser(username, password);
+    }
+    else
+    {
+        return false;
+    }
 
-    return fsClient.LoginUser(username, password);
+    
 }
 
 
@@ -577,11 +599,20 @@ void registerHandler(int fd, const string & contentStr, string & threadUsername)
 
     HttpDebugLog( fd, "Register New User: %s, %s", username.c_str(), password.c_str());
 
-    fsClient.RegisterUser(username, password);
+    if(masterClient.CreateUser(username))
+    {
+        getFSClient(username).RegisterUser(username, password);
 
-    header.clear();
-    sendFileToClient(fd, "/");
-    // sendRegisterSuccess(fd);
+        header.clear();
+        sendFileToClient(fd, "/");
+        // sendRegisterSuccess(fd);
+    }
+    else
+    {
+        HttpDebugLog( fd, "MASTER TEST: ERR create user");
+    }
+
+    
 }
 
 
@@ -618,7 +649,7 @@ void getFilelistHandler(int fd, const string & folder, string & threadUsername)
     oss << "{";
 
     std::map<std::string, FileInfo> fileList;
-    if (fsClient.GetFileList(path, fileList))
+    if (getFSClient(threadUsername).GetFileList(path, fileList))
     {
         bool isFirst = true;
         for (const auto & f : fileList)
@@ -749,7 +780,7 @@ void insertFolderHandler(int fd, const string & contentStr, string & threadUsern
 
     HttpDebugLog( fd, "insert full path: %s", fullPathFolder.c_str());
 
-    fsClient.InsertFolder(fullPathFolder);
+    getFSClient(threadUsername).InsertFolder(fullPathFolder);
 
     // need to parse from folder (content) sent
 
@@ -779,7 +810,7 @@ void deleteItemHandler(int fd, const string & contentStr, string & threadUsernam
 
     HttpDebugLog( fd, "item to delete url: %s, cull username path: %s, curFolder: %s", url.c_str(), fullPathURL.c_str(), curFolder.c_str());
 
-    fsClient.DeleteItem(threadUsername, fullPathURL);
+    getFSClient(threadUsername).DeleteItem(threadUsername, fullPathURL);
     getFilelistHandler(fd, curFolder, threadUsername);
 }
 
@@ -863,7 +894,7 @@ void uploadFileToStorage(const string & threadUsername, const string & curFolder
     }
 
     HttpDebugLog( 999, "fullPathFolder: %s, filename: %s, extname: %s", fullPathFolder.c_str(), filename.c_str(), extname.c_str());
-    fsClient.UploadFile(threadUsername, fullPathFolder, data, extname);
+    getFSClient(threadUsername).UploadFile(threadUsername, fullPathFolder, data, extname);
 }
 
 
@@ -871,10 +902,10 @@ void uploadFileToStorage(const string & threadUsername, const string & curFolder
 void uploadFileHandler(int fd, const string & contentStr, const string & boundary, const string & threadUsername)
 {
 
-    // master rpc test ******************************************
-    string fsServerAddr;
-    masterClient.GetUserAddr(threadUsername, fsServerAddr);
-    HttpDebugLog( fd, "TEST: master told us to ask for node %s", fsServerAddr.c_str());
+    // // master rpc test ******************************************
+    // string fsServerAddr;
+    // masterClient.GetUserAddr(threadUsername, fsServerAddr);
+    // HttpDebugLog( fd, "TEST: master told us to ask for node %s", fsServerAddr.c_str());
 
 
 
@@ -996,3 +1027,17 @@ void uploadFileHandler(int fd, const string & contentStr, const string & boundar
     // TODO: ajax refresh
     sendFileToClient(fd, "/drive.html");
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
