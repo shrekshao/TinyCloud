@@ -303,7 +303,7 @@ int BigTabler::delet(string username, string file_name) {
  * return: 1    success
  *         -1   error
  */
-int BigTabler::gc() {
+int BigTabler::gc(string& log_file) {
     for (map<string, vector<pair<time_t, FileMeta>>>::iterator it = deleted_files.begin(); it != deleted_files.end(); ++it) {
         if (it->first.compare(to_string(file_id)) != 0) {
             // Only clear sstable files, not memtable files
@@ -317,6 +317,9 @@ int BigTabler::gc() {
                 if (clearSSTable(it, ite) == -1) {
                     continue;
                 }
+
+
+
                 it->second.erase(ite, it->second.end());
                 deleted_files_mutex.at(it->first).unlock();
             }
@@ -396,3 +399,13 @@ int BigTabler::clearSSTable(map<string, vector<pair<time_t, FileMeta>>>::iterato
 
     return 1;
 }
+
+/*
+void BigTabler::writeToLog(string& msg) {
+    log_mutex.lock();
+    ofstream replica_log(string(log_file, ofstream::app));
+    replica_log.write(msg.c_str(), msg.size());
+    replica_log.close();
+    log_mutex.unlock();
+}
+ */

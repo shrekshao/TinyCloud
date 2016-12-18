@@ -90,6 +90,7 @@ class BigTabler {
         }
     };
 public:
+    mutex log_mutex; // mutex for write to log between server and gc
     BigTabler (string s);
     int createuser (string usrname, string password);
     int getpassword (string username, string& res);
@@ -98,9 +99,10 @@ public:
     FileMeta* getMeta (string username, string file_name);
     int get (string username, string file_name, unsigned char* res, unsigned int res_size);
     int delet (string username, string file_name);
-    int gc();
+    int gc(string& log_file);
     bool needClear(vector<pair<time_t, FileMeta>> &vec);
     int clearSSTable(map<string, vector<pair<time_t, FileMeta>>>::iterator it, vector<pair<time_t, FileMeta>>::iterator ite);
+    //void writeToLog(string& msg);
 };
 
 
