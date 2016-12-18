@@ -32,6 +32,8 @@ using backend::FileChunkRequest;
 using backend::Storage;
 using backend::UserAccount;
 using backend::UserAccountReply;
+using backend::Log;
+using backend::Buffer;
 
 const char*  primary_server_ip = "0.0.0.0:50051";
 const char*  replica_server_ip = "0.0.0.0:50052";
@@ -56,7 +58,7 @@ class StorageServiceImpl final : public Storage::Service {
         replica_mutex.lock();
 
         // Write to primary log
-        string log("CreateUser:insert(" + request->username() + ",false):crateuser(" + request->username() + "," + request->password() + ")\n");
+        string log("CreateUser:insert(" + request->username() + ",false):createuser(" + request->username() + "," + request->password() + ")\n");
         writeToLog(log);
 
         int success1 = indexer_service.insert(request->username(), false);
@@ -142,7 +144,7 @@ class StorageServiceImpl final : public Storage::Service {
 
         // Write to log, lock primary
         replica_mutex.lock();
-        string log("PutFile:put(" + request->username() + request->filename() + "," +  request->filetype() + "," + to_string(request->length()) + "):insert(" + request->username() + "/" + request->filename() + ",true)\n");
+        string log("PutFile:put(" + request->username() + "," + request->filename() + "," +  request->filetype() + "," + to_string(request->length()) + "):insert(" + request->username() + "/" + request->filename() + ",true)\n");
         writeToLog(log);
 
         int success1 = bigtable_service.put(request->username(), request->filename(), (unsigned char *) request->data().c_str(), request->filetype(), request->length());
@@ -230,7 +232,7 @@ class StorageServiceImpl final : public Storage::Service {
 
         // Write to log, lock primary
         replica_mutex.lock();
-        string log("DeleteFile:put(" + request->username() + "," + request->filename() + ")\n");
+        string log("DeleteFile:delet(" + request->username() + "," + request->filename() + ")\n");
         writeToLog(log);
 
         pair<int, bool> file_info = indexer_service.checkIsFile(request->username()+"/"+request->filename());
@@ -284,6 +286,26 @@ class StorageServiceImpl final : public Storage::Service {
         }
     }
 
+    Status GetLog(ServerContext* context, const Empty* request, Log* reply) override {
+        ifstream ifs(log_file, ios::binary|ios::ate);
+        ifstream::pos_type pos = ifs.tellg();
+
+        std::vector<char>  result(pos);
+
+        ifs.seekg(0, ios::beg);
+        ifs.read(&result[0], pos);
+
+        reply->set_size(pos);
+        reply->set_data(&result[0], pos);
+    }
+
+    Status GetBuffer(ServerContext* context, const Empty* request, Buffer* reply) override {
+        unsigned char result[bigtable_service.getCur_pt()];
+        bigtable_service.getMemtable(result);
+
+        reply->set_size(bigtable_service.getCur_pt());
+        reply->set_data(&result[0], bigtable_service.getCur_pt());
+    }
 };
 
 void RunServer() {

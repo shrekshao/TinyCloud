@@ -102,6 +102,9 @@ public:
     int gc(string& log_file);
     bool needClear(vector<pair<time_t, FileMeta>> &vec);
     int clearSSTable(map<string, vector<pair<time_t, FileMeta>>>::iterator it, vector<pair<time_t, FileMeta>>::iterator ite);
+    unsigned int getCur_pt();
+    int getMemtable(unsigned char* result);
+    int put (string username, string file_name, string file_type, unsigned int file_size);
     //void writeToLog(string& msg);
 };
 

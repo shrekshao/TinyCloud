@@ -25,6 +25,7 @@ static const char* Storage_method_names[] = {
   "/backend.Storage/GetFile",
   "/backend.Storage/DeleteFile",
   "/backend.Storage/GetLog",
+  "/backend.Storage/GetBuffer",
 };
 
 std::unique_ptr< Storage::Stub> Storage::NewStub(const std::shared_ptr< ::grpc::ChannelInterface>& channel, const ::grpc::StubOptions& options) {
@@ -42,6 +43,7 @@ Storage::Stub::Stub(const std::shared_ptr< ::grpc::ChannelInterface>& channel)
   , rpcmethod_GetFile_(Storage_method_names[6], ::grpc::RpcMethod::NORMAL_RPC, channel)
   , rpcmethod_DeleteFile_(Storage_method_names[7], ::grpc::RpcMethod::NORMAL_RPC, channel)
   , rpcmethod_GetLog_(Storage_method_names[8], ::grpc::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_GetBuffer_(Storage_method_names[9], ::grpc::RpcMethod::NORMAL_RPC, channel)
   {}
 
 ::grpc::Status Storage::Stub::CreateUser(::grpc::ClientContext* context, const ::backend::UserAccount& request, ::backend::Empty* response) {
@@ -116,6 +118,14 @@ Storage::Stub::Stub(const std::shared_ptr< ::grpc::ChannelInterface>& channel)
   return new ::grpc::ClientAsyncResponseReader< ::backend::Log>(channel_.get(), cq, rpcmethod_GetLog_, context, request);
 }
 
+::grpc::Status Storage::Stub::GetBuffer(::grpc::ClientContext* context, const ::backend::Empty& request, ::backend::Buffer* response) {
+  return ::grpc::BlockingUnaryCall(channel_.get(), rpcmethod_GetBuffer_, context, request, response);
+}
+
+::grpc::ClientAsyncResponseReader< ::backend::Buffer>* Storage::Stub::AsyncGetBufferRaw(::grpc::ClientContext* context, const ::backend::Empty& request, ::grpc::CompletionQueue* cq) {
+  return new ::grpc::ClientAsyncResponseReader< ::backend::Buffer>(channel_.get(), cq, rpcmethod_GetBuffer_, context, request);
+}
+
 Storage::Service::Service() {
   (void)Storage_method_names;
   AddMethod(new ::grpc::RpcServiceMethod(
@@ -163,6 +173,11 @@ Storage::Service::Service() {
       ::grpc::RpcMethod::NORMAL_RPC,
       new ::grpc::RpcMethodHandler< Storage::Service, ::backend::Empty, ::backend::Log>(
           std::mem_fn(&Storage::Service::GetLog), this)));
+  AddMethod(new ::grpc::RpcServiceMethod(
+      Storage_method_names[9],
+      ::grpc::RpcMethod::NORMAL_RPC,
+      new ::grpc::RpcMethodHandler< Storage::Service, ::backend::Empty, ::backend::Buffer>(
+          std::mem_fn(&Storage::Service::GetBuffer), this)));
 }
 
 Storage::Service::~Service() {
@@ -225,6 +240,13 @@ Storage::Service::~Service() {
 }
 
 ::grpc::Status Storage::Service::GetLog(::grpc::ServerContext* context, const ::backend::Empty* request, ::backend::Log* response) {
+  (void) context;
+  (void) request;
+  (void) response;
+  return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+}
+
+::grpc::Status Storage::Service::GetBuffer(::grpc::ServerContext* context, const ::backend::Empty* request, ::backend::Buffer* response) {
   (void) context;
   (void) request;
   (void) response;
