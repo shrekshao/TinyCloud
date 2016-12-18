@@ -13,8 +13,11 @@
 #include "Indexer.h"
 #include "BigTabler.h"
 
+void RunRestart();
 void RunGC();
 void writeToLog(string& msg);
+void replicaLogParser(string line, ofstream& outfile);
+void primaryLogParser(string line, ofstream& outfile);
 
 using namespace std;
 
@@ -49,6 +52,53 @@ mutex replica_mutex;
 
 // Log file
 string log_file = "replica_log.txt";
+
+/*
+ * Client Class to call primary server
+ */
+class PrimaryClient {
+public:
+    PrimaryClient(std::shared_ptr<Channel> channel) : stub_(Storage::NewStub(channel)) {}
+
+    int GetLog_Backup(string& buffer) {
+        Empty request;
+        Log reply;
+        ClientContext context;
+        Status status = stub_->GetLog(&context, request, &reply);
+
+        buffer = reply.data();
+
+        // Act upon its status.
+        if (status.ok()) {
+            return 1;
+        } else {
+            std::cout << status.error_code() << ": " << status.error_message() << std::endl;
+            return -1;
+        }
+    }
+
+    int GetBuffer_Backup(string& buffer) {
+        Empty request;
+        Buffer reply;
+        ClientContext context;
+        Status status = stub_->GetBuffer(&context, request, &reply);
+
+        buffer = reply.data();
+
+        // Act upon its status.
+        if (status.ok()) {
+            return 1;
+        } else {
+            std::cout << status.error_code() << ": " << status.error_message() << std::endl;
+            return -1;
+        }
+    }
+
+private:
+    std::unique_ptr<Storage::Stub> stub_;
+};
+
+PrimaryClient primarior(grpc::CreateChannel(primary_server_ip, grpc::InsecureChannelCredentials()));
 
 // Logic and data behind the server's behavior.
 class StorageServiceImpl final : public Storage::Service {
@@ -338,6 +388,7 @@ void RunServer() {
     std::unique_ptr<Server> replica_server(replica_builder.BuildAndStart());
     std::cout << "Server replica listening on " << replica_server_address << std::endl;
 
+    RunRestart();
     RunGC();
 
     replica_server->Wait();
@@ -365,8 +416,40 @@ void RunGC() {
     rc = pthread_join(gcthread, NULL);
 }
 
+void RunRestart() {
+
+    string buffer;
+    if (primarior.GetLog_Backup(buffer) == -1) {
+        fprintf(stderr, "Restart fail!");
+        exit(0);
+    }
+
+    ofstream outfile("replica_log_tmp.txt");
+
+    string line;
+    while (getline(stringstream(buffer), line)) {
+        primaryLogParser(line, outfile);
+    }
+
+    ifstream myfile(log_file);
+    if (myfile) {
+        while (getline(myfile, line)) {
+            replicaLogParser(line, outfile);
+        }
+        myfile.close();
+    }
+
+    string memtable;
+    primarior.GetBuffer_Backup(memtable);
+    bigtable_service.setMemtable(memtable);
+
+    outfile.close();
+    remove("replica_log.txt");
+    rename("replica_log_tmp.txt", "replica_log.txt");
+}
+
 int main(int argc, char** argv) {
-    ///* Indexer test
+    /* Indexer test
     cout << indexer_service.insert("/tianli", false) << endl;
     cout << indexer_service.insert("/tianli/folder1", false) << endl;
     cout << indexer_service.insert("/tianli/folder2", false) << endl;
@@ -378,9 +461,9 @@ int main(int argc, char** argv) {
     for (map<string, Node>::iterator it = res.begin(); it != res.end(); ++it) {
         cout << it->first << " " << it->second.is_file << endl;
     }
-    //*/
+    */
 
-    ///* File storage test
+    /* File storage test
     ifstream ifs1("file1.txt", ios::binary|ios::ate);
     ifstream::pos_type pos1 = ifs1.tellg();
 
@@ -413,7 +496,7 @@ int main(int argc, char** argv) {
     cout << bigtable_service.get("tianli", "file2", (unsigned char *) pChars3, length2) << endl;
 
     printf("%s\n", pChars3);
-    //*/
+    */
 
     RunServer();
 
@@ -428,3 +511,82 @@ void writeToLog(string& msg) {
     bigtable_service.log_mutex.unlock();
 }
 
+void primaryLogParser(string line, ofstream& outfile) {
+    istringstream ss(line);
+    string group;
+    getline(ss, group, ':');
+    if (strcmp(group.c_str(), "CreateUser") == 0) {
+        outfile.write(line.c_str(), strlen(line.c_str()));
+        string username;
+        getline(ss, username, '(');
+        getline(ss, username, ',');
+        indexer_service.insert(username, false);
+
+        string password;
+        getline(ss, password, ',');
+        getline(ss, password, ')');
+        bigtable_service.createuser(username, password);
+
+    } else if (strcmp(group.c_str(), "InsertFileList") == 0) {
+        outfile.write(line.c_str(), strlen(line.c_str()));
+        string username;
+        getline(ss, username, '(');
+        getline(ss, username, ',');
+        indexer_service.insert(username, false);
+
+    } else if (strcmp(group.c_str(), "PutFile") == 0) {
+        outfile.write(line.c_str(), strlen(line.c_str()));
+        string username, filename, filetype, filelength;
+        getline(ss, username, ',');
+        getline(ss, filename, ',');
+        getline(ss, filetype, ',');
+        getline(ss, filelength, ')');
+        bigtable_service.put(username, filename, filetype, stoul(filelength));
+
+        indexer_service.insert(username+"/"+filename, true);
+
+    } else if (strcmp(group.c_str(), "UpdateFile") == 0) {
+        outfile.write(line.c_str(), strlen(line.c_str()));
+        string username, filename, filetype, filelength;
+        getline(ss, username, ',');
+        getline(ss, filename, ')');
+        getline(ss, filetype, ',');
+        getline(ss, filetype, ',');
+        getline(ss, filetype, ',');
+        getline(ss, filelength, ')');
+        bigtable_service.delet(username, filename);
+        bigtable_service.put(username, filename, filetype, stoul(filelength));
+
+    } else if (strcmp(group.c_str(), "DeleteFile") == 0) {
+        outfile.write(line.c_str(), strlen(line.c_str()));
+        string username, filename, filetype, filelength;
+        getline(ss, username, ',');
+        getline(ss, filename, ')');
+        bigtable_service.delet(username, filename);
+
+    } else if (strcmp(group.c_str(), "GC") == 0) {
+        // No need for GC:
+    }
+
+}
+
+void replicaLogParser(string line, ofstream& outfile) {
+    istringstream ss(line);
+    string group;
+    getline(ss, group, ':');
+    if (strcmp(group.c_str(), "GC") == 0) {
+        outfile.write(line.c_str(), strlen(line.c_str()));
+
+        string sstable;
+        getline(ss, sstable, ',');
+
+        string size;
+        getline(ss, size, ',');
+        int length = stoi(size);
+        string temp[length];
+        for (int i = 0; i < length; i++) {
+            getline(ss, temp[i], ',');
+        }
+        bigtable_service.gcLog(sstable, temp, length);
+    }
+}

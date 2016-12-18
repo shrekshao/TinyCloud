@@ -16,8 +16,8 @@
 void RunGC();
 void RunRestart();
 void writeToLog(string& msg);
-void replicaLogParser(string line);
-void primaryLogParser(string line);
+void replicaLogParser(string line, ofstream& outfile);
+void primaryLogParser(string line, ofstream& outfile);
 
 using namespace std;
 
@@ -598,15 +598,17 @@ void RunRestart() {
         exit(0);
     }
 
+    ofstream outfile("primary_log_tmp.txt");
+
     string line;
     while (getline(stringstream(buffer), line)) {
-        replicaLogParser(line);
+        replicaLogParser(line, outfile);
     }
 
-    ifstream myfile(log_file );
+    ifstream myfile(log_file);
     if (myfile) {
         while (getline(myfile, line)) {
-            primaryLogParser(line);
+            primaryLogParser(line, outfile);
         }
         myfile.close();
     }
@@ -615,6 +617,9 @@ void RunRestart() {
     replicar.GetBuffer_Backup(memtable);
     bigtable_service.setMemtable(memtable);
 
+    outfile.close();
+    remove("primary_log.txt");
+    rename("primary_log_tmp.txt", "primary_log.txt");
 }
 
 int main(int argc, char** argv) {
@@ -684,12 +689,12 @@ void writeToLog(string& msg) {
     bigtable_service.log_mutex.unlock();
 }
 
-void replicaLogParser(string line) {
+void replicaLogParser(string line, ofstream& outfile) {
     istringstream ss(line);
     string group;
     getline(ss, group, ':');
     if (strcmp(group.c_str(), "CreateUser") == 0) {
-
+        outfile.write(line.c_str(), strlen(line.c_str()));
         string username;
         getline(ss, username, '(');
         getline(ss, username, ',');
@@ -701,14 +706,14 @@ void replicaLogParser(string line) {
         bigtable_service.createuser(username, password);
 
     } else if (strcmp(group.c_str(), "InsertFileList") == 0) {
-
+        outfile.write(line.c_str(), strlen(line.c_str()));
         string username;
         getline(ss, username, '(');
         getline(ss, username, ',');
         indexer_service.insert(username, false);
 
     } else if (strcmp(group.c_str(), "PutFile") == 0) {
-
+        outfile.write(line.c_str(), strlen(line.c_str()));
         string username, filename, filetype, filelength;
         getline(ss, username, ',');
         getline(ss, filename, ',');
@@ -719,7 +724,7 @@ void replicaLogParser(string line) {
         indexer_service.insert(username+"/"+filename, true);
 
     } else if (strcmp(group.c_str(), "UpdateFile") == 0) {
-
+        outfile.write(line.c_str(), strlen(line.c_str()));
         string username, filename, filetype, filelength;
         getline(ss, username, ',');
         getline(ss, filename, ')');
@@ -731,7 +736,7 @@ void replicaLogParser(string line) {
         bigtable_service.put(username, filename, filetype, stoul(filelength));
 
     } else if (strcmp(group.c_str(), "DeleteFile") == 0) {
-
+        outfile.write(line.c_str(), strlen(line.c_str()));
         string username, filename, filetype, filelength;
         getline(ss, username, ',');
         getline(ss, filename, ')');
@@ -743,11 +748,12 @@ void replicaLogParser(string line) {
 
 }
 
-void primaryLogParser(string line) {
+void primaryLogParser(string line, ofstream& outfile) {
     istringstream ss(line);
     string group;
     getline(ss, group, ':');
     if (strcmp(group.c_str(), "GC") == 0) {
+        outfile.write(line.c_str(), strlen(line.c_str()));
         string sstable;
         getline(ss, sstable, ',');
 
