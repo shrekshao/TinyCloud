@@ -338,7 +338,7 @@ class StorageServiceImpl final : public Storage::Service {
     Status GetLog(ServerContext* context, const Empty* request, Log* reply) override {
         ifstream ifs(log_file, ios::binary|ios::ate);
         int pos = ifs.tellg();
-        fprintf(stderr, "pos: %d", pos);
+        //fprintf(stderr, "pos: %d", pos);
 
         char result[pos];
 
@@ -439,7 +439,7 @@ void RunRestart() {
 
     fprintf(stderr, "Get log successfully! Log size: %zu\n", strlen(buffer.c_str()));
 
-    ofstream outfile("primary_log_tmp.txt");
+    ofstream outfile("replica_log_tmp.txt");
 
     string line;
     while (getline(stringstream(buffer), line)) {
