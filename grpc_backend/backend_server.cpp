@@ -600,7 +600,6 @@ void RunRestart() {
     string buffer;
     if (replicar.GetLog_Backup(buffer) == -1) {
         fprintf(stderr, "Restart fail!");
-        exit(0);
     }
 
     ofstream outfile("primary_log_tmp.txt");
@@ -628,7 +627,7 @@ void RunRestart() {
 }
 
 int main(int argc, char** argv) {
-    /* Indexer test
+    ///* Indexer test
     cout << indexer_service.insert("/tianli", false) << endl;
     cout << indexer_service.insert("/tianli/folder1", false) << endl;
     cout << indexer_service.insert("/tianli/folder2", false) << endl;
@@ -640,9 +639,9 @@ int main(int argc, char** argv) {
     for (map<string, Node>::iterator it = res.begin(); it != res.end(); ++it) {
         cout << it->first << " " << it->second.is_file << endl;
     }
-    */
+    //*/
 
-    /* File storage test
+    ///* File storage test
     ifstream ifs1("file1.txt", ios::binary|ios::ate);
     ifstream::pos_type pos1 = ifs1.tellg();
 
@@ -679,7 +678,7 @@ int main(int argc, char** argv) {
     cout << indexer_service.delet("tianli/file2") << endl;
     cout << bigtable_service.delet("tianli", "file2") << endl;
     cout << indexer_service.delet("tianli/folder2") << endl;
-    */
+    //*/
 
     RunServer();
 
