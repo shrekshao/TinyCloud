@@ -187,8 +187,6 @@ public:
             res = reply;
             return true;
         } else {
-            std::cerr << status.error_code() << ": " << status.error_message()
-                      << std::endl;
             return false;
         }
     }

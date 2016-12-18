@@ -152,7 +152,7 @@ class MasterServiceImpl final : public Master::Service {
 void* failureCheckingHelper(void*) {
     int res = 1;
     while (res == 1) {
-        cout << "Node Failure Scanning..." <<endl;
+        //cout << "Node Failure Scanning..." <<endl;
         this_thread::sleep_for (chrono::seconds(1));
         int res = master_service.failure_checking();
     }
@@ -172,7 +172,7 @@ void* checkPointHelper(void*) {
 void* storageNodeCheckingHelper(void*) {
     int res = 1;
     while (res == 1) {
-        cout << "Node Meta Info Retrieving..." <<endl;
+        //cout << "Node Meta Info Retrieving..." <<endl;
         this_thread::sleep_for (chrono::seconds(1));
         res = master_service.checking_node_data();
     }

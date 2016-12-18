@@ -365,7 +365,7 @@ int MasterNode::failure_checking() {
 
         if (connect(sockfd, (struct sockaddr *) &sin, sizeof(sin)) == -1)
         {
-            printf("Error connecting %s:%s\n", vec[0].c_str(), vec[1].c_str());
+            printf("Node Failed Detected %s:%s\n", vec[0].c_str(), vec[1].c_str());
             // mark this node as unavaliable
             crash_mapping[i] = true;
         }
@@ -383,15 +383,23 @@ int MasterNode::checking_node_data() {
             MasterClient msClient(grpc::CreateChannel(
                     replica_mapping[ip_mapping[i]], grpc::InsecureChannelCredentials()));
             MemTableInfo res;
-            msClient.GetMemTableInfo(res);
-            mem_info_mapping[replica_mapping[ip_mapping[i]]] = res;
+            if (msClient.GetMemTableInfo(res)) {
+                cout << "Storage Metadata Retrived Success!\n";
+                mem_info_mapping[replica_mapping[ip_mapping[i]]] = res;
+            } else {
+                cout << "Storage Metadata Retrived Failed!\n";
+            }
         } else {
             // go to primary to get data
             MasterClient msClient(grpc::CreateChannel(
                     ip_mapping[i], grpc::InsecureChannelCredentials()));
             MemTableInfo res;
-            msClient.GetMemTableInfo(res);
-            mem_info_mapping[ip_mapping[i]] = res;
+            if (msClient.GetMemTableInfo(res)) {
+                cout << "Storage Metadata Retrived Success!\n";
+                mem_info_mapping[ip_mapping[i]] = res;
+            } else {
+                cout << "Storage Metadata Retrived Failed!\n";
+            }
         }
 
     }
