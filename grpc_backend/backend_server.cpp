@@ -353,7 +353,7 @@ class StorageServiceImpl final : public Storage::Service {
         }
 
         // Write to log
-        string log("PutFile:put(" + request->username() + request->filename() + "," +  request->filetype() + "," + to_string(request->length()) + "):insert(" + request->username() + "/" + request->filename() + ",true)\n");
+        string log("PutFile:put(" + request->username() + "," + request->filename() + "," +  request->filetype() + "," + to_string(request->length()) + "):insert(" + request->username() + "/" + request->filename() + ",true)\n");
         writeToLog(log);
 
         int success1 = bigtable_service.put(request->username(), request->filename(), data_temp, request->filetype(), request->length());
@@ -715,6 +715,7 @@ void replicaLogParser(string line, ofstream& outfile) {
     string group;
     getline(ss, group, ':');
     if (strcmp(group.c_str(), "CreateUser") == 0) {
+        fprintf(stderr, "CreateUser handler\n");
         outfile.write(line.c_str(), strlen(line.c_str()));
         string username;
         getline(ss, username, '(');
@@ -727,6 +728,7 @@ void replicaLogParser(string line, ofstream& outfile) {
         bigtable_service.createuser(username, password);
 
     } else if (strcmp(group.c_str(), "InsertFileList") == 0) {
+        fprintf(stderr, "InsertFileList handler\n");
         outfile.write(line.c_str(), strlen(line.c_str()));
         string username;
         getline(ss, username, '(');
@@ -734,6 +736,7 @@ void replicaLogParser(string line, ofstream& outfile) {
         indexer_service.insert(username, false);
 
     } else if (strcmp(group.c_str(), "PutFile") == 0) {
+        fprintf(stderr, "PutFile handler\n");
         outfile.write(line.c_str(), strlen(line.c_str()));
         string username, filename, filetype, filelength;
         getline(ss, username, ',');
@@ -745,6 +748,7 @@ void replicaLogParser(string line, ofstream& outfile) {
         indexer_service.insert(username+"/"+filename, true);
 
     } else if (strcmp(group.c_str(), "UpdateFile") == 0) {
+        fprintf(stderr, "UpdateFile handler\n");
         outfile.write(line.c_str(), strlen(line.c_str()));
         string username, filename, filetype, filelength;
         getline(ss, username, ',');
@@ -757,6 +761,7 @@ void replicaLogParser(string line, ofstream& outfile) {
         bigtable_service.put(username, filename, filetype, stoul(filelength));
 
     } else if (strcmp(group.c_str(), "DeleteFile") == 0) {
+        fprintf(stderr, "DeleteFile handler\n");
         outfile.write(line.c_str(), strlen(line.c_str()));
         string username, filename, filetype, filelength;
         getline(ss, username, ',');
@@ -774,6 +779,7 @@ void primaryLogParser(string line, ofstream& outfile) {
     string group;
     getline(ss, group, ':');
     if (strcmp(group.c_str(), "GC") == 0) {
+        fprintf(stderr, "GC handler\n");
         outfile.write(line.c_str(), strlen(line.c_str()));
         string sstable;
         getline(ss, sstable, ',');
