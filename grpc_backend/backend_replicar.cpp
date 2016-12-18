@@ -340,13 +340,13 @@ class StorageServiceImpl final : public Storage::Service {
         fprintf(stderr, "pos: %d", pos);
 
         char result[pos];
-        /*
+
         ifs.seekg(0, ios::beg);
         ifs.read(result, pos);
 
         reply->set_size(pos);
         reply->set_data(result, pos);
-*/
+
         return Status::OK;
     }
 
@@ -377,6 +377,9 @@ void RunServer() {
     std::unique_ptr<Server> primary_server(primary_builder.BuildAndStart());
     std::cout << "Server primary listening on " << primary_server_address << std::endl;
     */
+
+    ofstream of(log_file, ostream::app);
+    of.close();
 
     // Replica port
     std::string replica_server_address(replica_server_ip);
