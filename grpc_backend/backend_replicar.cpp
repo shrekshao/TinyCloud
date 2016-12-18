@@ -337,15 +337,16 @@ class StorageServiceImpl final : public Storage::Service {
     Status GetLog(ServerContext* context, const Empty* request, Log* reply) override {
         ifstream ifs(log_file, ios::binary|ios::ate);
         int pos = ifs.tellg();
-        fprintf(stdout, "pos: %d", pos);
-        char result[pos];
+        fprintf(stderr, "pos: %d", pos);
 
+        char result[pos];
+        /*
         ifs.seekg(0, ios::beg);
         ifs.read(result, pos);
 
         reply->set_size(pos);
         reply->set_data(result, pos);
-
+*/
         return Status::OK;
     }
 
@@ -592,9 +593,12 @@ void replicaLogParser(string line, ofstream& outfile) {
         string size;
         getline(ss, size, ',');
         int length = stoi(size);
-        string temp[length];
+        //string temp[length];
+        vector<string> temp;
+        string str;
         for (int i = 0; i < length; i++) {
-            getline(ss, temp[i], ',');
+            getline(ss, str, ',');
+            temp.push_back(str);
         }
         bigtable_service.gcLog(sstable, temp, length);
     }
