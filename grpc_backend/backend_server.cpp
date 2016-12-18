@@ -513,7 +513,7 @@ class StorageServiceImpl final : public Storage::Service {
 
         ifstream ifs(log_file, ios::binary|ios::ate);
         int pos = ifs.tellg();
-        fprintf(stderr, "pos: %d", pos);
+        //fprintf(stderr, "pos: %d", pos);
 
         char result[pos];
 
@@ -545,7 +545,7 @@ class StorageServiceImpl final : public Storage::Service {
 
 void RunServer() {
 
-    ofstream of(log_file, ostream::app);
+    ofstream of(log_file, ostream::out | ostream::app);
     of.close();
 
     // Primary port
