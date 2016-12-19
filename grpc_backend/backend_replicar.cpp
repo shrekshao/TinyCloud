@@ -39,8 +39,8 @@ using backend::Log;
 using backend::Buffer;
 using backend::MemTableInfo;
 
-const char*  primary_server_ip = "0.0.0.0:50051";
-const char*  replica_server_ip = "0.0.0.0:50052";
+string  primary_server_ip = "0.0.0.0:";
+string  replica_server_ip = "0.0.0.0:";
 
 // Indexer service in-memory storage
 Indexer indexer_service;
@@ -475,7 +475,7 @@ void RunRestart() {
 }
 
 int main(int argc, char** argv) {
-    ///* Indexer test
+    /* Indexer test
     cout << indexer_service.insert("/tianli", false) << endl;
     cout << indexer_service.insert("/tianli/folder1", false) << endl;
     cout << indexer_service.insert("/tianli/folder2", false) << endl;
@@ -487,9 +487,9 @@ int main(int argc, char** argv) {
     for (map<string, Node>::iterator it = res.begin(); it != res.end(); ++it) {
         cout << it->first << " " << it->second.is_file << endl;
     }
-    //*/
+    */
 
-    ///* File storage test
+    /* File storage test
     ifstream ifs1("gmail.png", ios::binary|ios::ate);
     ifstream::pos_type pos1 = ifs1.tellg();
 
@@ -522,7 +522,25 @@ int main(int argc, char** argv) {
     cout << bigtable_service.get("tianli", "file2", (unsigned char *) pChars3, length2) << endl;
 
     printf("%s\n", pChars3);
-    //*/
+    */
+
+    int c;
+    // Read command line opts
+    while ((c = getopt (argc, argv, "p:r:")) != -1) {
+        switch (c) {
+            case 'p': primary_server_ip += optarg; break;
+            case 'r': replica_server_ip += optarg; break;
+            case '?':
+                if (optopt == 'p' || optopt == 'r')
+                    fprintf(stderr, "Option -%c requires an argument.\n", optopt);
+                else if (isprint(optopt))
+                    fprintf(stderr, "Unknown option '-%c'.\n", optopt);
+                else
+                    fprintf(stderr, "Unknown option character '\\x%x'.\n", optopt);
+                return -1;
+            default: abort(); break;
+        }
+    }
 
     RunServer();
 
