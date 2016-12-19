@@ -65,7 +65,7 @@ service Master {
     // As Server
     // Return Type: BufferLength
     // Request Buffer Raw Meta From Storage Node
-    //rpc SendMemTableInfo (Empty) returns (MemTableInfoReply) {}
+    rpc SendMemTableInfo (Empty) returns (MemTableInfoReply) {}
 
 }
 
@@ -77,13 +77,13 @@ message AddressReply {
     string addr = 1;
 }
 
-//message MemTableInfo {
-//    uint64 buffer_length = 1;
-//}
+message MemTableInfoMaster {
+    uint64 buffer_length = 1;
+}
 
-//message MemTableInfoReply {
-//    map<string, MemTableInfo> nodememinfo = 1;
-//}
+message MemTableInfoReply {
+    map<string, MemTableInfoMaster> nodememinfo = 1;
+}
 
 message NodesStatusReply {
     map<string, bool> nodesstatus = 1;
