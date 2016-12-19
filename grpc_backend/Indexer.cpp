@@ -128,6 +128,9 @@ int Indexer::findAllChildrenHelper(Node* cur_node, vector<string>& res) {
  *  Create/Upload a file or a directory
  */
 int Indexer::insert(string new_dir, bool is_file) {
+
+    fprintf(stderr, "Insert: %s\n", new_dir.c_str());
+
     boost::filesystem::path p1(new_dir);
 
     // traverse all the sub dir
@@ -163,6 +166,8 @@ int Indexer::insert(string new_dir, bool is_file) {
  *  Delete a file/directory in the hierarchy structure
  */
 int Indexer::delet(string del_dir) {
+    fprintf(stderr, "Delet: %s\n", del_dir.c_str());
+
     boost::filesystem::path p1(del_dir);
 
     // traverse all the sub dir
