@@ -109,7 +109,7 @@ message Log {
 }
 
 message Buffer {
-    int64 size = 1;
+    uint64 size = 1;
     bytes data = 2;
 }
 

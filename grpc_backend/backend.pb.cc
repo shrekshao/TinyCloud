@@ -339,7 +339,7 @@ void protobuf_AddDesc_backend_2eproto() {
     "\010filetype\030\004 \001(\t\022\014\n\004data\030\005 \001(\014\022\023\n\013orig_le"
     "ngth\030\006 \001(\004\022\021\n\torig_data\030\007 \001(\014\"!\n\003Log\022\014\n\004"
     "size\030\001 \001(\003\022\014\n\004data\030\002 \001(\014\"$\n\006Buffer\022\014\n\004si"
-    "ze\030\001 \001(\003\022\014\n\004data\030\002 \001(\014\"\007\n\005Empty\"%\n\014MemTa"
+    "ze\030\001 \001(\004\022\014\n\004data\030\002 \001(\014\"\007\n\005Empty\"%\n\014MemTa"
     "bleInfo\022\025\n\rbuffer_length\030\001 \001(\0042\366\004\n\007Stora"
     "ge\0224\n\nCreateUser\022\024.backend.UserAccount\032\016"
     ".backend.Empty\"\000\022B\n\rCheckPassword\022\024.back"
@@ -3574,7 +3574,7 @@ void Buffer::SharedCtor() {
     _is_default_instance_ = false;
   ::google::protobuf::internal::GetEmptyString();
   _cached_size_ = 0;
-  size_ = GOOGLE_LONGLONG(0);
+  size_ = GOOGLE_ULONGLONG(0);
   data_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 
@@ -3616,7 +3616,7 @@ Buffer* Buffer::New(::google::protobuf::Arena* arena) const {
 
 void Buffer::Clear() {
 // @@protoc_insertion_point(message_clear_start:backend.Buffer)
-  size_ = GOOGLE_LONGLONG(0);
+  size_ = GOOGLE_ULONGLONG(0);
   data_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 
@@ -3630,11 +3630,11 @@ bool Buffer::MergePartialFromCodedStream(
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // optional int64 size = 1;
+      // optional uint64 size = 1;
       case 1: {
         if (tag == 8) {
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   ::google::protobuf::int64, ::google::protobuf::internal::WireFormatLite::TYPE_INT64>(
+                   ::google::protobuf::uint64, ::google::protobuf::internal::WireFormatLite::TYPE_UINT64>(
                  input, &size_)));
 
         } else {
@@ -3681,9 +3681,9 @@ failure:
 void Buffer::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
   // @@protoc_insertion_point(serialize_start:backend.Buffer)
-  // optional int64 size = 1;
+  // optional uint64 size = 1;
   if (this->size() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteInt64(1, this->size(), output);
+    ::google::protobuf::internal::WireFormatLite::WriteUInt64(1, this->size(), output);
   }
 
   // optional bytes data = 2;
@@ -3698,9 +3698,9 @@ void Buffer::SerializeWithCachedSizes(
 ::google::protobuf::uint8* Buffer::InternalSerializeWithCachedSizesToArray(
     bool deterministic, ::google::protobuf::uint8* target) const {
   // @@protoc_insertion_point(serialize_to_array_start:backend.Buffer)
-  // optional int64 size = 1;
+  // optional uint64 size = 1;
   if (this->size() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteInt64ToArray(1, this->size(), target);
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt64ToArray(1, this->size(), target);
   }
 
   // optional bytes data = 2;
@@ -3718,10 +3718,10 @@ int Buffer::ByteSize() const {
 // @@protoc_insertion_point(message_byte_size_start:backend.Buffer)
   int total_size = 0;
 
-  // optional int64 size = 1;
+  // optional uint64 size = 1;
   if (this->size() != 0) {
     total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::Int64Size(
+      ::google::protobuf::internal::WireFormatLite::UInt64Size(
         this->size());
   }
 
@@ -3810,15 +3810,15 @@ void Buffer::InternalSwap(Buffer* other) {
 #if PROTOBUF_INLINE_NOT_IN_HEADERS
 // Buffer
 
-// optional int64 size = 1;
+// optional uint64 size = 1;
 void Buffer::clear_size() {
-  size_ = GOOGLE_LONGLONG(0);
+  size_ = GOOGLE_ULONGLONG(0);
 }
- ::google::protobuf::int64 Buffer::size() const {
+ ::google::protobuf::uint64 Buffer::size() const {
   // @@protoc_insertion_point(field_get:backend.Buffer.size)
   return size_;
 }
- void Buffer::set_size(::google::protobuf::int64 value) {
+ void Buffer::set_size(::google::protobuf::uint64 value) {
   
   size_ = value;
   // @@protoc_insertion_point(field_set:backend.Buffer.size)
