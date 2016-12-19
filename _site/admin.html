@@ -110,7 +110,7 @@
                             </div>-->
                         </div>
                     </div>
-                    <div class="panel-body">
+                    <div class="panel-body" id="node-info-pannel">
                         
                     </div>
                 </div>
@@ -131,6 +131,7 @@
 
 
 <script>
+    var node_list = {};
     function getNodeListAjax() {
 
         $.ajax({
@@ -157,16 +158,31 @@
     function buildNodeList(result) {
         // console.log('success');
         console.log(result);
-        // $('#file-list').html('');
+        node_list = result;
+        $('#node-list').html('');
 
-        // for (var key in result) {
-        //     // if (result[key].name == '..') {
-        //     //     // hack to get current folder
-        //     //     cur_folder = key;
-        //     // }
+        for (var key in result) {
+            // if (result[key].name == '..') {
+            //     // hack to get current folder
+            //     cur_folder = key;
+            // }
 
-        //     appendFileRow(key, result[key]);
-        // }
+            appendNodeRow(key, result[key]);
+        }
+    }
+
+    function showInfo(key) {
+        // console.log(JSON.stringify(node_list[key]));
+        $('#node-info-pannel').html(JSON.stringify(node_list[key]) );
+    }
+
+    function appendNodeRow(key, info) {
+        var row;
+        row = `<li class="list-group-item" onclick="showInfo('${key}')">
+                        ${key + " - " + info.user_list}
+                    </li>`;
+        
+        $('#node-list').append(row);
     }
 
 

@@ -785,28 +785,36 @@ void adminGetNodeList(int fd, const string & contentStr, string & threadUsername
             HttpDebugLog( fd, "<%s , %s >"
                 , f.first.c_str(), f.second.user_list().c_str());
 
-            // oss << "\"";
-            // // oss << f.first;
-            // oss << f.second.full_path();
-            // oss << "\"";
-            // oss << ":";
+            oss << "\"";
+            oss << f.first;
+            oss << "\"";
+            oss << ":";
 
-            // oss << "{";
+            oss << "{";
 
-            // oss << "\"name\":";
+            oss << "\"user_list\":";
+
+            oss << "\"";
+            oss << f.second.user_list();
+            oss << "\"";
+
+            oss << ",";
+
+
+            oss << "\"user_number\":";
 
             // oss << "\"";
-            // // oss << f.second.name();
-            // oss << f.first;
+            oss << to_string(f.second.user_number());
             // oss << "\"";
 
-            // oss << ",";
+            oss << ",";
+
             
-            // oss << "\"folder\":";
+            oss << "\"status\":";
 
-            // oss << ( !f.second.is_file() ) ? "1" : "0";
+            oss << ( f.second.status() ) ? "1" : "0";
             
-            // oss << "}";
+            oss << "}";
 
         }
     }
