@@ -813,6 +813,13 @@ void adminGetNodeList(int fd, const string & contentStr, string & threadUsername
             oss << "\"status\":";
 
             oss << ( f.second.status() ) ? "1" : "0";
+
+
+            oss << ",";
+            
+            oss << "\"buffer_length\":";
+
+            oss << to_string( f.second.buffer_length() );
             
             oss << "}";
 
