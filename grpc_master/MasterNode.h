@@ -96,6 +96,8 @@ class MasterNode {
     map<string, string> replica_mapping;
     // storage node crashing indexing table - #, boolean
     map<int, bool> crash_mapping;
+    // replica crashing map
+    map<int, bool> replica_crash_mapping;
     // user mapping to the storage node - username: #
     map<string, int> user_mapping;
     // meta-info about all the storage node - IP:Port, Struct

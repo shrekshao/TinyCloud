@@ -191,6 +191,7 @@ MasterNode::MasterNode(string config_file) {
         replica_mapping[vec[0]] = vec[1];
         // initialize all the node as un-crashed condition
         crash_mapping[index] = false;
+        replica_crash_mapping[index] = false;
         // put into inverse ip mapping as well
         inverse_ip_mapping[vec[0]] = index;
         // initialize all the buffer size to be zero
@@ -300,7 +301,7 @@ int MasterNode::get_info(map<string, StorageNodeInfo> &info) {
         // replica data
         info[replica_mapping[ip_mapping[it->second]]].user_list.push_back(it->first);
         info[replica_mapping[ip_mapping[it->second]]].user_number++;
-        if (crash_mapping[inverse_ip_mapping[replica_mapping[it->first]]]) {
+        if (replica_crash_mapping[it->second]) {
             info[replica_mapping[ip_mapping[it->second]]].crashed = true;
         } else {
             info[replica_mapping[ip_mapping[it->second]]].crashed = false;
@@ -318,6 +319,7 @@ int MasterNode::get_info(map<string, StorageNodeInfo> &info) {
     // getting the status of the server
     for (int i = 0; i < max_node_number; i++) {
         info[ip_mapping[i]].storage_size = mem_info_mapping[ip_mapping[i]].buffer_length;
+        info[replica_mapping[ip_mapping[i]]].storage_size = mem_info_mapping[replica_mapping[ip_mapping[i]]].buffer_length;
     }
     return 1;
 }
@@ -380,14 +382,43 @@ int MasterNode::failure_checking() {
 
         if (connect(sockfd, (struct sockaddr *) &sin, sizeof(sin)) == -1)
         {
-            printf("Node Failed Detected %s:%s\n", vec[0].c_str(), vec[1].c_str());
+            printf("Primary Node Failed Detected %s:%s\n", vec[0].c_str(), vec[1].c_str());
             // mark this node as unavaliable
             crash_mapping[i] = true;
         } else {
-            printf("Node Successfully Detected %s:%s\n", vec[0].c_str(), vec[1].c_str());
+            printf("Primary Node Successfully Detected %s:%s\n", vec[0].c_str(), vec[1].c_str());
             crash_mapping[i] = false;
         }
     }
+
+    // looping through all the replicas to see if a failure is detected
+    for (int i = 0; i < max_node_number; i ++) {
+        string token;
+        vector<string> vec;
+        stringstream ss(replica_mapping[ip_mapping[i]]);
+        while(std::getline(ss, token, ':')) {
+            vec.push_back(token);
+        }
+        //cout << "Scanning IP: " << vec[0] << " Port: " << vec[1] << "\n";
+        // trying to connect to this IP with this port
+        int sockfd = socket(AF_INET, SOCK_STREAM, 0);
+
+        struct sockaddr_in sin;
+        sin.sin_family = AF_INET;
+        sin.sin_port   = htons(atoi(vec[1].c_str()));  // Could be anything
+        inet_pton(AF_INET, vec[0].c_str(), &sin.sin_addr);
+
+        if (connect(sockfd, (struct sockaddr *) &sin, sizeof(sin)) == -1)
+        {
+            printf("Replica Node Failed Detected %s:%s\n", vec[0].c_str(), vec[1].c_str());
+            // mark this node as unavaliable
+            replica_crash_mapping[i] = true;
+        } else {
+            printf("Replica Node Successfully Detected %s:%s\n", vec[0].c_str(), vec[1].c_str());
+            replica_crash_mapping[i] = false;
+        }
+    }
+
     return 1;
 }
 
@@ -407,7 +438,7 @@ int MasterNode::checking_node_data() {
                 cout << "Storage Metadata Retrived Success!\n";
                 cout << "Buffer Size: "<< res.buffer_length << "\n";
 //                cout << "Buffer Size: " << res.buffer_length() << "\n";
-//                mem_info_mapping[replica_mapping[ip_mapping[i]]] = res;
+                mem_info_mapping[replica_mapping[ip_mapping[i]]].buffer_length = res.buffer_length;
             } else {
                 cout << "Storage Metadata Retrived Failed!\n";
             }
@@ -419,7 +450,7 @@ int MasterNode::checking_node_data() {
             if (bClient.GetMemTableInfo(res.buffer_length)) {
                 cout << "Storage Metadata Retrived Success!\n";
                 cout << "Buffer Size: " << res.buffer_length << "\n";
-                mem_info_mapping[ip_mapping[i]] = res;
+                mem_info_mapping[ip_mapping[i]].buffer_length = res.buffer_length;
             } else {
                 cout << "Storage Metadata Retrived Failed!\n";
             }
