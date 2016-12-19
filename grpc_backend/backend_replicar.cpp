@@ -353,7 +353,7 @@ class StorageServiceImpl final : public Storage::Service {
 
     Status GetBuffer(ServerContext* context, const Empty* request, Buffer* reply) override {
         unsigned char result[bigtable_service.getCur_pt()];
-        bigtable_service.getMemtable(result);
+        bigtable_service.getMemtable(result, (int) bigtable_service.getCur_pt());
 
         reply->set_size(bigtable_service.getCur_pt());
         fprintf(stderr, "Give size from bigtable_service.getCur_pt(): %d\n", (int) bigtable_service.getCur_pt());

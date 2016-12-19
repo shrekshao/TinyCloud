@@ -103,7 +103,7 @@ public:
     bool needClear(vector<pair<time_t, FileMeta>> &vec);
     int clearSSTable(map<string, vector<pair<time_t, FileMeta>>>::iterator it, vector<pair<time_t, FileMeta>>::iterator ite, ofstream& replica_log);
     unsigned int getCur_pt();
-    int getMemtable(unsigned char* result);
+    int getMemtable(unsigned char* result, int length);
     int put (string username, string file_name, string file_type, unsigned int file_size);
     void setMemtable(string& temp);
     void gcLog(string sstable, vector<string> temp, int length);
