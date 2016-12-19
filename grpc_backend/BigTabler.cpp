@@ -406,8 +406,10 @@ unsigned int BigTabler::getCur_pt() {
     return cur_pt;
 }
 
-int BigTabler::getMemtable(unsigned char* result) {
-    strcpy((char *) result, (char *) memtable);
+int BigTabler::getMemtable(unsigned char* result, int length) {
+    for (int i = 0; i < length; i++) {
+        result[i] = memtable[i];
+    }
 
     return 1;
 }
