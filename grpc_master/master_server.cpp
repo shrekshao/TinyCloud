@@ -99,7 +99,7 @@ class MasterServiceImpl final : public Master::Service {
                 ni.set_user_number(it->second.user_number);
                 ni.set_status(it->second.crashed);
                 ni.set_buffer("[ADMIN] dummy message for testing displaying raw data");
-                ni.set_buffer_length(9999);
+                ni.set_buffer_length(it->second.storage_size);
                 (*reply->mutable_nodeinfo())[it->first] = ni;
             }
             return Status::OK;

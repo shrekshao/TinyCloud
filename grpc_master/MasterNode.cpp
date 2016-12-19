@@ -297,14 +297,27 @@ int MasterNode::get_info(map<string, StorageNodeInfo> &info) {
     // loop through all the users
     for (auto it = user_mapping.begin(); it != user_mapping.end(); ++it)
     {
-        // push the user into the node user lists
+        // replica data
+        info[replica_mapping[ip_mapping[it->second]]].user_list.push_back(it->first);
+        info[replica_mapping[ip_mapping[it->second]]].user_number++;
+        if (crash_mapping[inverse_ip_mapping[replica_mapping[it->first]]]) {
+            info[replica_mapping[ip_mapping[it->second]]].crashed = true;
+        } else {
+            info[replica_mapping[ip_mapping[it->second]]].crashed = false;
+        }
+
+        // primary data
         info[ip_mapping[it->second]].user_list.push_back(it->first);
-        // adding the user count for this node
         info[ip_mapping[it->second]].user_number++;
+        if (crash_mapping[it->second]) {
+            info[ip_mapping[it->second]].crashed = true;
+        } else {
+            info[ip_mapping[it->second]].crashed = false;
+        }
     }
     // getting the status of the server
     for (int i = 0; i < max_node_number; i++) {
-        info[ip_mapping[i]].crashed = crash_mapping[i];
+        info[ip_mapping[i]].storage_size = mem_info_mapping[ip_mapping[i]].buffer_length;
     }
     return 1;
 }

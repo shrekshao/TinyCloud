@@ -30,8 +30,8 @@ using master::AddressReply;
 using master::NodesStatusReply;
 using master::NodesInfoReply;
 using master::NodeIndexRequest;
-//using master::MemTableInfoReply;
-//using master::MemTableInfo;
+using master::MemTableInfoReply;
+using master::MemTableInfoMaster;
 using master::NodeInfo;
 
 // we need to log when a function is get called
@@ -162,6 +162,30 @@ public:
 
         if (status.ok()) {
             res = std::map<string, NodeInfo>(reply.nodeinfo().begin(), reply.nodeinfo().end());
+            return true;
+        } else {
+            std::cerr << status.error_code() << ": " << status.error_message()
+                      << std::endl;
+            return false;
+        }
+    }
+
+    bool SendMemTableInfo(map<string, MemTableInfoMaster> &res) {
+        // data that are sending to the master
+        master::Empty request;
+
+        // container for the reply message
+        MemTableInfoReply reply;
+
+        // Context for the client. It could be used to convey extra information to
+        // the server and/or tweak certain RPC behaviors.
+        ClientContext context;
+
+        // The actual RPC.
+        Status status = stub_->SendMemTableInfo(&context, request, &reply);
+
+        if (status.ok()) {
+            res = std::map<string, MemTableInfoMaster>(reply.nodememinfo().begin(), reply.nodememinfo().end());
             return true;
         } else {
             std::cerr << status.error_code() << ": " << status.error_message()
