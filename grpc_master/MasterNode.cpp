@@ -427,7 +427,6 @@ int MasterNode::checking_node_data() {
     // looping through all the storage node to fetch info
     for (int i = 0; i < max_node_number; i ++) {
         // formulate a client to storage server sequentially
-        if (crash_mapping[i]) {
             // go to replica IP for fetching meta data
             BackendClient bClient(grpc::CreateChannel(
                     replica_mapping[ip_mapping[i]], grpc::InsecureChannelCredentials()));
@@ -435,27 +434,27 @@ int MasterNode::checking_node_data() {
             RawDataFromNode res;
             cout << "Primary Failed! Redirected ->" << replica_mapping[ip_mapping[i]] << "\n";
             if (bClient.GetMemTableInfo(res.buffer_length)) {
-                cout << "Storage Metadata Retrived Success!\n";
-                cout << "Buffer Size: "<< res.buffer_length << "\n";
+                cout << "Primary Storage Metadata Retrived Success!\n";
+                cout << "Primary Buffer Size: "<< res.buffer_length << "\n";
 //                cout << "Buffer Size: " << res.buffer_length() << "\n";
                 mem_info_mapping[replica_mapping[ip_mapping[i]]].buffer_length = res.buffer_length;
             } else {
-                cout << "Storage Metadata Retrived Failed!\n";
+                cout << "Primary Storage Metadata Retrived Failed!\n";
             }
-        } else {
-            // go to primary to get data
-            BackendClient bClient(grpc::CreateChannel(
-                    ip_mapping[i], grpc::InsecureChannelCredentials()));
-            RawDataFromNode res;
-            if (bClient.GetMemTableInfo(res.buffer_length)) {
-                cout << "Storage Metadata Retrived Success!\n";
-                cout << "Buffer Size: " << res.buffer_length << "\n";
-                mem_info_mapping[ip_mapping[i]].buffer_length = res.buffer_length;
-            } else {
-                cout << "Storage Metadata Retrived Failed!\n";
-            }
-        }
+    }
 
+    for (int i = 0; i < max_node_number; i ++) {
+        // go to primary to get data
+        BackendClient bClient(grpc::CreateChannel(
+                ip_mapping[i], grpc::InsecureChannelCredentials()));
+        RawDataFromNode res;
+        if (bClient.GetMemTableInfo(res.buffer_length)) {
+            cout << "Replica Storage Metadata Retrived Success!\n";
+            cout << "Replica Buffer Size: " << res.buffer_length << "\n";
+            mem_info_mapping[ip_mapping[i]].buffer_length = res.buffer_length;
+        } else {
+            cout << "Replica Storage Metadata Retrived Failed!\n";
+        }
     }
     return 1;
 }
