@@ -77,7 +77,7 @@ public:
         }
     }
 
-    int GetBuffer_Backup(string& buffer) {
+    int GetBuffer_Backup(string& buffer, unsigned int& pt) {
         Empty request;
         Buffer reply;
         ClientContext context;
@@ -85,6 +85,8 @@ public:
 
         // Act upon its status.
         if (status.ok()) {
+            fprintf(stderr, "GetBuffer_Backup pt: %lu\n", reply.size());
+            pt = reply.size();
             buffer = reply.data();
             return 1;
         } else {
@@ -457,13 +459,15 @@ void RunRestart() {
     }
 
     string memtable;
-    if (primarior.GetBuffer_Backup(memtable) == -1) {
+    unsigned int pt;
+    if (primarior.GetBuffer_Backup(memtable, pt) == -1) {
         fprintf(stderr, "GetBuffer_Backup fail!\n");
     }
 
     fprintf(stderr, "Get buffer successfully! Buffersize: %zu\n", memtable.size());
 
     bigtable_service.setMemtable(memtable);
+    bigtable_service.setCur_pt(pt);
 
     outfile.close();
     remove("replica_log.txt");
@@ -471,7 +475,7 @@ void RunRestart() {
 }
 
 int main(int argc, char** argv) {
-    /* Indexer test
+    ///* Indexer test
     cout << indexer_service.insert("/tianli", false) << endl;
     cout << indexer_service.insert("/tianli/folder1", false) << endl;
     cout << indexer_service.insert("/tianli/folder2", false) << endl;
@@ -483,9 +487,9 @@ int main(int argc, char** argv) {
     for (map<string, Node>::iterator it = res.begin(); it != res.end(); ++it) {
         cout << it->first << " " << it->second.is_file << endl;
     }
-    */
+    //*/
 
-    /* File storage test
+    ///* File storage test
     ifstream ifs1("file1.txt", ios::binary|ios::ate);
     ifstream::pos_type pos1 = ifs1.tellg();
 
@@ -518,7 +522,7 @@ int main(int argc, char** argv) {
     cout << bigtable_service.get("tianli", "file2", (unsigned char *) pChars3, length2) << endl;
 
     printf("%s\n", pChars3);
-    */
+    //*/
 
     RunServer();
 

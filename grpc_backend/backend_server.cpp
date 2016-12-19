@@ -211,7 +211,7 @@ public:
         }
     }
 
-    int GetBuffer_Backup(string& buffer) {
+    int GetBuffer_Backup(string& buffer, unsigned int& pt) {
         Empty request;
         Buffer reply;
         ClientContext context;
@@ -219,7 +219,14 @@ public:
 
         // Act upon its status.
         if (status.ok()) {
+            fprintf(stderr, "GetBuffer_Backup pt: %lu\n", reply.size());
+            pt = reply.size();
+
             buffer = reply.data();
+
+            for (int i = 0; i < pt; i++) {
+                fprintf(stderr, "GetBuffer_Backup: %d, %c\n", i, buffer[i]);
+            }
             return 1;
         } else {
             std::cout << status.error_code() << ": " << status.error_message() << std::endl;
@@ -633,13 +640,15 @@ void RunRestart() {
     }
 
     string memtable;
-    if (replicar.GetBuffer_Backup(memtable) == -1) {
+    unsigned int pt;
+    if (replicar.GetBuffer_Backup(memtable, pt) == -1) {
         fprintf(stderr, "GetBuffer_Backup fail!\n");
     }
 
     fprintf(stderr, "Get buffer successfully! Buffersize: %zu\n", strlen(memtable.c_str()));
 
     bigtable_service.setMemtable(memtable);
+    bigtable_service.setCur_pt(pt);
 
     outfile.close();
     remove("primary_log.txt");
