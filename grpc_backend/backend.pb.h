@@ -924,11 +924,11 @@ class Buffer : public ::google::protobuf::Message /* @@protoc_insertion_point(cl
 
   // accessors -------------------------------------------------------
 
-  // optional int64 size = 1;
+  // optional uint64 size = 1;
   void clear_size();
   static const int kSizeFieldNumber = 1;
-  ::google::protobuf::int64 size() const;
-  void set_size(::google::protobuf::int64 value);
+  ::google::protobuf::uint64 size() const;
+  void set_size(::google::protobuf::uint64 value);
 
   // optional bytes data = 2;
   void clear_data();
@@ -946,7 +946,7 @@ class Buffer : public ::google::protobuf::Message /* @@protoc_insertion_point(cl
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   bool _is_default_instance_;
-  ::google::protobuf::int64 size_;
+  ::google::protobuf::uint64 size_;
   ::google::protobuf::internal::ArenaStringPtr data_;
   mutable int _cached_size_;
   friend void  protobuf_AddDesc_backend_2eproto();
@@ -1813,15 +1813,15 @@ inline void Log::set_allocated_data(::std::string* data) {
 
 // Buffer
 
-// optional int64 size = 1;
+// optional uint64 size = 1;
 inline void Buffer::clear_size() {
-  size_ = GOOGLE_LONGLONG(0);
+  size_ = GOOGLE_ULONGLONG(0);
 }
-inline ::google::protobuf::int64 Buffer::size() const {
+inline ::google::protobuf::uint64 Buffer::size() const {
   // @@protoc_insertion_point(field_get:backend.Buffer.size)
   return size_;
 }
-inline void Buffer::set_size(::google::protobuf::int64 value) {
+inline void Buffer::set_size(::google::protobuf::uint64 value) {
   
   size_ = value;
   // @@protoc_insertion_point(field_set:backend.Buffer.size)
