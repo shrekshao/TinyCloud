@@ -356,6 +356,7 @@ class StorageServiceImpl final : public Storage::Service {
         bigtable_service.getMemtable(result);
 
         reply->set_size(bigtable_service.getCur_pt());
+        fprintf(stderr, "Give size from bigtable_service.getCur_pt(): %d\n", (int) bigtable_service.getCur_pt());
         reply->set_data(&result[0], (int) bigtable_service.getCur_pt());
 
         return Status::OK;
@@ -460,7 +461,7 @@ void RunRestart() {
         fprintf(stderr, "GetBuffer_Backup fail!\n");
     }
 
-    fprintf(stderr, "Get buffer successfully! Buffersize: %d\n", memtable.size());
+    fprintf(stderr, "Get buffer successfully! Buffersize: %zu\n", memtable.size());
 
     bigtable_service.setMemtable(memtable);
 
