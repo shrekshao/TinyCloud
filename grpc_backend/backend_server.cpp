@@ -645,9 +645,9 @@ void RunRestart() {
         fprintf(stderr, "GetBuffer_Backup fail!\n");
     }
 
-    fprintf(stderr, "Get buffer successfully! Buffersize: %zu\n", strlen(memtable.c_str()));
+    fprintf(stderr, "Get buffer successfully! Buffersize: %zu\n", memtable.size());
 
-    bigtable_service.setMemtable(memtable);
+    bigtable_service.setMemtable(memtable, pt);
     bigtable_service.setCur_pt(pt);
 
     outfile.close();

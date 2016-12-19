@@ -466,7 +466,7 @@ void RunRestart() {
 
     fprintf(stderr, "Get buffer successfully! Buffersize: %zu\n", memtable.size());
 
-    bigtable_service.setMemtable(memtable);
+    bigtable_service.setMemtable(memtable, pt);
     bigtable_service.setCur_pt(pt);
 
     outfile.close();
@@ -490,7 +490,7 @@ int main(int argc, char** argv) {
     //*/
 
     ///* File storage test
-    ifstream ifs1("file1.txt", ios::binary|ios::ate);
+    ifstream ifs1("gmail.png", ios::binary|ios::ate);
     ifstream::pos_type pos1 = ifs1.tellg();
 
     int length1 = pos1;
@@ -501,7 +501,7 @@ int main(int argc, char** argv) {
     ifs1.close();
 
     cout << "First put" << endl;
-    cout << bigtable_service.put("tianli", "file1", (unsigned char *) pChars1, ".txt", length1) << endl;
+    cout << bigtable_service.put("tianli", "gmail", (unsigned char *) pChars1, ".png", length1) << endl;
 
     ifstream ifs2("file2.txt", ios::binary|ios::ate);
     ifstream::pos_type pos2 = ifs2.tellg();

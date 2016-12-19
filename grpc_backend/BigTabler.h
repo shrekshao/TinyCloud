@@ -105,7 +105,7 @@ public:
     unsigned int getCur_pt();
     int getMemtable(unsigned char* result, int length);
     int put (string username, string file_name, string file_type, unsigned int file_size);
-    void setMemtable(string& temp);
+    void setMemtable(string& temp, int length);
     void setCur_pt(unsigned int pt);
     void gcLog(string sstable, vector<string> temp, int length);
     //void writeToLog(string& msg);

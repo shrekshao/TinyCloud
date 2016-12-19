@@ -415,8 +415,11 @@ int BigTabler::getMemtable(unsigned char* result, int length) {
     return 1;
 }
 
-void BigTabler::setMemtable(string& temp) {
-    strcpy((char *) memtable, temp.c_str());
+void BigTabler::setMemtable(string& temp, int length) {
+    for (int i = 0; i < length; i++) {
+        memtable[i] = temp[i];
+        fprintf(stderr, "getMemtable: %d, %c\n", i, memtable[i]);
+    }
 }
 
 void BigTabler::setCur_pt(unsigned int pt) {
