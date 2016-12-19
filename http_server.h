@@ -29,6 +29,10 @@ static FileSystemClient fsClient0(grpc::CreateChannel(
       "127.0.0.1:50051", grpc::InsecureChannelCredentials()));
 static FileSystemClient fsClient0r(grpc::CreateChannel(
       "127.0.0.1:50052", grpc::InsecureChannelCredentials()));
+static FileSystemClient fsClient1(grpc::CreateChannel(
+      "127.0.0.1:50053", grpc::InsecureChannelCredentials()));
+static FileSystemClient fsClient1r(grpc::CreateChannel(
+      "127.0.0.1:50054", grpc::InsecureChannelCredentials()));
 
 // static nodes
 // FSC no copy function, work around
@@ -36,7 +40,8 @@ static unordered_map<string, FileSystemClient&> addr2FileSystemClient({
     {"127.0.0.1:50051", fsClient0}
     , {"127.0.0.1:50052", fsClient0r}
 
-
+    ,{"127.0.0.1:50053", fsClient1}
+    , {"127.0.0.1:50054", fsClient1r}
 });
 
 static MasterClient masterClient(grpc::CreateChannel(

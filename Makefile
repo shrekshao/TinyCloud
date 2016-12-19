@@ -1,6 +1,6 @@
 TARGETS = http_server
 
-CXX = g++
+CXX = g++ -O2
 CPPFLAGS += -I/usr/local/include -pthread
 CXXFLAGS += -std=c++11
 
