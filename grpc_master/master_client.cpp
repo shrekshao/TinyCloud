@@ -1,15 +1,29 @@
 //
 // Created by Frank Wu on 16/12/2016.
 //
-#include "master_client.h"
+//#include "master_client.h"
+#include "../grpc_backend/backend_client.h"
 
 using namespace std;
 
 //MasterClient msClient(grpc::CreateChannel(
 //        "localhost:52013", grpc::InsecureChannelCredentials()));
 
+BackendClient bClient(grpc::CreateChannel(
+        "localhost:50051", grpc::InsecureChannelCredentials()));
+
 int main(int argc, char *argv[])
 {
+    int a;
+    if (bClient.GetMemTableInfo(a)) {
+        cout << "Storage Metadata Retrived Success!\n";
+        cout << "Buffer Size: " << a << "\n";
+//                cout << "Buffer Size: " << res.buffer_length() << "\n";
+//                mem_info_mapping[replica_mapping[ip_mapping[i]]] = res;
+    } else {
+        cout << "Storage Metadata Retrived Failed!\n";
+    }
+
 //    cout << "-------------------------------------\n";
 //
 //    string username = "wuzhengx";

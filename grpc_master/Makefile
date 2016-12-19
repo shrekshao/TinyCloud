@@ -46,11 +46,11 @@ vpath %.proto $(PROTOS_PATH)
 
 all: master_server MasterNode master_client
 
-MasterNode: master.pb.o master.grpc.pb.o master_server.o MasterNode.o
+MasterNode: master.pb.o master.grpc.pb.o ../grpc_backend/backend.grpc.pb.o ../grpc_backend/backend.pb.o master_server.o MasterNode.o
 	$(CXX) $^ $(LDFLAGS) -o $@
-master_server: master.pb.o master.grpc.pb.o master_server.o MasterNode.o
+master_server: master.pb.o master.grpc.pb.o ../grpc_backend/backend.grpc.pb.o ../grpc_backend/backend.pb.o master_server.o MasterNode.o
 	$(CXX) $^ $(LDFLAGS) -o $@
-master_client: master.pb.o master.grpc.pb.o master_client.o
+master_client: master.pb.o master.grpc.pb.o ../grpc_backend/backend.grpc.pb.o ../grpc_backend/backend.pb.o master_client.o
 	$(CXX) $^ $(LDFLAGS) -o $@
 
 

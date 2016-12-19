@@ -31,8 +31,8 @@ using master::Empty;
 using master::NodesStatusReply;
 using master::NodesInfoReply;
 using master::NodeIndexRequest;
-using backend::MemTableInfo;
-using master::MemTableInfoReply;
+//using master::MemTableInfo;
+//using master::MemTableInfoReply;
 
 // master server IP:Port
 const char*  server_ip = "0.0.0.0:52013";
@@ -130,21 +130,22 @@ class MasterServiceImpl final : public Master::Service {
         }
     }
     // send back storage meta data
-    Status SendMemTableInfo(ServerContext* context, const Empty* request, MemTableInfoReply* reply) override {
-        map<string, MemTableInfo> res;
-        int success = master_service.send_node_date(res);
-        if (success == 1) {
-            // writing to the reply map
-            for (map<string, MemTableInfo>::iterator it = res.begin(); it != res.end(); ++it) {
-                master::MemTableInfo mi;
-                mi.set_buffer_length(it->second.buffer_length());
-                (*reply->mutable_nodememinfo())[it->first] = mi;
-            }
-            return Status::OK;
-        } else {
-            return Status::CANCELLED;
-        }
-    }
+    //Status SendMemTableInfo(ServerContext* context, const Empty* request, MemTableInfoReply* reply) override {
+//        map<string, MemTableInfo> res;
+//        int success = master_service.send_node_date(res);
+//        if (success == 1) {
+//            // writing to the reply map
+//            for (map<string, MemTableInfo>::iterator it = res.begin(); it != res.end(); ++it) {
+//                master::MemTableInfo mi;
+//                mi.set_buffer_length(it->second.buffer_length());
+//                (*reply->mutable_nodememinfo())[it->first] = mi;
+//            }
+//            return Status::OK;
+//        } else {
+//            return Status::CANCELLED;
+//        }
+      //  return Status::OK;
+    //}
 
 };
 

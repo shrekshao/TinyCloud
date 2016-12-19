@@ -48,7 +48,8 @@
 
 #include <grpc++/grpc++.h>
 
-#include "../grpc_backend/backend.grpc.pb.h"
+#include "master.grpc.pb.h"
+
 
 using namespace std;
 
@@ -56,8 +57,15 @@ using grpc::Channel;
 using grpc::ClientContext;
 using grpc::Status;
 
-using backend::Storage;
-using backend::MemTableInfo;
+using master::Master;
+using master::UserNameRequest;
+using master::AddressReply;
+using master::Empty;
+using master::NodesStatusReply;
+using master::NodesInfoReply;
+using master::NodeIndexRequest;
+//using master::MemTableInfoReply;
+//using master::MemTableInfo;
 
 // design a class for saving a node
 class StorageNodeInfo {
@@ -71,6 +79,10 @@ public:
         user_number = 0;
         crashed = false;
     }
+};
+
+struct RawDataFromNode {
+    int buffer_length;
 };
 
 class MasterNode {
@@ -87,7 +99,7 @@ class MasterNode {
     // user mapping to the storage node - username: #
     map<string, int> user_mapping;
     // meta-info about all the storage node - IP:Port, Struct
-    map<string, MemTableInfo> mem_info_mapping;
+    map<string, RawDataFromNode> mem_info_mapping;
 public:
     // constructor
     MasterNode(string config_file);
@@ -113,7 +125,7 @@ public:
         return num;
     }
     // send stored storage node meta info to front server
-    int send_node_date(map<string, MemTableInfo> &res);
+    int send_node_date(map<string, RawDataFromNode> &res);
 
     // background thread
     // for replaying the logs

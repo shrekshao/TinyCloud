@@ -4,6 +4,8 @@
 
 #include "MasterNode.h"
 #include "master_client.h"
+#include "../grpc_backend/backend_client.h"
+
 
 mutex _logging_mutex;
 
@@ -192,7 +194,7 @@ MasterNode::MasterNode(string config_file) {
         // put into inverse ip mapping as well
         inverse_ip_mapping[vec[0]] = index;
         // initialize all the buffer size to be zero
-        mem_info_mapping[ip_mapping[index]].set_buffer_length(0);
+        mem_info_mapping[ip_mapping[index]].buffer_length = 0;
         index++;
     }
     max_node_number = index;
@@ -256,15 +258,15 @@ int MasterNode::create_user(string username) {
     for (auto it = mem_info_mapping.begin(); it != mem_info_mapping.end(); ++it)
     {
         //cout << "buffer length: " << it->second.buffer_length();
-        long temp_size = (long) it->second.buffer_length();
+        long temp_size = (long) it->second.buffer_length;
         if (temp_size < min_load) {
-            min_load = (long) it->second.buffer_length();
+            min_load = (long) it->second.buffer_length;
             min_index = index;
         }
         index++;
     }
 
-    if (min_index == mapping_node_id || (long) mem_info_mapping[ip_mapping[mapping_node_id]].buffer_length() <= min_load*2) {
+    if (min_index == mapping_node_id || (long) mem_info_mapping[ip_mapping[mapping_node_id]].buffer_length <= min_load*2) {
         // we only assign user to the primary server
         user_mapping[username] = mapping_node_id;
         std::cout << "[Code]User: " << username << " is assigned to Node: "<< ip_mapping[mapping_node_id] << '\n';
@@ -333,12 +335,13 @@ int MasterNode::enable_node(int index) {
     }
 }
 
-int MasterNode::send_node_date(map<string, MemTableInfo> &res) {
-    cout << "[MASTER]:Receiving GETTING NODE DATA Call\n";
-    // loop through all the nodes with its metainfo
-    res = std::map<string, MemTableInfo>(mem_info_mapping.begin(), mem_info_mapping.end());
-    return 1;
-}
+//int MasterNode::send_node_date(map<string, RawDataFromNode> &res) {
+//    cout << "[MASTER]:Receiving GETTING NODE DATA Call\n";
+//    // loop through all the nodes with its metainfo
+////    res = std::map<string, MemTableInfo>(mem_info_mapping.begin(), mem_info_mapping.end());
+//    // TODO
+//    return 1;
+//}
 
 // Background Thread Pinning To Check Availability Of Nodes
 int MasterNode::failure_checking() {
@@ -368,6 +371,9 @@ int MasterNode::failure_checking() {
             printf("Node Failed Detected %s:%s\n", vec[0].c_str(), vec[1].c_str());
             // mark this node as unavaliable
             crash_mapping[i] = true;
+        } else {
+            printf("Node Successfully Detected %s:%s\n", vec[0].c_str(), vec[1].c_str());
+            crash_mapping[i] = false;
         }
     }
     return 1;
@@ -380,25 +386,27 @@ int MasterNode::checking_node_data() {
         // formulate a client to storage server sequentially
         if (crash_mapping[i]) {
             // go to replica IP for fetching meta data
-            MasterClient msClient(grpc::CreateChannel(
+            BackendClient bClient(grpc::CreateChannel(
                     replica_mapping[ip_mapping[i]], grpc::InsecureChannelCredentials()));
-            backend::MemTableInfo res;
+//            backend::MemTableInfo res;
+            RawDataFromNode res;
             cout << "Primary Failed! Redirected ->" << replica_mapping[ip_mapping[i]] << "\n";
-            if (msClient.GetMemTableInfo(res)) {
+            if (bClient.GetMemTableInfo(res.buffer_length)) {
                 cout << "Storage Metadata Retrived Success!\n";
-                cout << "Buffer Size: " << res.buffer_length() << "\n";
-                mem_info_mapping[replica_mapping[ip_mapping[i]]] = res;
+                cout << "Buffer Size: "<< res.buffer_length << "\n";
+//                cout << "Buffer Size: " << res.buffer_length() << "\n";
+//                mem_info_mapping[replica_mapping[ip_mapping[i]]] = res;
             } else {
                 cout << "Storage Metadata Retrived Failed!\n";
             }
         } else {
             // go to primary to get data
-            MasterClient msClient(grpc::CreateChannel(
+            BackendClient bClient(grpc::CreateChannel(
                     ip_mapping[i], grpc::InsecureChannelCredentials()));
-            backend::MemTableInfo res;
-            if (msClient.GetMemTableInfo(res)) {
+            RawDataFromNode res;
+            if (bClient.GetMemTableInfo(res.buffer_length)) {
                 cout << "Storage Metadata Retrived Success!\n";
-                cout << "Buffer Size: " << res.buffer_length() << "\n";
+                cout << "Buffer Size: " << res.buffer_length << "\n";
                 mem_info_mapping[ip_mapping[i]] = res;
             } else {
                 cout << "Storage Metadata Retrived Failed!\n";
