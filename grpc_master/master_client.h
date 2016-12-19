@@ -26,7 +26,7 @@ using grpc::Status;
 using master::Master;
 using master::UserNameRequest;
 using master::AddressReply;
-using master::Empty;
+// using master::Empty;
 using master::NodesStatusReply;
 using master::NodesInfoReply;
 using master::NodeIndexRequest;

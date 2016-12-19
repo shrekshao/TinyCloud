@@ -536,9 +536,9 @@ class StorageServiceImpl final : public Storage::Service {
     }
 
     Status GetMemTableInfo (ServerContext* context, const Empty* request, MemTableInfo* reply) override {
-        cout << "Here!!!!\n";
+        // cout << "Here!!!!\n";
         reply->set_buffer_length(bigtable_service.getCur_pt());
-        cout << "Here!!!!Here!!!\n";
+        // cout << "Here!!!!Here!!!\n";
         return Status::OK;
     }
 };
