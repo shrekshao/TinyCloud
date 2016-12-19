@@ -191,6 +191,7 @@ int BigTabler::put (string username, string file_name, string file_type, unsigne
         memtable_file.emplace(memtable_file.end(), username+"/"+file_name);
 
         cur_pt += file_size;
+        fprintf(stderr, "put update cur_pt to: %u\n", cur_pt);
     }
 
     return 1;
