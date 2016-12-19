@@ -755,6 +755,79 @@ void getFilelistHandler(int fd, const string & folder, string & threadUsername)
 }
 
 
+void adminGetNodeList(int fd, const string & contentStr, string & threadUsername)
+{
+    // HttpDebugLog( fd, "admin-get: %s %s", threadUsername.c_str(), folder.c_str());
+    
+    ostringstream oss;
+
+    oss << "{";
+
+    std::map<std::string, master::NodeInfo> nodeList;
+    if (masterClient.GetNodesInfo(nodeList))
+    {
+        bool isFirst = true;
+        for (const auto & f : nodeList)
+        {
+            if (isFirst)
+            {
+                isFirst = false;
+            }
+            else
+            {
+                oss << ",";
+            }
+
+            // FileInfo.full_path  /tianli/path/to
+            // FileInfo.name (relative) == first (key) except for key=..
+
+
+            HttpDebugLog( fd, "<%s , %s >"
+                , f.first.c_str(), f.second.user_list().c_str());
+
+            // oss << "\"";
+            // // oss << f.first;
+            // oss << f.second.full_path();
+            // oss << "\"";
+            // oss << ":";
+
+            // oss << "{";
+
+            // oss << "\"name\":";
+
+            // oss << "\"";
+            // // oss << f.second.name();
+            // oss << f.first;
+            // oss << "\"";
+
+            // oss << ",";
+            
+            // oss << "\"folder\":";
+
+            // oss << ( !f.second.is_file() ) ? "1" : "0";
+            
+            // oss << "}";
+
+        }
+    }
+    else
+    {
+        HttpDebugLog( fd, "get node list fail");
+    }
+
+    oss << "}";
+
+
+    string list_json = oss.str();
+
+
+
+    HttpDebugLog( fd, "send node list json:\n %s", list_json.c_str());
+
+    // header.clear();
+    sendData(fd, "application/json", list_json);
+}
+
 
 
 void insertFolderHandler(int fd, const string & contentStr, string & threadUsername)
@@ -827,6 +900,11 @@ static const unordered_map<string, FunctionHandlerPost> postRequestHandlers({
     , {"/insert-folder", &insertFolderHandler}
 
     , {"/delete-item", &deleteItemHandler}
+
+    
+
+
+    , {"/admin-get-node-list", &adminGetNodeList}
 });
 
 

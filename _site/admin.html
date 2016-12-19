@@ -131,7 +131,50 @@
 
 
 <script>
-    
+    function getNodeListAjax() {
+
+        $.ajax({
+            url: '/admin-get-node-list',
+            type: 'post',
+            data: 'nothing',
+            contentType: 'text',
+            beforeSend: function(xhr){
+                console.log('beforeSend');
+                if (xhr.overrideMimeType)
+                {
+                    console.log('override app json');
+                    xhr.overrideMimeType("application/json");
+                }
+            },
+            dataType: 'json',
+            // dataType: 'application/json',
+            // dataType: 'text',
+
+            success: buildNodeList
+        });
+    }
+
+    function buildNodeList(result) {
+        // console.log('success');
+        console.log(result);
+        // $('#file-list').html('');
+
+        // for (var key in result) {
+        //     // if (result[key].name == '..') {
+        //     //     // hack to get current folder
+        //     //     cur_folder = key;
+        //     // }
+
+        //     appendFileRow(key, result[key]);
+        // }
+    }
+
+
+    $(function(){
+        'use strict';
+
+        getNodeListAjax();
+    });
 
 </script>
 
