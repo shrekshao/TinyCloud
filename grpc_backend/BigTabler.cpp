@@ -401,6 +401,7 @@ int BigTabler::gc(string& log_file) {
 }
 
 unsigned int BigTabler::getCur_pt() {
+    fprintf(stderr, "cur_pt in getCur_pt: %u\n", cur_pt);
     return cur_pt;
 }
 
