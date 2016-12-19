@@ -4,6 +4,8 @@
 
 #include "MasterNode.h"
 #include "master_client.h"
+#include "../grpc_backend/backend_client.h"
+
 
 mutex _logging_mutex;
 
@@ -32,20 +34,24 @@ void _logging( const std::string &text )
 // ------------------------SUPP------------------------
 
 // side function
-bool ifexists (const std::string& name) {
-    struct stat buffer;
-    return (stat (name.c_str(), &buffer) == 0);
+inline bool ifexists (const std::string& name) {
+    ifstream f(name.c_str());
+    return f.good();
 }
 
 // ------------------------STATE MACHINE------------------------
 
 // Replaying All The Command In File
 int MasterNode::replay() {
-    ifstream file(log_filename);
+
+    ifstream file_2("master_log_file.txt");
     string str;
     int line_index = 1;
-    while (getline(file, str))
+    while (getline(file_2, str))
     {
+        if(str==""){
+            break;
+        }
         string line_number = to_string(line_index);
         // reading the node ip with its replica ip
         string token;
@@ -56,44 +62,50 @@ int MasterNode::replay() {
         }
         // adding a switch statement
         if (vec[0] == "CREATE") {
-            cout<<"[Replaying"<< " Line:"<<line_number <<"] Create User";
+            cout<<"[Replaying"<< " Line:"<<line_number <<"] Create User\n";
             MasterNode::create_user(vec[1]);
         } else if (vec[0] == "ENABLE") {
-            cout<<"[Replaying"<< " Line:"<<line_number <<"] Enable Node";
+            cout<<"[Replaying"<< " Line:"<<line_number <<"] Enable Node\n";
             int node_index = stoi(vec[1]);
             if (MasterNode::enable_node(node_index) == 0)
-                cout<<"[Replaying] Enable Replay Failed";
+                cout<<"[Replaying] Enable Replay Failed\n";
         } else if (vec[0] == "DISENABLE") {
-            cout<<"[Replaying"<< " Line:"<<line_number <<"] Disenable Node";
+            cout<<"[Replaying"<< " Line:"<<line_number <<"] Disenable Node\n";
             int node_index = stoi(vec[1]);
             if (MasterNode::disenable_node(node_index) == 0)
-                cout<<"[Replaying] Disenable Replay Failed";
+                cout<<"[Replaying] Disenable Replay Failed\n";
         }
         line_index++;
     }
+    file_2.close();
     return 1;
 }
 
 // Checking Into Disk Constantly For All In-memory Raw Data
 int MasterNode::checking_to_disk() {
 
-    ReadLock r_lock(myLock);
-
-    ofstream checkpoint_1(crash_checkpoint_filename, std::ios_base::app);
+    remove(crash_checkpoint_filename.c_str());
+    ofstream checkpoint_1(crash_checkpoint_filename, std::ios_base::out | std::ios_base::app );
     // writing to the check point file
     for (auto it = crash_mapping.begin(); it != crash_mapping.end(); ++it)
     {
-        checkpoint_1 << it->first << ":" << to_string(it->second);
+        if (it->second) {
+            checkpoint_1 << ip_mapping[it->first] << ":true" << std::endl;
+        } else {
+            checkpoint_1 << ip_mapping[it->first] << ":false" << std::endl;
+        }
+
     }
 
-    ofstream checkpoint_2(user_checkpoint_filename, std::ios_base::app);
+    remove(user_checkpoint_filename.c_str());
+    ofstream checkpoint_2(user_checkpoint_filename, std::ios_base::out | std::ios_base::app );
     // writing to the check point file
     for (auto it = user_mapping.begin(); it != user_mapping.end(); ++it)
     {
-        checkpoint_2 << it->first << ":" << to_string(it->second);
+        checkpoint_2 << it->first << ":" << to_string(it->second) << std::endl;
     }
 
-    remove(log_filename.c_str());
+    //remove(log_filename.c_str());
 
     return 1;
 }
@@ -102,7 +114,7 @@ int MasterNode::checking_to_disk() {
 int MasterNode::construct_crash_map() {
     // we simply open two checkpoint files
     // parsing the txt, and save in memory
-    ifstream file(crash_checkpoint_filename);
+    ifstream file("crash_checkpoint.txt");
     string str;
     while (getline(file, str))
     {
@@ -126,7 +138,7 @@ int MasterNode::construct_crash_map() {
 int MasterNode::construct_user_map() {
     // we simply open two checkpoint files
     // parsing the txt, and save in memory
-    ifstream file(user_checkpoint_filename);
+    ifstream file("user_checkpoint.txt");
     string str;
     while (getline(file, str))
     {
@@ -149,7 +161,7 @@ int MasterNode::checking_out_disk() {
             MasterNode::construct_user_map() ==1 ) {
         return 1;
     }
-    return 0;
+    return 1;
 }
 
 // ------------------------MASTER NDOE------------------------
@@ -162,6 +174,9 @@ MasterNode::MasterNode(string config_file) {
     int index = 0;
     while (getline(file, str))
     {
+        if(str==""){
+            continue;
+        }
         // reading the node ip with its replica ip
         //cout << str << "\n";
         string token;
@@ -179,23 +194,28 @@ MasterNode::MasterNode(string config_file) {
         // put into inverse ip mapping as well
         inverse_ip_mapping[vec[0]] = index;
         // initialize all the buffer size to be zero
-        mem_info_mapping[ip_mapping[index]].set_buffer_length(0);
+        mem_info_mapping[ip_mapping[index]].buffer_length = 0;
         index++;
     }
     max_node_number = index;
 
+    file.close();
+
+    remove(log_filename.c_str());
     //state machine reboot
 
     //checking point file?
-    if (ifexists(crash_checkpoint_filename) &&
-            ifexists(user_checkpoint_filename)) {
+    if (ifexists("./" + crash_checkpoint_filename) &&
+            ifexists("./" + user_checkpoint_filename)) {
+        cout << "[MASTER]:Check Point Detected! Cache Into Memory\n";
         MasterNode::checking_out_disk();
         // replay the rest
         if (ifexists(log_filename))
             MasterNode::replay();
     } else {
         // if not check point file, log file?
-        if (ifexists(log_filename)) {
+        if (ifexists("./" + log_filename)) {
+            cout << "[MASTER]:Log File Detected! Replay All Calls\n";
             // only reply
             MasterNode::replay();
         }
@@ -224,8 +244,6 @@ string MasterNode::get_user_node(string username) {
 // Create A New User, Assign To A Node Internally
 int MasterNode::create_user(string username) {
 
-    WriteLock w_lock(myLock);
-
     cout << "[MASTER]:Receiving CREATE USER Call\n";
     _logging("CREATE:" + username);
     int mapping_node_id = hash_user2node(username);
@@ -240,15 +258,15 @@ int MasterNode::create_user(string username) {
     for (auto it = mem_info_mapping.begin(); it != mem_info_mapping.end(); ++it)
     {
         //cout << "buffer length: " << it->second.buffer_length();
-        long temp_size = (long) it->second.buffer_length();
+        long temp_size = (long) it->second.buffer_length;
         if (temp_size < min_load) {
-            min_load = (long) it->second.buffer_length();
+            min_load = (long) it->second.buffer_length;
             min_index = index;
         }
         index++;
     }
 
-    if (min_index == mapping_node_id || (long) mem_info_mapping[ip_mapping[mapping_node_id]].buffer_length() <= min_load*2) {
+    if (min_index == mapping_node_id || (long) mem_info_mapping[ip_mapping[mapping_node_id]].buffer_length <= min_load*2) {
         // we only assign user to the primary server
         user_mapping[username] = mapping_node_id;
         std::cout << "[Code]User: " << username << " is assigned to Node: "<< ip_mapping[mapping_node_id] << '\n';
@@ -294,8 +312,6 @@ int MasterNode::get_info(map<string, StorageNodeInfo> &info) {
 // Disenable One Node For Testing
 int MasterNode::disenable_node(int index) {
 
-    WriteLock w_lock(myLock);
-
     cout << "[MASTER]:Receiving DISENABLE Call\n";
     _logging("DISENABLE:" + ip_mapping[index]);
     if (!crash_mapping[index]) {
@@ -309,8 +325,6 @@ int MasterNode::disenable_node(int index) {
 // Enable One Node For Testing
 int MasterNode::enable_node(int index) {
 
-    WriteLock w_lock(myLock);
-
     cout << "[MASTER]:Receiving ENABLE Call\n";
     _logging("ENABLE:" + ip_mapping[index]);
     if (crash_mapping[index]) {
@@ -321,12 +335,13 @@ int MasterNode::enable_node(int index) {
     }
 }
 
-int MasterNode::send_node_date(map<string, MemTableInfo> &res) {
-    cout << "[MASTER]:Receiving GETTING NODE DATA Call\n";
-    // loop through all the nodes with its metainfo
-    res = std::map<string, MemTableInfo>(mem_info_mapping.begin(), mem_info_mapping.end());
-    return 1;
-}
+//int MasterNode::send_node_date(map<string, RawDataFromNode> &res) {
+//    cout << "[MASTER]:Receiving GETTING NODE DATA Call\n";
+//    // loop through all the nodes with its metainfo
+////    res = std::map<string, MemTableInfo>(mem_info_mapping.begin(), mem_info_mapping.end());
+//    // TODO
+//    return 1;
+//}
 
 // Background Thread Pinning To Check Availability Of Nodes
 int MasterNode::failure_checking() {
@@ -353,12 +368,11 @@ int MasterNode::failure_checking() {
 
         if (connect(sockfd, (struct sockaddr *) &sin, sizeof(sin)) == -1)
         {
-            printf("Error connecting %s:%s\n", vec[0].c_str(), vec[1].c_str());
+            printf("Node Failed Detected %s:%s\n", vec[0].c_str(), vec[1].c_str());
             // mark this node as unavaliable
             crash_mapping[i] = true;
         } else {
-            printf("Successfully connected %s:%s\n", vec[0].c_str(), vec[1].c_str());
-            // mark this node as unavaliable
+            printf("Node Successfully Detected %s:%s\n", vec[0].c_str(), vec[1].c_str());
             crash_mapping[i] = false;
         }
     }
@@ -370,11 +384,35 @@ int MasterNode::checking_node_data() {
     // looping through all the storage node to fetch info
     for (int i = 0; i < max_node_number; i ++) {
         // formulate a client to storage server sequentially
-        MasterClient msClient(grpc::CreateChannel(
-                ip_mapping[i], grpc::InsecureChannelCredentials()));
-        MemTableInfo res;
-        msClient.GetMemTableInfo(res);
-        mem_info_mapping[ip_mapping[i]] = res;
+        if (crash_mapping[i]) {
+            // go to replica IP for fetching meta data
+            BackendClient bClient(grpc::CreateChannel(
+                    replica_mapping[ip_mapping[i]], grpc::InsecureChannelCredentials()));
+//            backend::MemTableInfo res;
+            RawDataFromNode res;
+            cout << "Primary Failed! Redirected ->" << replica_mapping[ip_mapping[i]] << "\n";
+            if (bClient.GetMemTableInfo(res.buffer_length)) {
+                cout << "Storage Metadata Retrived Success!\n";
+                cout << "Buffer Size: "<< res.buffer_length << "\n";
+//                cout << "Buffer Size: " << res.buffer_length() << "\n";
+//                mem_info_mapping[replica_mapping[ip_mapping[i]]] = res;
+            } else {
+                cout << "Storage Metadata Retrived Failed!\n";
+            }
+        } else {
+            // go to primary to get data
+            BackendClient bClient(grpc::CreateChannel(
+                    ip_mapping[i], grpc::InsecureChannelCredentials()));
+            RawDataFromNode res;
+            if (bClient.GetMemTableInfo(res.buffer_length)) {
+                cout << "Storage Metadata Retrived Success!\n";
+                cout << "Buffer Size: " << res.buffer_length << "\n";
+                mem_info_mapping[ip_mapping[i]] = res;
+            } else {
+                cout << "Storage Metadata Retrived Failed!\n";
+            }
+        }
+
     }
     return 1;
 }

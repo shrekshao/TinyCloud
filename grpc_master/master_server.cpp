@@ -31,8 +31,8 @@ using master::Empty;
 using master::NodesStatusReply;
 using master::NodesInfoReply;
 using master::NodeIndexRequest;
-using master::MemTableInfo;
-using master::MemTableInfoReply;
+//using master::MemTableInfo;
+//using master::MemTableInfoReply;
 
 // master server IP:Port
 const char*  server_ip = "0.0.0.0:52013";
@@ -130,21 +130,22 @@ class MasterServiceImpl final : public Master::Service {
         }
     }
     // send back storage meta data
-    Status SendMemTableInfo(ServerContext* context, const Empty* request, MemTableInfoReply* reply) override {
-        map<string, MemTableInfo> res;
-        int success = master_service.send_node_date(res);
-        if (success == 1) {
-            // writing to the reply map
-            for (map<string, MemTableInfo>::iterator it = res.begin(); it != res.end(); ++it) {
-                master::MemTableInfo mi;
-                mi.set_buffer_length(it->second.buffer_length());
-                (*reply->mutable_nodememinfo())[it->first] = mi;
-            }
-            return Status::OK;
-        } else {
-            return Status::CANCELLED;
-        }
-    }
+    //Status SendMemTableInfo(ServerContext* context, const Empty* request, MemTableInfoReply* reply) override {
+//        map<string, MemTableInfo> res;
+//        int success = master_service.send_node_date(res);
+//        if (success == 1) {
+//            // writing to the reply map
+//            for (map<string, MemTableInfo>::iterator it = res.begin(); it != res.end(); ++it) {
+//                master::MemTableInfo mi;
+//                mi.set_buffer_length(it->second.buffer_length());
+//                (*reply->mutable_nodememinfo())[it->first] = mi;
+//            }
+//            return Status::OK;
+//        } else {
+//            return Status::CANCELLED;
+//        }
+      //  return Status::OK;
+    //}
 
 };
 
@@ -152,10 +153,9 @@ class MasterServiceImpl final : public Master::Service {
 void* failureCheckingHelper(void*) {
     int res = 1;
     while (res == 1) {
-        // this garbage collector will run every 100s
         //cout << "Node Failure Scanning..." <<endl;
         this_thread::sleep_for (chrono::seconds(1));
-        res = master_service.failure_checking();
+        int res = master_service.failure_checking();
     }
     pthread_exit(NULL);
 }
@@ -163,9 +163,8 @@ void* failureCheckingHelper(void*) {
 void* checkPointHelper(void*) {
     int res = 1;
     while (res == 1) {
-        // this garbage collector will run every 100s
         cout << "Master Check Pointer (Mem to Disk)..." <<endl;
-        this_thread::sleep_for (chrono::seconds(10));
+        this_thread::sleep_for (chrono::seconds(50));
         res = master_service.checking_to_disk();
     }
     pthread_exit(NULL);
@@ -174,30 +173,23 @@ void* checkPointHelper(void*) {
 void* storageNodeCheckingHelper(void*) {
     int res = 1;
     while (res == 1) {
-        // this garbage collector will run every 100s
-        cout << "Node Meta Info Retrieving..." <<endl;
+        //cout << "Node Meta Info Retrieving..." <<endl;
         this_thread::sleep_for (chrono::seconds(1));
         res = master_service.checking_node_data();
     }
     pthread_exit(NULL);
 }
 
-// running the background thread
-void RunFailureChecking() {
+void RunBackgroundThread() {
     pthread_t failureCheckingThread;
     pthread_create(&failureCheckingThread, NULL, &failureCheckingHelper, NULL);
-    pthread_join(failureCheckingThread, NULL);
-}
-
-void RunCheckPoint() {
     pthread_t checkPointThread;
     pthread_create(&checkPointThread, NULL, &checkPointHelper, NULL);
-    pthread_join(checkPointThread, NULL);
-}
-
-void RunStorageNodeChecking() {
     pthread_t storageNodeCheckingThread;
     pthread_create(&storageNodeCheckingThread, NULL, &storageNodeCheckingHelper, NULL);
+
+    pthread_join(failureCheckingThread, NULL);
+    pthread_join(checkPointThread, NULL);
     pthread_join(storageNodeCheckingThread, NULL);
 }
 
@@ -217,9 +209,8 @@ void RunServer() {
     std::cout << "Server listening on " << server_address << std::endl;
     // checking thread
     //master_service.create_user("tianli");
-    RunFailureChecking();
-    RunCheckPoint();
-    RunStorageNodeChecking();
+    RunBackgroundThread();
+    //RunStorageNodeChecking();
     // Wait for the server to shutdown. Note that some other thread must be
     // responsible for shutting down the server for this call to ever return.
     server->Wait();

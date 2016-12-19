@@ -33,9 +33,9 @@ CXX = g++
 CPPFLAGS += -I/usr/local/include -pthread
 CXXFLAGS += -std=c++11
 LDFLAGS += -L/usr/local/lib `pkg-config --libs grpc++ grpc`       \
-           -Wl,--no-as-needed -lgrpc++_reflection -Wl,--as-needed \
+           -Wl, -lgrpc++_reflection -Wl, \
            -lprotobuf -lpthread -ldl -lboost_system -lboost_filesystem \
-           -lboost_thread
+           -lboost_thread-mt
 PROTOC = protoc
 GRPC_CPP_PLUGIN = grpc_cpp_plugin
 GRPC_CPP_PLUGIN_PATH ?= `which $(GRPC_CPP_PLUGIN)`
@@ -46,11 +46,11 @@ vpath %.proto $(PROTOS_PATH)
 
 all: master_server MasterNode master_client
 
-MasterNode: master.pb.o master.grpc.pb.o master_server.o MasterNode.o
+MasterNode: master.pb.o master.grpc.pb.o ../grpc_backend/backend.grpc.pb.o ../grpc_backend/backend.pb.o master_server.o MasterNode.o
 	$(CXX) $^ $(LDFLAGS) -o $@
-master_server: master.pb.o master.grpc.pb.o master_server.o MasterNode.o
+master_server: master.pb.o master.grpc.pb.o ../grpc_backend/backend.grpc.pb.o ../grpc_backend/backend.pb.o master_server.o MasterNode.o
 	$(CXX) $^ $(LDFLAGS) -o $@
-master_client: master.pb.o master.grpc.pb.o master_client.o
+master_client: master.pb.o master.grpc.pb.o ../grpc_backend/backend.grpc.pb.o ../grpc_backend/backend.pb.o master_client.o
 	$(CXX) $^ $(LDFLAGS) -o $@
 
 
