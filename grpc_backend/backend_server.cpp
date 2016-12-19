@@ -52,7 +52,7 @@ BigTabler bigtable_service(primary_server_ip);
 mutex primary_mutex;
 
 // Log file
-string log_file = "primary_log.txt";
+string log_file = "primary_log_";
 
 /*
  * Client Class to call replica server
@@ -710,7 +710,7 @@ int main(int argc, char** argv) {
     // Read command line opts
     while ((c = getopt (argc, argv, "p:r:")) != -1) {
         switch (c) {
-            case 'p': primary_server_ip += optarg; break;
+            case 'p': primary_server_ip += optarg; log_file += optarg; log_file += ".txt"; break;
             case 'r': replica_server_ip += optarg; break;
             case '?':
                 if (optopt == 'p' || optopt == 'r')
