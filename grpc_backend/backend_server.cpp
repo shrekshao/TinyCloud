@@ -39,8 +39,8 @@ using backend::Log;
 using backend::Buffer;
 using backend::MemTableInfo;
 
-const char*  primary_server_ip = "0.0.0.0:50051";
-const char*  replica_server_ip = "0.0.0.0:50052";
+string  primary_server_ip = "0.0.0.0:";
+string  replica_server_ip = "0.0.0.0:";
 
 // Indexer service in-memory storage
 Indexer indexer_service;
@@ -224,9 +224,6 @@ public:
 
             buffer = reply.data();
 
-            for (int i = 0; i < pt; i++) {
-                fprintf(stderr, "GetBuffer_Backup: %d, %c\n", i, buffer[i]);
-            }
             return 1;
         } else {
             std::cout << status.error_code() << ": " << status.error_message() << std::endl;
@@ -707,6 +704,24 @@ int main(int argc, char** argv) {
     cout << bigtable_service.delet("tianli", "file2") << endl;
     cout << indexer_service.delet("tianli/folder2") << endl;
     */
+
+    int c;
+    // Read command line opts
+    while ((c = getopt (argc, argv, "p:r:")) != -1) {
+        switch (c) {
+            case 'p': primary_server_ip += optarg; break;
+            case 'r': replica_server_ip += optarg; break;
+            case '?':
+                if (optopt == 'p' || optopt == 'r')
+                    fprintf(stderr, "Option -%c requires an argument.\n", optopt);
+                else if (isprint(optopt))
+                    fprintf(stderr, "Unknown option '-%c'.\n", optopt);
+                else
+                    fprintf(stderr, "Unknown option character '\\x%x'.\n", optopt);
+                return -1;
+            default: abort(); break;
+        }
+    }
 
     RunServer();
 
