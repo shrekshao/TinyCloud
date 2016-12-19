@@ -14,7 +14,10 @@
 #include "BigTabler.h"
 
 void RunGC();
+void RunRestart();
 void writeToLog(string& msg);
+void replicaLogParser(string line, ofstream& outfile);
+void primaryLogParser(string line, ofstream& outfile);
 
 using namespace std;
 
@@ -32,6 +35,9 @@ using backend::FileChunkRequest;
 using backend::Storage;
 using backend::UserAccount;
 using backend::UserAccountReply;
+using backend::Log;
+using backend::Buffer;
+using backend::MemTableInfo;
 
 const char*  primary_server_ip = "0.0.0.0:50051";
 const char*  replica_server_ip = "0.0.0.0:50052";
@@ -85,6 +91,7 @@ public:
         // Data we are sending to the server.
         UserAccount request;
         request.set_username(username);
+        request.set_password(password);
 
         // Container for the data we expect from the server.
         Empty reply;
@@ -188,6 +195,38 @@ public:
         }
     }
 
+    int GetLog_Backup(string& buffer) {
+        Empty request;
+        Log reply;
+        ClientContext context;
+        Status status = stub_->GetLog(&context, request, &reply);
+
+        // Act upon its status.
+        if (status.ok()) {
+            buffer = reply.data();
+            return 1;
+        } else {
+            std::cout << status.error_code() << ": " << status.error_message() << std::endl;
+            return -1;
+        }
+    }
+
+    int GetBuffer_Backup(string& buffer) {
+        Empty request;
+        Buffer reply;
+        ClientContext context;
+        Status status = stub_->GetBuffer(&context, request, &reply);
+
+        // Act upon its status.
+        if (status.ok()) {
+            buffer = reply.data();
+            return 1;
+        } else {
+            std::cout << status.error_code() << ": " << status.error_message() << std::endl;
+            return -1;
+        }
+    }
+
 private:
     std::unique_ptr<Storage::Stub> stub_;
 };
@@ -207,7 +246,7 @@ class StorageServiceImpl final : public Storage::Service {
         }
 
         // Write to primary log
-        string log("CreateUser:insert(" + request->username() + ",false):crateuser(" + request->username() + "," + request->password() + ")\n");
+        string log("CreateUser:insert(" + request->username() + ",false):createuser(" + request->username() + "," + request->password() + ")\n");
         writeToLog(log);
 
         int success1 = indexer_service.insert(request->username(), false);
@@ -470,9 +509,45 @@ class StorageServiceImpl final : public Storage::Service {
         }
     }
 
+    Status GetLog(ServerContext* context, const Empty* request, Log* reply) override {
+
+        ifstream ifs(log_file, ios::binary|ios::ate);
+        int pos = ifs.tellg();
+        //fprintf(stderr, "pos: %d", pos);
+
+        char result[pos];
+
+        ifs.seekg(0, ios::beg);
+        ifs.read(result, pos);
+
+        reply->set_size(pos);
+        reply->set_data(result, pos);
+        return Status::OK;
+    }
+
+    Status GetBuffer(ServerContext* context, const Empty* request, Buffer* reply) override {
+        unsigned char result[bigtable_service.getCur_pt()];
+        bigtable_service.getMemtable(result);
+
+        reply->set_size(bigtable_service.getCur_pt());
+        reply->set_data(&result[0], bigtable_service.getCur_pt());
+
+        return Status::OK;
+    }
+
+    Status GetMemTableInfo (ServerContext* context, const Empty* request, MemTableInfo* reply) override {
+        cout << "Here!!!!\n";
+        reply->set_buffer_length(bigtable_service.getCur_pt());
+        cout << "Here!!!!Here!!!\n";
+        return Status::OK;
+    }
 };
 
 void RunServer() {
+
+    ofstream of(log_file, ostream::out | ostream::app);
+    of.close();
+
     // Primary port
     std::string primary_server_address(primary_server_ip);
     StorageServiceImpl primary_service;
@@ -505,9 +580,11 @@ void RunServer() {
     replica_server->Wait();
     */
 
+    RunRestart();
     RunGC();
     // Wait for the server to shutdown. Note that some other thread must be
     // responsible for shutting down the server for this call to ever return.
+
 
     primary_server->Wait();
 }
@@ -526,11 +603,45 @@ void RunGC() {
     pthread_t gcthread;
 
     pthread_create(&gcthread, NULL, &gcHelper, NULL);
-    rc = pthread_join(gcthread, NULL);
 }
 
 void RunRestart() {
 
+    string buffer;
+    if (replicar.GetLog_Backup(buffer) == -1) {
+        fprintf(stderr, "GetLog_Backup fail!\n");
+        return;
+    }
+
+    fprintf(stderr, "Get log successfully! Log size: %zu\n", strlen(buffer.c_str()));
+
+    ofstream outfile("primary_log_tmp.txt");
+
+    string line;
+    while (getline(stringstream(buffer), line)) {
+        replicaLogParser(line, outfile);
+    }
+
+    ifstream myfile(log_file);
+    if (myfile) {
+        while (getline(myfile, line)) {
+            primaryLogParser(line, outfile);
+        }
+        myfile.close();
+    }
+
+    string memtable;
+    if (replicar.GetBuffer_Backup(memtable) == -1) {
+        fprintf(stderr, "GetBuffer_Backup fail!\n");
+    }
+
+    fprintf(stderr, "Get buffer successfully! Buffersize: %zu\n", strlen(memtable.c_str()));
+
+    bigtable_service.setMemtable(memtable);
+
+    outfile.close();
+    remove("primary_log.txt");
+    rename("primary_log_tmp.txt", "primary_log.txt");
 }
 
 int main(int argc, char** argv) {
@@ -598,4 +709,86 @@ void writeToLog(string& msg) {
     replica_log.write(msg.c_str(), msg.size());
     replica_log.close();
     bigtable_service.log_mutex.unlock();
+}
+
+void replicaLogParser(string line, ofstream& outfile) {
+    istringstream ss(line);
+    string group;
+    getline(ss, group, ':');
+    if (strcmp(group.c_str(), "CreateUser") == 0) {
+        outfile.write(line.c_str(), strlen(line.c_str()));
+        string username;
+        getline(ss, username, '(');
+        getline(ss, username, ',');
+        indexer_service.insert(username, false);
+
+        string password;
+        getline(ss, password, ',');
+        getline(ss, password, ')');
+        bigtable_service.createuser(username, password);
+
+    } else if (strcmp(group.c_str(), "InsertFileList") == 0) {
+        outfile.write(line.c_str(), strlen(line.c_str()));
+        string username;
+        getline(ss, username, '(');
+        getline(ss, username, ',');
+        indexer_service.insert(username, false);
+
+    } else if (strcmp(group.c_str(), "PutFile") == 0) {
+        outfile.write(line.c_str(), strlen(line.c_str()));
+        string username, filename, filetype, filelength;
+        getline(ss, username, ',');
+        getline(ss, filename, ',');
+        getline(ss, filetype, ',');
+        getline(ss, filelength, ')');
+        bigtable_service.put(username, filename, filetype, stoul(filelength));
+
+        indexer_service.insert(username+"/"+filename, true);
+
+    } else if (strcmp(group.c_str(), "UpdateFile") == 0) {
+        outfile.write(line.c_str(), strlen(line.c_str()));
+        string username, filename, filetype, filelength;
+        getline(ss, username, ',');
+        getline(ss, filename, ')');
+        getline(ss, filetype, ',');
+        getline(ss, filetype, ',');
+        getline(ss, filetype, ',');
+        getline(ss, filelength, ')');
+        bigtable_service.delet(username, filename);
+        bigtable_service.put(username, filename, filetype, stoul(filelength));
+
+    } else if (strcmp(group.c_str(), "DeleteFile") == 0) {
+        outfile.write(line.c_str(), strlen(line.c_str()));
+        string username, filename, filetype, filelength;
+        getline(ss, username, ',');
+        getline(ss, filename, ')');
+        bigtable_service.delet(username, filename);
+
+    } else if (strcmp(group.c_str(), "GC") == 0) {
+        // No need for GC:
+    }
+
+}
+
+void primaryLogParser(string line, ofstream& outfile) {
+    istringstream ss(line);
+    string group;
+    getline(ss, group, ':');
+    if (strcmp(group.c_str(), "GC") == 0) {
+        outfile.write(line.c_str(), strlen(line.c_str()));
+        string sstable;
+        getline(ss, sstable, ',');
+
+        string size;
+        getline(ss, size, ',');
+        int length = stoi(size);
+        //string temp[length];
+        vector<string> temp;
+        string str;
+        for (int i = 0; i < length; i++) {
+            getline(ss, str, ',');
+            temp.push_back(str);
+        }
+        bigtable_service.gcLog(sstable, temp, length);
+    }
 }

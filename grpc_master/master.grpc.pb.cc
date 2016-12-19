@@ -22,8 +22,6 @@ static const char* Master_method_names[] = {
   "/master.Master/GetNodesInfo",
   "/master.Master/DisableNode",
   "/master.Master/EnableNode",
-  "/master.Master/SendMemTableInfo",
-  "/master.Master/GetMemTableInfo",
 };
 
 std::unique_ptr< Master::Stub> Master::NewStub(const std::shared_ptr< ::grpc::ChannelInterface>& channel, const ::grpc::StubOptions& options) {
@@ -38,8 +36,6 @@ Master::Stub::Stub(const std::shared_ptr< ::grpc::ChannelInterface>& channel)
   , rpcmethod_GetNodesInfo_(Master_method_names[3], ::grpc::RpcMethod::NORMAL_RPC, channel)
   , rpcmethod_DisableNode_(Master_method_names[4], ::grpc::RpcMethod::NORMAL_RPC, channel)
   , rpcmethod_EnableNode_(Master_method_names[5], ::grpc::RpcMethod::NORMAL_RPC, channel)
-  , rpcmethod_SendMemTableInfo_(Master_method_names[6], ::grpc::RpcMethod::NORMAL_RPC, channel)
-  , rpcmethod_GetMemTableInfo_(Master_method_names[7], ::grpc::RpcMethod::NORMAL_RPC, channel)
   {}
 
 ::grpc::Status Master::Stub::GetUserAddr(::grpc::ClientContext* context, const ::master::UserNameRequest& request, ::master::AddressReply* response) {
@@ -90,22 +86,6 @@ Master::Stub::Stub(const std::shared_ptr< ::grpc::ChannelInterface>& channel)
   return new ::grpc::ClientAsyncResponseReader< ::master::Empty>(channel_.get(), cq, rpcmethod_EnableNode_, context, request);
 }
 
-::grpc::Status Master::Stub::SendMemTableInfo(::grpc::ClientContext* context, const ::master::Empty& request, ::master::MemTableInfoReply* response) {
-  return ::grpc::BlockingUnaryCall(channel_.get(), rpcmethod_SendMemTableInfo_, context, request, response);
-}
-
-::grpc::ClientAsyncResponseReader< ::master::MemTableInfoReply>* Master::Stub::AsyncSendMemTableInfoRaw(::grpc::ClientContext* context, const ::master::Empty& request, ::grpc::CompletionQueue* cq) {
-  return new ::grpc::ClientAsyncResponseReader< ::master::MemTableInfoReply>(channel_.get(), cq, rpcmethod_SendMemTableInfo_, context, request);
-}
-
-::grpc::Status Master::Stub::GetMemTableInfo(::grpc::ClientContext* context, const ::master::Empty& request, ::master::MemTableInfo* response) {
-  return ::grpc::BlockingUnaryCall(channel_.get(), rpcmethod_GetMemTableInfo_, context, request, response);
-}
-
-::grpc::ClientAsyncResponseReader< ::master::MemTableInfo>* Master::Stub::AsyncGetMemTableInfoRaw(::grpc::ClientContext* context, const ::master::Empty& request, ::grpc::CompletionQueue* cq) {
-  return new ::grpc::ClientAsyncResponseReader< ::master::MemTableInfo>(channel_.get(), cq, rpcmethod_GetMemTableInfo_, context, request);
-}
-
 Master::Service::Service() {
   (void)Master_method_names;
   AddMethod(new ::grpc::RpcServiceMethod(
@@ -138,16 +118,6 @@ Master::Service::Service() {
       ::grpc::RpcMethod::NORMAL_RPC,
       new ::grpc::RpcMethodHandler< Master::Service, ::master::NodeIndexRequest, ::master::Empty>(
           std::mem_fn(&Master::Service::EnableNode), this)));
-  AddMethod(new ::grpc::RpcServiceMethod(
-      Master_method_names[6],
-      ::grpc::RpcMethod::NORMAL_RPC,
-      new ::grpc::RpcMethodHandler< Master::Service, ::master::Empty, ::master::MemTableInfoReply>(
-          std::mem_fn(&Master::Service::SendMemTableInfo), this)));
-  AddMethod(new ::grpc::RpcServiceMethod(
-      Master_method_names[7],
-      ::grpc::RpcMethod::NORMAL_RPC,
-      new ::grpc::RpcMethodHandler< Master::Service, ::master::Empty, ::master::MemTableInfo>(
-          std::mem_fn(&Master::Service::GetMemTableInfo), this)));
 }
 
 Master::Service::~Service() {
@@ -189,20 +159,6 @@ Master::Service::~Service() {
 }
 
 ::grpc::Status Master::Service::EnableNode(::grpc::ServerContext* context, const ::master::NodeIndexRequest* request, ::master::Empty* response) {
-  (void) context;
-  (void) request;
-  (void) response;
-  return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
-}
-
-::grpc::Status Master::Service::SendMemTableInfo(::grpc::ServerContext* context, const ::master::Empty* request, ::master::MemTableInfoReply* response) {
-  (void) context;
-  (void) request;
-  (void) response;
-  return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
-}
-
-::grpc::Status Master::Service::GetMemTableInfo(::grpc::ServerContext* context, const ::master::Empty* request, ::master::MemTableInfo* response) {
   (void) context;
   (void) request;
   (void) response;

@@ -26,17 +26,19 @@ using grpc::Status;
 using master::Master;
 using master::UserNameRequest;
 using master::AddressReply;
-//using master::Empty;
+using master::Empty;
 using master::NodesStatusReply;
 using master::NodesInfoReply;
 using master::NodeIndexRequest;
+//using master::MemTableInfoReply;
+//using master::MemTableInfo;
 using master::NodeInfo;
-using master::MemTableInfo;
 
 // we need to log when a function is get called
 
 class MasterClient {
 public:
+
     MasterClient(std::shared_ptr<Channel> channel)
     : stub_(Master::NewStub(channel)) {}
 
@@ -160,31 +162,6 @@ public:
 
         if (status.ok()) {
             res = std::map<string, NodeInfo>(reply.nodeinfo().begin(), reply.nodeinfo().end());
-            return true;
-        } else {
-            std::cerr << status.error_code() << ": " << status.error_message()
-                      << std::endl;
-            return false;
-        }
-    }
-
-    // getting memtable info from storage node
-    bool GetMemTableInfo(MemTableInfo &res) {
-        // data that are sending to the master
-        master::Empty request;
-
-        // container for the reply message
-        MemTableInfo reply;
-
-        // Context for the client. It could be used to convey extra information to
-        // the server and/or tweak certain RPC behaviors.
-        ClientContext context;
-
-        // The actual RPC.
-        Status status = stub_->GetMemTableInfo(&context, request, &reply);
-
-        if (status.ok()) {
-            res = reply;
             return true;
         } else {
             std::cerr << status.error_code() << ": " << status.error_message()

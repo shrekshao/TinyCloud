@@ -27,13 +27,6 @@ const ::google::protobuf::internal::GeneratedMessageReflection*
 const ::google::protobuf::Descriptor* AddressReply_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   AddressReply_reflection_ = NULL;
-const ::google::protobuf::Descriptor* MemTableInfo_descriptor_ = NULL;
-const ::google::protobuf::internal::GeneratedMessageReflection*
-  MemTableInfo_reflection_ = NULL;
-const ::google::protobuf::Descriptor* MemTableInfoReply_descriptor_ = NULL;
-const ::google::protobuf::internal::GeneratedMessageReflection*
-  MemTableInfoReply_reflection_ = NULL;
-const ::google::protobuf::Descriptor* MemTableInfoReply_NodememinfoEntry_descriptor_ = NULL;
 const ::google::protobuf::Descriptor* NodesStatusReply_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   NodesStatusReply_reflection_ = NULL;
@@ -92,38 +85,7 @@ void protobuf_AssignDesc_master_2eproto() {
       sizeof(AddressReply),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AddressReply, _internal_metadata_),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AddressReply, _is_default_instance_));
-  MemTableInfo_descriptor_ = file->message_type(2);
-  static const int MemTableInfo_offsets_[1] = {
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MemTableInfo, buffer_length_),
-  };
-  MemTableInfo_reflection_ =
-    ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
-      MemTableInfo_descriptor_,
-      MemTableInfo::default_instance_,
-      MemTableInfo_offsets_,
-      -1,
-      -1,
-      -1,
-      sizeof(MemTableInfo),
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MemTableInfo, _internal_metadata_),
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MemTableInfo, _is_default_instance_));
-  MemTableInfoReply_descriptor_ = file->message_type(3);
-  static const int MemTableInfoReply_offsets_[1] = {
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MemTableInfoReply, nodememinfo_),
-  };
-  MemTableInfoReply_reflection_ =
-    ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
-      MemTableInfoReply_descriptor_,
-      MemTableInfoReply::default_instance_,
-      MemTableInfoReply_offsets_,
-      -1,
-      -1,
-      -1,
-      sizeof(MemTableInfoReply),
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MemTableInfoReply, _internal_metadata_),
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MemTableInfoReply, _is_default_instance_));
-  MemTableInfoReply_NodememinfoEntry_descriptor_ = MemTableInfoReply_descriptor_->nested_type(0);
-  NodesStatusReply_descriptor_ = file->message_type(4);
+  NodesStatusReply_descriptor_ = file->message_type(2);
   static const int NodesStatusReply_offsets_[1] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(NodesStatusReply, nodesstatus_),
   };
@@ -139,7 +101,7 @@ void protobuf_AssignDesc_master_2eproto() {
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(NodesStatusReply, _internal_metadata_),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(NodesStatusReply, _is_default_instance_));
   NodesStatusReply_NodesstatusEntry_descriptor_ = NodesStatusReply_descriptor_->nested_type(0);
-  NodeIndexRequest_descriptor_ = file->message_type(5);
+  NodeIndexRequest_descriptor_ = file->message_type(3);
   static const int NodeIndexRequest_offsets_[1] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(NodeIndexRequest, index_),
   };
@@ -154,7 +116,7 @@ void protobuf_AssignDesc_master_2eproto() {
       sizeof(NodeIndexRequest),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(NodeIndexRequest, _internal_metadata_),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(NodeIndexRequest, _is_default_instance_));
-  NodeInfo_descriptor_ = file->message_type(6);
+  NodeInfo_descriptor_ = file->message_type(4);
   static const int NodeInfo_offsets_[5] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(NodeInfo, user_list_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(NodeInfo, user_number_),
@@ -173,7 +135,7 @@ void protobuf_AssignDesc_master_2eproto() {
       sizeof(NodeInfo),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(NodeInfo, _internal_metadata_),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(NodeInfo, _is_default_instance_));
-  NodesInfoReply_descriptor_ = file->message_type(7);
+  NodesInfoReply_descriptor_ = file->message_type(5);
   static const int NodesInfoReply_offsets_[1] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(NodesInfoReply, nodeinfo_),
   };
@@ -189,7 +151,7 @@ void protobuf_AssignDesc_master_2eproto() {
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(NodesInfoReply, _internal_metadata_),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(NodesInfoReply, _is_default_instance_));
   NodesInfoReply_NodeinfoEntry_descriptor_ = NodesInfoReply_descriptor_->nested_type(0);
-  Empty_descriptor_ = file->message_type(8);
+  Empty_descriptor_ = file->message_type(6);
   static const int Empty_offsets_[1] = {
   };
   Empty_reflection_ =
@@ -220,19 +182,6 @@ void protobuf_RegisterTypes(const ::std::string&) {
       UserNameRequest_descriptor_, &UserNameRequest::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
       AddressReply_descriptor_, &AddressReply::default_instance());
-  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
-      MemTableInfo_descriptor_, &MemTableInfo::default_instance());
-  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
-      MemTableInfoReply_descriptor_, &MemTableInfoReply::default_instance());
-  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
-        MemTableInfoReply_NodememinfoEntry_descriptor_,
-        ::google::protobuf::internal::MapEntry<
-            ::std::string,
-            ::master::MemTableInfo,
-            ::google::protobuf::internal::WireFormatLite::TYPE_STRING,
-            ::google::protobuf::internal::WireFormatLite::TYPE_MESSAGE,
-            0>::CreateDefaultInstance(
-                MemTableInfoReply_NodememinfoEntry_descriptor_));
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
       NodesStatusReply_descriptor_, &NodesStatusReply::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
@@ -270,10 +219,6 @@ void protobuf_ShutdownFile_master_2eproto() {
   delete UserNameRequest_reflection_;
   delete AddressReply::default_instance_;
   delete AddressReply_reflection_;
-  delete MemTableInfo::default_instance_;
-  delete MemTableInfo_reflection_;
-  delete MemTableInfoReply::default_instance_;
-  delete MemTableInfoReply_reflection_;
   delete NodesStatusReply::default_instance_;
   delete NodesStatusReply_reflection_;
   delete NodeIndexRequest::default_instance_;
@@ -296,12 +241,7 @@ void protobuf_AddDesc_master_2eproto() {
   ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
     "\n\014master.proto\022\006master\"#\n\017UserNameReques"
     "t\022\020\n\010username\030\001 \001(\t\"\034\n\014AddressReply\022\014\n\004a"
-    "ddr\030\001 \001(\t\"%\n\014MemTableInfo\022\025\n\rbuffer_leng"
-    "th\030\001 \001(\004\"\236\001\n\021MemTableInfoReply\022\?\n\013nodeme"
-    "minfo\030\001 \003(\0132*.master.MemTableInfoReply.N"
-    "odememinfoEntry\032H\n\020NodememinfoEntry\022\013\n\003k"
-    "ey\030\001 \001(\t\022#\n\005value\030\002 \001(\0132\024.master.MemTabl"
-    "eInfo:\0028\001\"\206\001\n\020NodesStatusReply\022>\n\013nodess"
+    "ddr\030\001 \001(\t\"\206\001\n\020NodesStatusReply\022>\n\013nodess"
     "tatus\030\001 \003(\0132).master.NodesStatusReply.No"
     "desstatusEntry\0322\n\020NodesstatusEntry\022\013\n\003ke"
     "y\030\001 \001(\t\022\r\n\005value\030\002 \001(\010:\0028\001\"!\n\020NodeIndexR"
@@ -312,7 +252,7 @@ void protobuf_AddDesc_master_2eproto() {
     "\001 \003(\0132$.master.NodesInfoReply.NodeinfoEn"
     "try\032A\n\rNodeinfoEntry\022\013\n\003key\030\001 \001(\t\022\037\n\005val"
     "ue\030\002 \001(\0132\020.master.NodeInfo:\0028\001\"\007\n\005Empty2"
-    "\343\003\n\006Master\022>\n\013GetUserAddr\022\027.master.UserN"
+    "\351\002\n\006Master\022>\n\013GetUserAddr\022\027.master.UserN"
     "ameRequest\032\024.master.AddressReply\"\000\0226\n\nCr"
     "eateUser\022\027.master.UserNameRequest\032\r.mast"
     "er.Empty\"\000\022;\n\016GetNodesStatus\022\r.master.Em"
@@ -321,16 +261,11 @@ void protobuf_AddDesc_master_2eproto() {
     "oReply\"\000\0228\n\013DisableNode\022\030.master.NodeInd"
     "exRequest\032\r.master.Empty\"\000\0227\n\nEnableNode"
     "\022\030.master.NodeIndexRequest\032\r.master.Empt"
-    "y\"\000\022>\n\020SendMemTableInfo\022\r.master.Empty\032\031"
-    ".master.MemTableInfoReply\"\000\0228\n\017GetMemTab"
-    "leInfo\022\r.master.Empty\032\024.master.MemTableI"
-    "nfo\"\000B\006\242\002\003HLWb\006proto3", 1221);
+    "y\"\000B\006\242\002\003HLWb\006proto3", 899);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "master.proto", &protobuf_RegisterTypes);
   UserNameRequest::default_instance_ = new UserNameRequest();
   AddressReply::default_instance_ = new AddressReply();
-  MemTableInfo::default_instance_ = new MemTableInfo();
-  MemTableInfoReply::default_instance_ = new MemTableInfoReply();
   NodesStatusReply::default_instance_ = new NodesStatusReply();
   NodeIndexRequest::default_instance_ = new NodeIndexRequest();
   NodeInfo::default_instance_ = new NodeInfo();
@@ -338,8 +273,6 @@ void protobuf_AddDesc_master_2eproto() {
   Empty::default_instance_ = new Empty();
   UserNameRequest::default_instance_->InitAsDefaultInstance();
   AddressReply::default_instance_->InitAsDefaultInstance();
-  MemTableInfo::default_instance_->InitAsDefaultInstance();
-  MemTableInfoReply::default_instance_->InitAsDefaultInstance();
   NodesStatusReply::default_instance_->InitAsDefaultInstance();
   NodeIndexRequest::default_instance_->InitAsDefaultInstance();
   NodeInfo::default_instance_->InitAsDefaultInstance();
@@ -919,598 +852,6 @@ void AddressReply::clear_addr() {
   }
   addr_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), addr);
   // @@protoc_insertion_point(field_set_allocated:master.AddressReply.addr)
-}
-
-#endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
-
-// ===================================================================
-
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
-const int MemTableInfo::kBufferLengthFieldNumber;
-#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
-
-MemTableInfo::MemTableInfo()
-  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
-  SharedCtor();
-  // @@protoc_insertion_point(constructor:master.MemTableInfo)
-}
-
-void MemTableInfo::InitAsDefaultInstance() {
-  _is_default_instance_ = true;
-}
-
-MemTableInfo::MemTableInfo(const MemTableInfo& from)
-  : ::google::protobuf::Message(),
-    _internal_metadata_(NULL) {
-  SharedCtor();
-  MergeFrom(from);
-  // @@protoc_insertion_point(copy_constructor:master.MemTableInfo)
-}
-
-void MemTableInfo::SharedCtor() {
-    _is_default_instance_ = false;
-  _cached_size_ = 0;
-  buffer_length_ = GOOGLE_ULONGLONG(0);
-}
-
-MemTableInfo::~MemTableInfo() {
-  // @@protoc_insertion_point(destructor:master.MemTableInfo)
-  SharedDtor();
-}
-
-void MemTableInfo::SharedDtor() {
-  if (this != default_instance_) {
-  }
-}
-
-void MemTableInfo::SetCachedSize(int size) const {
-  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
-  _cached_size_ = size;
-  GOOGLE_SAFE_CONCURRENT_WRITES_END();
-}
-const ::google::protobuf::Descriptor* MemTableInfo::descriptor() {
-  protobuf_AssignDescriptorsOnce();
-  return MemTableInfo_descriptor_;
-}
-
-const MemTableInfo& MemTableInfo::default_instance() {
-  if (default_instance_ == NULL) protobuf_AddDesc_master_2eproto();
-  return *default_instance_;
-}
-
-MemTableInfo* MemTableInfo::default_instance_ = NULL;
-
-MemTableInfo* MemTableInfo::New(::google::protobuf::Arena* arena) const {
-  MemTableInfo* n = new MemTableInfo;
-  if (arena != NULL) {
-    arena->Own(n);
-  }
-  return n;
-}
-
-void MemTableInfo::Clear() {
-// @@protoc_insertion_point(message_clear_start:master.MemTableInfo)
-  buffer_length_ = GOOGLE_ULONGLONG(0);
-}
-
-bool MemTableInfo::MergePartialFromCodedStream(
-    ::google::protobuf::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
-  ::google::protobuf::uint32 tag;
-  // @@protoc_insertion_point(parse_start:master.MemTableInfo)
-  for (;;) {
-    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
-    tag = p.first;
-    if (!p.second) goto handle_unusual;
-    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // optional uint64 buffer_length = 1;
-      case 1: {
-        if (tag == 8) {
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   ::google::protobuf::uint64, ::google::protobuf::internal::WireFormatLite::TYPE_UINT64>(
-                 input, &buffer_length_)));
-
-        } else {
-          goto handle_unusual;
-        }
-        if (input->ExpectAtEnd()) goto success;
-        break;
-      }
-
-      default: {
-      handle_unusual:
-        if (tag == 0 ||
-            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
-          goto success;
-        }
-        DO_(::google::protobuf::internal::WireFormatLite::SkipField(input, tag));
-        break;
-      }
-    }
-  }
-success:
-  // @@protoc_insertion_point(parse_success:master.MemTableInfo)
-  return true;
-failure:
-  // @@protoc_insertion_point(parse_failure:master.MemTableInfo)
-  return false;
-#undef DO_
-}
-
-void MemTableInfo::SerializeWithCachedSizes(
-    ::google::protobuf::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:master.MemTableInfo)
-  // optional uint64 buffer_length = 1;
-  if (this->buffer_length() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteUInt64(1, this->buffer_length(), output);
-  }
-
-  // @@protoc_insertion_point(serialize_end:master.MemTableInfo)
-}
-
-::google::protobuf::uint8* MemTableInfo::InternalSerializeWithCachedSizesToArray(
-    bool deterministic, ::google::protobuf::uint8* target) const {
-  // @@protoc_insertion_point(serialize_to_array_start:master.MemTableInfo)
-  // optional uint64 buffer_length = 1;
-  if (this->buffer_length() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteUInt64ToArray(1, this->buffer_length(), target);
-  }
-
-  // @@protoc_insertion_point(serialize_to_array_end:master.MemTableInfo)
-  return target;
-}
-
-int MemTableInfo::ByteSize() const {
-// @@protoc_insertion_point(message_byte_size_start:master.MemTableInfo)
-  int total_size = 0;
-
-  // optional uint64 buffer_length = 1;
-  if (this->buffer_length() != 0) {
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::UInt64Size(
-        this->buffer_length());
-  }
-
-  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
-  _cached_size_ = total_size;
-  GOOGLE_SAFE_CONCURRENT_WRITES_END();
-  return total_size;
-}
-
-void MemTableInfo::MergeFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:master.MemTableInfo)
-  if (GOOGLE_PREDICT_FALSE(&from == this)) {
-    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
-  }
-  const MemTableInfo* source = 
-      ::google::protobuf::internal::DynamicCastToGenerated<const MemTableInfo>(
-          &from);
-  if (source == NULL) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:master.MemTableInfo)
-    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
-  } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:master.MemTableInfo)
-    MergeFrom(*source);
-  }
-}
-
-void MemTableInfo::MergeFrom(const MemTableInfo& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:master.MemTableInfo)
-  if (GOOGLE_PREDICT_FALSE(&from == this)) {
-    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
-  }
-  if (from.buffer_length() != 0) {
-    set_buffer_length(from.buffer_length());
-  }
-}
-
-void MemTableInfo::CopyFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:master.MemTableInfo)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
-void MemTableInfo::CopyFrom(const MemTableInfo& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:master.MemTableInfo)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
-bool MemTableInfo::IsInitialized() const {
-
-  return true;
-}
-
-void MemTableInfo::Swap(MemTableInfo* other) {
-  if (other == this) return;
-  InternalSwap(other);
-}
-void MemTableInfo::InternalSwap(MemTableInfo* other) {
-  std::swap(buffer_length_, other->buffer_length_);
-  _internal_metadata_.Swap(&other->_internal_metadata_);
-  std::swap(_cached_size_, other->_cached_size_);
-}
-
-::google::protobuf::Metadata MemTableInfo::GetMetadata() const {
-  protobuf_AssignDescriptorsOnce();
-  ::google::protobuf::Metadata metadata;
-  metadata.descriptor = MemTableInfo_descriptor_;
-  metadata.reflection = MemTableInfo_reflection_;
-  return metadata;
-}
-
-#if PROTOBUF_INLINE_NOT_IN_HEADERS
-// MemTableInfo
-
-// optional uint64 buffer_length = 1;
-void MemTableInfo::clear_buffer_length() {
-  buffer_length_ = GOOGLE_ULONGLONG(0);
-}
- ::google::protobuf::uint64 MemTableInfo::buffer_length() const {
-  // @@protoc_insertion_point(field_get:master.MemTableInfo.buffer_length)
-  return buffer_length_;
-}
- void MemTableInfo::set_buffer_length(::google::protobuf::uint64 value) {
-  
-  buffer_length_ = value;
-  // @@protoc_insertion_point(field_set:master.MemTableInfo.buffer_length)
-}
-
-#endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
-
-// ===================================================================
-
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
-const int MemTableInfoReply::kNodememinfoFieldNumber;
-#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
-
-MemTableInfoReply::MemTableInfoReply()
-  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
-  SharedCtor();
-  // @@protoc_insertion_point(constructor:master.MemTableInfoReply)
-}
-
-void MemTableInfoReply::InitAsDefaultInstance() {
-  _is_default_instance_ = true;
-}
-
-MemTableInfoReply::MemTableInfoReply(const MemTableInfoReply& from)
-  : ::google::protobuf::Message(),
-    _internal_metadata_(NULL) {
-  SharedCtor();
-  MergeFrom(from);
-  // @@protoc_insertion_point(copy_constructor:master.MemTableInfoReply)
-}
-
-void MemTableInfoReply::SharedCtor() {
-    _is_default_instance_ = false;
-  ::google::protobuf::internal::GetEmptyString();
-  _cached_size_ = 0;
-  nodememinfo_.SetAssignDescriptorCallback(
-      protobuf_AssignDescriptorsOnce);
-  nodememinfo_.SetEntryDescriptor(
-      &::master::MemTableInfoReply_NodememinfoEntry_descriptor_);
-}
-
-MemTableInfoReply::~MemTableInfoReply() {
-  // @@protoc_insertion_point(destructor:master.MemTableInfoReply)
-  SharedDtor();
-}
-
-void MemTableInfoReply::SharedDtor() {
-  if (this != default_instance_) {
-  }
-}
-
-void MemTableInfoReply::SetCachedSize(int size) const {
-  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
-  _cached_size_ = size;
-  GOOGLE_SAFE_CONCURRENT_WRITES_END();
-}
-const ::google::protobuf::Descriptor* MemTableInfoReply::descriptor() {
-  protobuf_AssignDescriptorsOnce();
-  return MemTableInfoReply_descriptor_;
-}
-
-const MemTableInfoReply& MemTableInfoReply::default_instance() {
-  if (default_instance_ == NULL) protobuf_AddDesc_master_2eproto();
-  return *default_instance_;
-}
-
-MemTableInfoReply* MemTableInfoReply::default_instance_ = NULL;
-
-MemTableInfoReply* MemTableInfoReply::New(::google::protobuf::Arena* arena) const {
-  MemTableInfoReply* n = new MemTableInfoReply;
-  if (arena != NULL) {
-    arena->Own(n);
-  }
-  return n;
-}
-
-void MemTableInfoReply::Clear() {
-// @@protoc_insertion_point(message_clear_start:master.MemTableInfoReply)
-  nodememinfo_.Clear();
-}
-
-bool MemTableInfoReply::MergePartialFromCodedStream(
-    ::google::protobuf::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
-  ::google::protobuf::uint32 tag;
-  // @@protoc_insertion_point(parse_start:master.MemTableInfoReply)
-  for (;;) {
-    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
-    tag = p.first;
-    if (!p.second) goto handle_unusual;
-    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // map<string, .master.MemTableInfo> nodememinfo = 1;
-      case 1: {
-        if (tag == 10) {
-          DO_(input->IncrementRecursionDepth());
-         parse_loop_nodememinfo:
-          MemTableInfoReply_NodememinfoEntry::Parser< ::google::protobuf::internal::MapField<
-              ::std::string, ::master::MemTableInfo,
-              ::google::protobuf::internal::WireFormatLite::TYPE_STRING,
-              ::google::protobuf::internal::WireFormatLite::TYPE_MESSAGE,
-              0 >,
-            ::google::protobuf::Map< ::std::string, ::master::MemTableInfo > > parser(&nodememinfo_);
-          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
-              input, &parser));
-          DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-            parser.key().data(), parser.key().length(),
-            ::google::protobuf::internal::WireFormatLite::PARSE,
-            "master.MemTableInfoReply.NodememinfoEntry.key"));
-        } else {
-          goto handle_unusual;
-        }
-        if (input->ExpectTag(10)) goto parse_loop_nodememinfo;
-        input->UnsafeDecrementRecursionDepth();
-        if (input->ExpectAtEnd()) goto success;
-        break;
-      }
-
-      default: {
-      handle_unusual:
-        if (tag == 0 ||
-            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
-          goto success;
-        }
-        DO_(::google::protobuf::internal::WireFormatLite::SkipField(input, tag));
-        break;
-      }
-    }
-  }
-success:
-  // @@protoc_insertion_point(parse_success:master.MemTableInfoReply)
-  return true;
-failure:
-  // @@protoc_insertion_point(parse_failure:master.MemTableInfoReply)
-  return false;
-#undef DO_
-}
-
-void MemTableInfoReply::SerializeWithCachedSizes(
-    ::google::protobuf::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:master.MemTableInfoReply)
-  // map<string, .master.MemTableInfo> nodememinfo = 1;
-  if (!this->nodememinfo().empty()) {
-    typedef ::google::protobuf::Map< ::std::string, ::master::MemTableInfo >::const_pointer
-        ConstPtr;
-    typedef ConstPtr SortItem;
-    typedef ::google::protobuf::internal::CompareByDerefFirst<SortItem> Less;
-    struct Utf8Check {
-      static void Check(ConstPtr p) {
-        ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-          p->first.data(), p->first.length(),
-          ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-          "master.MemTableInfoReply.NodememinfoEntry.key");
-      }
-    };
-
-    if (output->IsSerializationDeterminstic() &&
-        this->nodememinfo().size() > 1) {
-      ::google::protobuf::scoped_array<SortItem> items(
-          new SortItem[this->nodememinfo().size()]);
-      typedef ::google::protobuf::Map< ::std::string, ::master::MemTableInfo >::size_type size_type;
-      size_type n = 0;
-      for (::google::protobuf::Map< ::std::string, ::master::MemTableInfo >::const_iterator
-          it = this->nodememinfo().begin();
-          it != this->nodememinfo().end(); ++it, ++n) {
-        items[n] = SortItem(&*it);
-      }
-      ::std::sort(&items[0], &items[n], Less());
-      ::google::protobuf::scoped_ptr<MemTableInfoReply_NodememinfoEntry> entry;
-      for (size_type i = 0; i < n; i++) {
-        entry.reset(nodememinfo_.NewEntryWrapper(
-            items[i]->first, items[i]->second));
-        ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
-            1, *entry, output);
-        Utf8Check::Check(items[i]);
-      }
-    } else {
-      ::google::protobuf::scoped_ptr<MemTableInfoReply_NodememinfoEntry> entry;
-      for (::google::protobuf::Map< ::std::string, ::master::MemTableInfo >::const_iterator
-          it = this->nodememinfo().begin();
-          it != this->nodememinfo().end(); ++it) {
-        entry.reset(nodememinfo_.NewEntryWrapper(
-            it->first, it->second));
-        ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
-            1, *entry, output);
-        Utf8Check::Check(&*it);
-      }
-    }
-  }
-
-  // @@protoc_insertion_point(serialize_end:master.MemTableInfoReply)
-}
-
-::google::protobuf::uint8* MemTableInfoReply::InternalSerializeWithCachedSizesToArray(
-    bool deterministic, ::google::protobuf::uint8* target) const {
-  // @@protoc_insertion_point(serialize_to_array_start:master.MemTableInfoReply)
-  // map<string, .master.MemTableInfo> nodememinfo = 1;
-  if (!this->nodememinfo().empty()) {
-    typedef ::google::protobuf::Map< ::std::string, ::master::MemTableInfo >::const_pointer
-        ConstPtr;
-    typedef ConstPtr SortItem;
-    typedef ::google::protobuf::internal::CompareByDerefFirst<SortItem> Less;
-    struct Utf8Check {
-      static void Check(ConstPtr p) {
-        ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-          p->first.data(), p->first.length(),
-          ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-          "master.MemTableInfoReply.NodememinfoEntry.key");
-      }
-    };
-
-    if (deterministic &&
-        this->nodememinfo().size() > 1) {
-      ::google::protobuf::scoped_array<SortItem> items(
-          new SortItem[this->nodememinfo().size()]);
-      typedef ::google::protobuf::Map< ::std::string, ::master::MemTableInfo >::size_type size_type;
-      size_type n = 0;
-      for (::google::protobuf::Map< ::std::string, ::master::MemTableInfo >::const_iterator
-          it = this->nodememinfo().begin();
-          it != this->nodememinfo().end(); ++it, ++n) {
-        items[n] = SortItem(&*it);
-      }
-      ::std::sort(&items[0], &items[n], Less());
-      ::google::protobuf::scoped_ptr<MemTableInfoReply_NodememinfoEntry> entry;
-      for (size_type i = 0; i < n; i++) {
-        entry.reset(nodememinfo_.NewEntryWrapper(
-            items[i]->first, items[i]->second));
-        target = ::google::protobuf::internal::WireFormatLite::
-                   InternalWriteMessageNoVirtualToArray(
-                       1, *entry, deterministic, target);
-;
-        Utf8Check::Check(items[i]);
-      }
-    } else {
-      ::google::protobuf::scoped_ptr<MemTableInfoReply_NodememinfoEntry> entry;
-      for (::google::protobuf::Map< ::std::string, ::master::MemTableInfo >::const_iterator
-          it = this->nodememinfo().begin();
-          it != this->nodememinfo().end(); ++it) {
-        entry.reset(nodememinfo_.NewEntryWrapper(
-            it->first, it->second));
-        target = ::google::protobuf::internal::WireFormatLite::
-                   InternalWriteMessageNoVirtualToArray(
-                       1, *entry, deterministic, target);
-;
-        Utf8Check::Check(&*it);
-      }
-    }
-  }
-
-  // @@protoc_insertion_point(serialize_to_array_end:master.MemTableInfoReply)
-  return target;
-}
-
-int MemTableInfoReply::ByteSize() const {
-// @@protoc_insertion_point(message_byte_size_start:master.MemTableInfoReply)
-  int total_size = 0;
-
-  // map<string, .master.MemTableInfo> nodememinfo = 1;
-  total_size += 1 * this->nodememinfo_size();
-  {
-    ::google::protobuf::scoped_ptr<MemTableInfoReply_NodememinfoEntry> entry;
-    for (::google::protobuf::Map< ::std::string, ::master::MemTableInfo >::const_iterator
-        it = this->nodememinfo().begin();
-        it != this->nodememinfo().end(); ++it) {
-      entry.reset(nodememinfo_.NewEntryWrapper(it->first, it->second));
-      total_size += ::google::protobuf::internal::WireFormatLite::
-          MessageSizeNoVirtual(*entry);
-    }
-  }
-
-  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
-  _cached_size_ = total_size;
-  GOOGLE_SAFE_CONCURRENT_WRITES_END();
-  return total_size;
-}
-
-void MemTableInfoReply::MergeFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:master.MemTableInfoReply)
-  if (GOOGLE_PREDICT_FALSE(&from == this)) {
-    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
-  }
-  const MemTableInfoReply* source = 
-      ::google::protobuf::internal::DynamicCastToGenerated<const MemTableInfoReply>(
-          &from);
-  if (source == NULL) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:master.MemTableInfoReply)
-    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
-  } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:master.MemTableInfoReply)
-    MergeFrom(*source);
-  }
-}
-
-void MemTableInfoReply::MergeFrom(const MemTableInfoReply& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:master.MemTableInfoReply)
-  if (GOOGLE_PREDICT_FALSE(&from == this)) {
-    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
-  }
-  nodememinfo_.MergeFrom(from.nodememinfo_);
-}
-
-void MemTableInfoReply::CopyFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:master.MemTableInfoReply)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
-void MemTableInfoReply::CopyFrom(const MemTableInfoReply& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:master.MemTableInfoReply)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
-bool MemTableInfoReply::IsInitialized() const {
-
-  return true;
-}
-
-void MemTableInfoReply::Swap(MemTableInfoReply* other) {
-  if (other == this) return;
-  InternalSwap(other);
-}
-void MemTableInfoReply::InternalSwap(MemTableInfoReply* other) {
-  nodememinfo_.Swap(&other->nodememinfo_);
-  _internal_metadata_.Swap(&other->_internal_metadata_);
-  std::swap(_cached_size_, other->_cached_size_);
-}
-
-::google::protobuf::Metadata MemTableInfoReply::GetMetadata() const {
-  protobuf_AssignDescriptorsOnce();
-  ::google::protobuf::Metadata metadata;
-  metadata.descriptor = MemTableInfoReply_descriptor_;
-  metadata.reflection = MemTableInfoReply_reflection_;
-  return metadata;
-}
-
-#if PROTOBUF_INLINE_NOT_IN_HEADERS
-// MemTableInfoReply
-
-// map<string, .master.MemTableInfo> nodememinfo = 1;
-int MemTableInfoReply::nodememinfo_size() const {
-  return nodememinfo_.size();
-}
-void MemTableInfoReply::clear_nodememinfo() {
-  nodememinfo_.Clear();
-}
- const ::google::protobuf::Map< ::std::string, ::master::MemTableInfo >&
-MemTableInfoReply::nodememinfo() const {
-  // @@protoc_insertion_point(field_map:master.MemTableInfoReply.nodememinfo)
-  return nodememinfo_.GetMap();
-}
- ::google::protobuf::Map< ::std::string, ::master::MemTableInfo >*
-MemTableInfoReply::mutable_nodememinfo() {
-  // @@protoc_insertion_point(field_mutable_map:master.MemTableInfoReply.nodememinfo)
-  return nodememinfo_.MutableMap();
 }
 
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS

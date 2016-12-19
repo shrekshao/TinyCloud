@@ -13,8 +13,11 @@
 #include "Indexer.h"
 #include "BigTabler.h"
 
+void RunRestart();
 void RunGC();
 void writeToLog(string& msg);
+void replicaLogParser(string line, ofstream& outfile);
+void primaryLogParser(string line, ofstream& outfile);
 
 using namespace std;
 
@@ -32,6 +35,9 @@ using backend::FileChunkRequest;
 using backend::Storage;
 using backend::UserAccount;
 using backend::UserAccountReply;
+using backend::Log;
+using backend::Buffer;
+using backend::MemTableInfo;
 
 const char*  primary_server_ip = "0.0.0.0:50051";
 const char*  replica_server_ip = "0.0.0.0:50052";
@@ -48,6 +54,51 @@ mutex replica_mutex;
 // Log file
 string log_file = "replica_log.txt";
 
+/*
+ * Client Class to call primary server
+ */
+class PrimaryClient {
+public:
+    PrimaryClient(std::shared_ptr<Channel> channel) : stub_(Storage::NewStub(channel)) {}
+
+    int GetLog_Backup(string& buffer) {
+        Empty request;
+        Log reply;
+        ClientContext context;
+        Status status = stub_->GetLog(&context, request, &reply);
+
+        // Act upon its status.
+        if (status.ok()) {
+            buffer = reply.data();
+            return 1;
+        } else {
+            std::cout << status.error_code() << ": " << status.error_message() << std::endl;
+            return -1;
+        }
+    }
+
+    int GetBuffer_Backup(string& buffer) {
+        Empty request;
+        Buffer reply;
+        ClientContext context;
+        Status status = stub_->GetBuffer(&context, request, &reply);
+
+        // Act upon its status.
+        if (status.ok()) {
+            buffer = reply.data();
+            return 1;
+        } else {
+            std::cout << status.error_code() << ": " << status.error_message() << std::endl;
+            return -1;
+        }
+    }
+
+private:
+    std::unique_ptr<Storage::Stub> stub_;
+};
+
+PrimaryClient primarior(grpc::CreateChannel(primary_server_ip, grpc::InsecureChannelCredentials()));
+
 // Logic and data behind the server's behavior.
 class StorageServiceImpl final : public Storage::Service {
 
@@ -56,7 +107,7 @@ class StorageServiceImpl final : public Storage::Service {
         replica_mutex.lock();
 
         // Write to primary log
-        string log("CreateUser:insert(" + request->username() + ",false):crateuser(" + request->username() + "," + request->password() + ")\n");
+        string log("CreateUser:insert(" + request->username() + ",false):createuser(" + request->username() + "," + request->password() + ")\n");
         writeToLog(log);
 
         int success1 = indexer_service.insert(request->username(), false);
@@ -142,7 +193,7 @@ class StorageServiceImpl final : public Storage::Service {
 
         // Write to log, lock primary
         replica_mutex.lock();
-        string log("PutFile:put(" + request->username() + request->filename() + "," +  request->filetype() + "," + to_string(request->length()) + "):insert(" + request->username() + "/" + request->filename() + ",true)\n");
+        string log("PutFile:put(" + request->username() + "," + request->filename() + "," +  request->filetype() + "," + to_string(request->length()) + "):insert(" + request->username() + "/" + request->filename() + ",true)\n");
         writeToLog(log);
 
         int success1 = bigtable_service.put(request->username(), request->filename(), (unsigned char *) request->data().c_str(), request->filetype(), request->length());
@@ -230,7 +281,7 @@ class StorageServiceImpl final : public Storage::Service {
 
         // Write to log, lock primary
         replica_mutex.lock();
-        string log("DeleteFile:put(" + request->username() + "," + request->filename() + ")\n");
+        string log("DeleteFile:delet(" + request->username() + "," + request->filename() + ")\n");
         writeToLog(log);
 
         pair<int, bool> file_info = indexer_service.checkIsFile(request->username()+"/"+request->filename());
@@ -284,9 +335,41 @@ class StorageServiceImpl final : public Storage::Service {
         }
     }
 
+    Status GetLog(ServerContext* context, const Empty* request, Log* reply) override {
+        ifstream ifs(log_file, ios::binary|ios::ate);
+        int pos = ifs.tellg();
+        //fprintf(stderr, "pos: %d", pos);
+
+        char result[pos];
+
+        ifs.seekg(0, ios::beg);
+        ifs.read(result, pos);
+
+        reply->set_size(pos);
+        reply->set_data(result, pos);
+
+        return Status::OK;
+    }
+
+    Status GetBuffer(ServerContext* context, const Empty* request, Buffer* reply) override {
+        unsigned char result[bigtable_service.getCur_pt()];
+        bigtable_service.getMemtable(result);
+
+        reply->set_size(bigtable_service.getCur_pt());
+        reply->set_data(&result[0], bigtable_service.getCur_pt());
+
+        return Status::OK;
+    }
+
+    Status GetMemTableInfo (ServerContext* context, const Empty* request, MemTableInfo* reply) override {
+        reply->set_buffer_length(bigtable_service.getCur_pt());
+
+        return Status::OK;
+    }
 };
 
 void RunServer() {
+
     /*// Primary port
     std::string primary_server_address(primary_server_ip);
     StorageServiceImpl primary_service;
@@ -302,6 +385,9 @@ void RunServer() {
     std::cout << "Server primary listening on " << primary_server_address << std::endl;
     */
 
+    ofstream of(log_file, ostream::out | ostream::app);
+    of.close();
+
     // Replica port
     std::string replica_server_address(replica_server_ip);
     StorageServiceImpl replica_service;
@@ -316,6 +402,7 @@ void RunServer() {
     std::unique_ptr<Server> replica_server(replica_builder.BuildAndStart());
     std::cout << "Server replica listening on " << replica_server_address << std::endl;
 
+    RunRestart();
     RunGC();
 
     replica_server->Wait();
@@ -340,11 +427,49 @@ void RunGC() {
     pthread_t gcthread;
 
     pthread_create(&gcthread, NULL, &gcHelper, NULL);
-    rc = pthread_join(gcthread, NULL);
+}
+
+void RunRestart() {
+
+    string buffer;
+    if (primarior.GetLog_Backup(buffer) == -1) {
+        fprintf(stderr, "GetLog_Backup fail!\n");
+        return;
+    }
+
+    fprintf(stderr, "Get log successfully! Log size: %zu\n", strlen(buffer.c_str()));
+
+    ofstream outfile("replica_log_tmp.txt");
+
+    string line;
+    while (getline(stringstream(buffer), line)) {
+        replicaLogParser(line, outfile);
+    }
+
+    ifstream myfile(log_file);
+    if (myfile) {
+        while (getline(myfile, line)) {
+            primaryLogParser(line, outfile);
+        }
+        myfile.close();
+    }
+
+    string memtable;
+    if (primarior.GetBuffer_Backup(memtable) == -1) {
+        fprintf(stderr, "GetBuffer_Backup fail!\n");
+    }
+
+    fprintf(stderr, "Get buffer successfully! Buffersize: %zu\n", strlen(memtable.c_str()));
+
+    bigtable_service.setMemtable(memtable);
+
+    outfile.close();
+    remove("replica_log.txt");
+    rename("replica_log_tmp.txt", "replica_log.txt");
 }
 
 int main(int argc, char** argv) {
-    ///* Indexer test
+    /* Indexer test
     cout << indexer_service.insert("/tianli", false) << endl;
     cout << indexer_service.insert("/tianli/folder1", false) << endl;
     cout << indexer_service.insert("/tianli/folder2", false) << endl;
@@ -356,9 +481,9 @@ int main(int argc, char** argv) {
     for (map<string, Node>::iterator it = res.begin(); it != res.end(); ++it) {
         cout << it->first << " " << it->second.is_file << endl;
     }
-    //*/
+    */
 
-    ///* File storage test
+    /* File storage test
     ifstream ifs1("file1.txt", ios::binary|ios::ate);
     ifstream::pos_type pos1 = ifs1.tellg();
 
@@ -391,7 +516,7 @@ int main(int argc, char** argv) {
     cout << bigtable_service.get("tianli", "file2", (unsigned char *) pChars3, length2) << endl;
 
     printf("%s\n", pChars3);
-    //*/
+    */
 
     RunServer();
 
@@ -406,3 +531,85 @@ void writeToLog(string& msg) {
     bigtable_service.log_mutex.unlock();
 }
 
+void primaryLogParser(string line, ofstream& outfile) {
+    istringstream ss(line);
+    string group;
+    getline(ss, group, ':');
+    if (strcmp(group.c_str(), "CreateUser") == 0) {
+        outfile.write(line.c_str(), strlen(line.c_str()));
+        string username;
+        getline(ss, username, '(');
+        getline(ss, username, ',');
+        indexer_service.insert(username, false);
+
+        string password;
+        getline(ss, password, ',');
+        getline(ss, password, ')');
+        bigtable_service.createuser(username, password);
+
+    } else if (strcmp(group.c_str(), "InsertFileList") == 0) {
+        outfile.write(line.c_str(), strlen(line.c_str()));
+        string username;
+        getline(ss, username, '(');
+        getline(ss, username, ',');
+        indexer_service.insert(username, false);
+
+    } else if (strcmp(group.c_str(), "PutFile") == 0) {
+        outfile.write(line.c_str(), strlen(line.c_str()));
+        string username, filename, filetype, filelength;
+        getline(ss, username, ',');
+        getline(ss, filename, ',');
+        getline(ss, filetype, ',');
+        getline(ss, filelength, ')');
+        bigtable_service.put(username, filename, filetype, stoul(filelength));
+
+        indexer_service.insert(username+"/"+filename, true);
+
+    } else if (strcmp(group.c_str(), "UpdateFile") == 0) {
+        outfile.write(line.c_str(), strlen(line.c_str()));
+        string username, filename, filetype, filelength;
+        getline(ss, username, ',');
+        getline(ss, filename, ')');
+        getline(ss, filetype, ',');
+        getline(ss, filetype, ',');
+        getline(ss, filetype, ',');
+        getline(ss, filelength, ')');
+        bigtable_service.delet(username, filename);
+        bigtable_service.put(username, filename, filetype, stoul(filelength));
+
+    } else if (strcmp(group.c_str(), "DeleteFile") == 0) {
+        outfile.write(line.c_str(), strlen(line.c_str()));
+        string username, filename, filetype, filelength;
+        getline(ss, username, ',');
+        getline(ss, filename, ')');
+        bigtable_service.delet(username, filename);
+
+    } else if (strcmp(group.c_str(), "GC") == 0) {
+        // No need for GC:
+    }
+
+}
+
+void replicaLogParser(string line, ofstream& outfile) {
+    istringstream ss(line);
+    string group;
+    getline(ss, group, ':');
+    if (strcmp(group.c_str(), "GC") == 0) {
+        outfile.write(line.c_str(), strlen(line.c_str()));
+
+        string sstable;
+        getline(ss, sstable, ',');
+
+        string size;
+        getline(ss, size, ',');
+        int length = stoi(size);
+        //string temp[length];
+        vector<string> temp;
+        string str;
+        for (int i = 0; i < length; i++) {
+            getline(ss, str, ',');
+            temp.push_back(str);
+        }
+        bigtable_service.gcLog(sstable, temp, length);
+    }
+}
