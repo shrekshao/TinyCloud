@@ -530,7 +530,7 @@ class StorageServiceImpl final : public Storage::Service {
         bigtable_service.getMemtable(result);
 
         reply->set_size(bigtable_service.getCur_pt());
-        reply->set_data(result, bigtable_service.getCur_pt());
+        reply->set_data(result, (int) bigtable_service.getCur_pt());
 
         return Status::OK;
     }
