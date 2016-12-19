@@ -530,7 +530,7 @@ class StorageServiceImpl final : public Storage::Service {
         bigtable_service.getMemtable(result);
 
         reply->set_size(bigtable_service.getCur_pt());
-        reply->set_data(&result[0], bigtable_service.getCur_pt());
+        reply->set_data(result, bigtable_service.getCur_pt());
 
         return Status::OK;
     }
@@ -741,6 +741,7 @@ void replicaLogParser(string line, ofstream& outfile) {
         fprintf(stderr, "PutFile handler\n");
         outfile.write((line+"\n").c_str(), strlen((line+"\n").c_str()));
         string username, filename, filetype, filelength;
+        getline(ss, username, '(');
         getline(ss, username, ',');
         getline(ss, filename, ',');
         getline(ss, filetype, ',');
@@ -753,6 +754,7 @@ void replicaLogParser(string line, ofstream& outfile) {
         fprintf(stderr, "UpdateFile handler\n");
         outfile.write((line+"\n").c_str(), strlen((line+"\n").c_str()));
         string username, filename, filetype, filelength;
+        getline(ss, username, '(');
         getline(ss, username, ',');
         getline(ss, filename, ')');
         getline(ss, filetype, ',');
@@ -766,6 +768,7 @@ void replicaLogParser(string line, ofstream& outfile) {
         fprintf(stderr, "DeleteFile handler\n");
         outfile.write((line+"\n").c_str(), strlen((line+"\n").c_str()));
         string username, filename, filetype, filelength;
+        getline(ss, username, '(');
         getline(ss, username, ',');
         getline(ss, filename, ')');
         bigtable_service.delet(username, filename);

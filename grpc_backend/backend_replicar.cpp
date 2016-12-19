@@ -561,6 +561,7 @@ void primaryLogParser(string line, ofstream& outfile) {
         fprintf(stderr, "PutFile handler\n");
         outfile.write((line+"\n").c_str(), strlen((line+"\n").c_str()));
         string username, filename, filetype, filelength;
+        getline(ss, username, '(');
         getline(ss, username, ',');
         getline(ss, filename, ',');
         getline(ss, filetype, ',');
@@ -573,6 +574,7 @@ void primaryLogParser(string line, ofstream& outfile) {
         fprintf(stderr, "UpdateFile handler\n");
         outfile.write((line+"\n").c_str(), strlen((line+"\n").c_str()));
         string username, filename, filetype, filelength;
+        getline(ss, username, '(');
         getline(ss, username, ',');
         getline(ss, filename, ')');
         getline(ss, filetype, ',');
@@ -586,6 +588,7 @@ void primaryLogParser(string line, ofstream& outfile) {
         fprintf(stderr, "DeleteFile handler\n");
         outfile.write((line+"\n").c_str(), strlen((line+"\n").c_str()));
         string username, filename, filetype, filelength;
+        getline(ss, username, '(');
         getline(ss, username, ',');
         getline(ss, filename, ')');
         bigtable_service.delet(username, filename);
