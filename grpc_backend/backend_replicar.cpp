@@ -39,8 +39,8 @@ using backend::Log;
 using backend::Buffer;
 using backend::MemTableInfo;
 
-string  primary_server_ip = "0.0.0.0:";
-string  replica_server_ip = "0.0.0.0:";
+string  primary_server_ip = "0.0.0.0:50053";
+string  replica_server_ip = "0.0.0.0:50054";
 
 // Indexer service in-memory storage
 Indexer indexer_service;
@@ -52,7 +52,7 @@ BigTabler bigtable_service(replica_server_ip);
 mutex replica_mutex;
 
 // Log file
-string log_file = "replica_log_";
+string log_file = "replica_log.txt";
 
 /*
  * Client Class to call primary server
@@ -524,23 +524,23 @@ int main(int argc, char** argv) {
     printf("%s\n", pChars3);
     */
 
-    int c;
-    // Read command line opts
-    while ((c = getopt (argc, argv, "p:r:")) != -1) {
-        switch (c) {
-            case 'p': primary_server_ip += optarg; break;
-            case 'r': replica_server_ip += optarg; log_file += optarg; log_file += ".txt"; break;
-            case '?':
-                if (optopt == 'p' || optopt == 'r')
-                    fprintf(stderr, "Option -%c requires an argument.\n", optopt);
-                else if (isprint(optopt))
-                    fprintf(stderr, "Unknown option '-%c'.\n", optopt);
-                else
-                    fprintf(stderr, "Unknown option character '\\x%x'.\n", optopt);
-                return -1;
-            default: abort(); break;
-        }
-    }
+    // int c;
+    // // Read command line opts
+    // while ((c = getopt (argc, argv, "p:r:")) != -1) {
+    //     switch (c) {
+    //         case 'p': primary_server_ip += optarg; break;
+    //         case 'r': replica_server_ip += optarg; log_file += optarg; log_file += ".txt"; break;
+    //         case '?':
+    //             if (optopt == 'p' || optopt == 'r')
+    //                 fprintf(stderr, "Option -%c requires an argument.\n", optopt);
+    //             else if (isprint(optopt))
+    //                 fprintf(stderr, "Unknown option '-%c'.\n", optopt);
+    //             else
+    //                 fprintf(stderr, "Unknown option character '\\x%x'.\n", optopt);
+    //             return -1;
+    //         default: abort(); break;
+    //     }
+    // }
 
     RunServer();
 

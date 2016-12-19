@@ -1,5 +1,4 @@
 http_server
-backend_server
 *.o
 grpc_backend/BigTabler
 grpc_backend/Indexer
