@@ -97,6 +97,13 @@ class Master GRPC_FINAL {
     std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::master::Empty>> AsyncEnableNode(::grpc::ClientContext* context, const ::master::NodeIndexRequest& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::master::Empty>>(AsyncEnableNodeRaw(context, request, cq));
     }
+    // As Server
+    // Return Type: BufferLength
+    // Request Buffer Raw Meta From Storage Node
+    virtual ::grpc::Status SendMemTableInfo(::grpc::ClientContext* context, const ::master::Empty& request, ::master::MemTableInfoReply* response) = 0;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::master::MemTableInfoReply>> AsyncSendMemTableInfo(::grpc::ClientContext* context, const ::master::Empty& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::master::MemTableInfoReply>>(AsyncSendMemTableInfoRaw(context, request, cq));
+    }
   private:
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::master::AddressReply>* AsyncGetUserAddrRaw(::grpc::ClientContext* context, const ::master::UserNameRequest& request, ::grpc::CompletionQueue* cq) = 0;
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::master::Empty>* AsyncCreateUserRaw(::grpc::ClientContext* context, const ::master::UserNameRequest& request, ::grpc::CompletionQueue* cq) = 0;
@@ -104,6 +111,7 @@ class Master GRPC_FINAL {
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::master::NodesInfoReply>* AsyncGetNodesInfoRaw(::grpc::ClientContext* context, const ::master::Empty& request, ::grpc::CompletionQueue* cq) = 0;
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::master::Empty>* AsyncDisableNodeRaw(::grpc::ClientContext* context, const ::master::NodeIndexRequest& request, ::grpc::CompletionQueue* cq) = 0;
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::master::Empty>* AsyncEnableNodeRaw(::grpc::ClientContext* context, const ::master::NodeIndexRequest& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::master::MemTableInfoReply>* AsyncSendMemTableInfoRaw(::grpc::ClientContext* context, const ::master::Empty& request, ::grpc::CompletionQueue* cq) = 0;
   };
   class Stub GRPC_FINAL : public StubInterface {
    public:
@@ -132,6 +140,10 @@ class Master GRPC_FINAL {
     std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::master::Empty>> AsyncEnableNode(::grpc::ClientContext* context, const ::master::NodeIndexRequest& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::master::Empty>>(AsyncEnableNodeRaw(context, request, cq));
     }
+    ::grpc::Status SendMemTableInfo(::grpc::ClientContext* context, const ::master::Empty& request, ::master::MemTableInfoReply* response) GRPC_OVERRIDE;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::master::MemTableInfoReply>> AsyncSendMemTableInfo(::grpc::ClientContext* context, const ::master::Empty& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::master::MemTableInfoReply>>(AsyncSendMemTableInfoRaw(context, request, cq));
+    }
 
    private:
     std::shared_ptr< ::grpc::ChannelInterface> channel_;
@@ -141,12 +153,14 @@ class Master GRPC_FINAL {
     ::grpc::ClientAsyncResponseReader< ::master::NodesInfoReply>* AsyncGetNodesInfoRaw(::grpc::ClientContext* context, const ::master::Empty& request, ::grpc::CompletionQueue* cq) GRPC_OVERRIDE;
     ::grpc::ClientAsyncResponseReader< ::master::Empty>* AsyncDisableNodeRaw(::grpc::ClientContext* context, const ::master::NodeIndexRequest& request, ::grpc::CompletionQueue* cq) GRPC_OVERRIDE;
     ::grpc::ClientAsyncResponseReader< ::master::Empty>* AsyncEnableNodeRaw(::grpc::ClientContext* context, const ::master::NodeIndexRequest& request, ::grpc::CompletionQueue* cq) GRPC_OVERRIDE;
+    ::grpc::ClientAsyncResponseReader< ::master::MemTableInfoReply>* AsyncSendMemTableInfoRaw(::grpc::ClientContext* context, const ::master::Empty& request, ::grpc::CompletionQueue* cq) GRPC_OVERRIDE;
     const ::grpc::RpcMethod rpcmethod_GetUserAddr_;
     const ::grpc::RpcMethod rpcmethod_CreateUser_;
     const ::grpc::RpcMethod rpcmethod_GetNodesStatus_;
     const ::grpc::RpcMethod rpcmethod_GetNodesInfo_;
     const ::grpc::RpcMethod rpcmethod_DisableNode_;
     const ::grpc::RpcMethod rpcmethod_EnableNode_;
+    const ::grpc::RpcMethod rpcmethod_SendMemTableInfo_;
   };
   static std::unique_ptr<Stub> NewStub(const std::shared_ptr< ::grpc::ChannelInterface>& channel, const ::grpc::StubOptions& options = ::grpc::StubOptions());
 
@@ -173,6 +187,10 @@ class Master GRPC_FINAL {
     // Return Type: Empty
     // Disable One Node As Requested
     virtual ::grpc::Status EnableNode(::grpc::ServerContext* context, const ::master::NodeIndexRequest* request, ::master::Empty* response);
+    // As Server
+    // Return Type: BufferLength
+    // Request Buffer Raw Meta From Storage Node
+    virtual ::grpc::Status SendMemTableInfo(::grpc::ServerContext* context, const ::master::Empty* request, ::master::MemTableInfoReply* response);
   };
   template <class BaseClass>
   class WithAsyncMethod_GetUserAddr : public BaseClass {
@@ -294,7 +312,27 @@ class Master GRPC_FINAL {
       ::grpc::Service::RequestAsyncUnary(5, context, request, response, new_call_cq, notification_cq, tag);
     }
   };
-  typedef WithAsyncMethod_GetUserAddr<WithAsyncMethod_CreateUser<WithAsyncMethod_GetNodesStatus<WithAsyncMethod_GetNodesInfo<WithAsyncMethod_DisableNode<WithAsyncMethod_EnableNode<Service > > > > > > AsyncService;
+  template <class BaseClass>
+  class WithAsyncMethod_SendMemTableInfo : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service *service) {}
+   public:
+    WithAsyncMethod_SendMemTableInfo() {
+      ::grpc::Service::MarkMethodAsync(6);
+    }
+    ~WithAsyncMethod_SendMemTableInfo() GRPC_OVERRIDE {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status SendMemTableInfo(::grpc::ServerContext* context, const ::master::Empty* request, ::master::MemTableInfoReply* response) GRPC_FINAL GRPC_OVERRIDE {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    void RequestSendMemTableInfo(::grpc::ServerContext* context, ::master::Empty* request, ::grpc::ServerAsyncResponseWriter< ::master::MemTableInfoReply>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+      ::grpc::Service::RequestAsyncUnary(6, context, request, response, new_call_cq, notification_cq, tag);
+    }
+  };
+  typedef WithAsyncMethod_GetUserAddr<WithAsyncMethod_CreateUser<WithAsyncMethod_GetNodesStatus<WithAsyncMethod_GetNodesInfo<WithAsyncMethod_DisableNode<WithAsyncMethod_EnableNode<WithAsyncMethod_SendMemTableInfo<Service > > > > > > > AsyncService;
   template <class BaseClass>
   class WithGenericMethod_GetUserAddr : public BaseClass {
    private:
@@ -393,6 +431,23 @@ class Master GRPC_FINAL {
     }
     // disable synchronous version of this method
     ::grpc::Status EnableNode(::grpc::ServerContext* context, const ::master::NodeIndexRequest* request, ::master::Empty* response) GRPC_FINAL GRPC_OVERRIDE {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+  };
+  template <class BaseClass>
+  class WithGenericMethod_SendMemTableInfo : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service *service) {}
+   public:
+    WithGenericMethod_SendMemTableInfo() {
+      ::grpc::Service::MarkMethodGeneric(6);
+    }
+    ~WithGenericMethod_SendMemTableInfo() GRPC_OVERRIDE {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status SendMemTableInfo(::grpc::ServerContext* context, const ::master::Empty* request, ::master::MemTableInfoReply* response) GRPC_FINAL GRPC_OVERRIDE {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }

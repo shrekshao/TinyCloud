@@ -335,13 +335,12 @@ int MasterNode::enable_node(int index) {
     }
 }
 
-//int MasterNode::send_node_date(map<string, RawDataFromNode> &res) {
-//    cout << "[MASTER]:Receiving GETTING NODE DATA Call\n";
-//    // loop through all the nodes with its metainfo
-////    res = std::map<string, MemTableInfo>(mem_info_mapping.begin(), mem_info_mapping.end());
-//    // TODO
-//    return 1;
-//}
+int MasterNode::send_node_date(map<string, RawDataFromNode> &res) {
+    cout << "[MASTER]:Receiving GETTING NODE DATA Call\n";
+    // loop through all the nodes with its metainfo
+    res = std::map<string, RawDataFromNode>(mem_info_mapping.begin(), mem_info_mapping.end());
+    return 1;
+}
 
 // Background Thread Pinning To Check Availability Of Nodes
 int MasterNode::failure_checking() {
